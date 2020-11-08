@@ -20,4 +20,3 @@ dotnet publish --configuration Release --output bin
 4. Place the resulting .dll file in a folder called ```plugins/Merge versions``` under  the program data directory or inside the portable install directory
 
 
-"# jellyfin-plugin-skin-manager" 
