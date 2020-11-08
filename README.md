@@ -6,7 +6,25 @@ Jellyfin Skin Manager is a plugin that helps you to download and install skins;
 
 </p>
 
+## Install Process
 
+
+## From Repository
+1. In jellyfin, go to dashboard -> plugins -> Repositories -> add and paste this link https://raw.githubusercontent.com/danieladov/JellyfinPluginManifest/master/manifest.json
+2. Go to Catalog and search for Skin Manager
+3. Click on it and install
+4. Restart Jellyfin
+
+
+## From .zip file
+1. Download the .zip file from release page
+2. Extract it and place the .dll file in a folder called ```plugins/SkinManager``` under  the program data directory or inside the portable install directory
+3. Restart Jellyfin
+
+## User Guide
+1.Go to Plugins, click on Skin Manager
+2.Select the skin you want to install
+3.Click set skin
 
 
 
