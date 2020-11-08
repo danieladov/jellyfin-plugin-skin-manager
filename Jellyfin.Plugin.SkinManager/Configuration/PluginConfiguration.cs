@@ -1,6 +1,6 @@
 ﻿using MediaBrowser.Model.Plugins;
 
-namespace Jellyfin.Plugin.Css.Configuration
+namespace Jellyfin.Plugin.SkinManager.Configuration
 {
     public class PluginConfiguration : BasePluginConfiguration
     {

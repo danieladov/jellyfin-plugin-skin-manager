@@ -12,7 +12,7 @@ using MediaBrowser.Api;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Net;
 
-namespace Jellyfin.Plugin.Css
+namespace Jellyfin.Plugin.SkinManager
 {
 	public class CssManager : IServerEntryPoint
 	{

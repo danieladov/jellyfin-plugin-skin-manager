@@ -7,7 +7,7 @@ using MediaBrowser.Model.Branding;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Api;
 
-namespace Jellyfin.Plugin.Css.Api
+namespace Jellyfin.Plugin.SkinManager.Api
 {
     [Route("/Css/Set", "POST", Summary = "Downloads theme songs")]
     [Authenticated]

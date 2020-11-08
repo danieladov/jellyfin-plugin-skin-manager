@@ -1,14 +1,27 @@
 [
 	{
-		"name":"Netflix",
+		"name":"Jellyflix",
 		"author":"prayagprajapati17",
 		"css": "@import url(https://prayag17.github.io/JellyFlix/default.css);"
 
 	},
 	{
+		"name":"Monochromic",
+		"author":"EdgeMentality",
+		"css": "@import url('https://ctalvio.github.io/Monochromic/default_style.css');"
+
+	},
+
+	{
 		"name":"Kaleidochromic",
 		"author":"EdgeMentality",
 		"css": "@import url(https://ctalvio.github.io/Kaleidochromic/default_style.css);"
+
+	},
+	{
+		"name":"JellySkin",
+		"author":"prayagprajapati17",
+		"css": "@import url('https://prayag17.github.io/JellySkin/default.css');"
 
 	}
 ]

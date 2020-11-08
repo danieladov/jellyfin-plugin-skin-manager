@@ -10,7 +10,7 @@ using MediaBrowser.Api;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Net;
 
-namespace Jellyfin.Plugin.Css.ScheduledTasks
+namespace Jellyfin.Plugin.SkinManager.ScheduledTasks
 {
     public class SetCssTask : IScheduledTask
     {
