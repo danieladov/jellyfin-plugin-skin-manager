@@ -38,3 +38,11 @@ dotnet publish --configuration Release --output bin
 4. Place the resulting .dll file in a folder called ```plugins/SkinManager``` under  the program data directory or inside the portable install directory
 
 
+
+## Using with reverse proxy
+When using the Nginx Reverse proxy config from the [Jellyfin docs](https://jellyfin.org/docs/general/networking/nginx.html) the theme might not work by default. (If you are using the subpath config, you can ignore all this.)
+
+Because the config includes Content-Security-Policy which reduces risk of XSS, you need to add the URL from the skin repo and the fonts to the list of allowed external sources.
+
+For example to use Kaleidochromic you need to do [this](https://github.com/CTalvio/Kaleidochromic/blob/main/README.md#using-with-reverse-proxy)
+
