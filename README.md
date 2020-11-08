@@ -22,9 +22,9 @@ Jellyfin Skin Manager is a plugin that helps you to download and install skins;
 3. Restart Jellyfin.
 
 ## User Guide
-1.Go to Plugins, click on Skin Manager
-2.Select the skin you want to install
-3.Click set skin
+1. Go to Plugins, click on Skin Manager.
+2. Select the skin you want to install.
+3. Click set skin.
 
 
 
