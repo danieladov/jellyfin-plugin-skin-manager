@@ -3,7 +3,7 @@
     
 
 <head>
-    <title>Css</title>
+    <title>Skin Manager</title>
 </head>
 
 <body>
@@ -13,7 +13,7 @@
             <div class="content-primary">
                 <form class="tbsConfigurationPage">
                     <div class="sectionTitleContainer flex align-items-center">
-                        <h2 class="sectionTitle">Theme Songs</h2>
+                        <h2 class="sectionTitle">Skin Manager</h2>
                         <a is="emby-linkbutton" class="raised button-alt headerHelpButton emby-button" target="_blank"
                            href="https://github.com/danieladov/jellyfin-plugin-themesongs">Help</a>
                     </div>
@@ -62,33 +62,27 @@
             loadSkins();
 
             function setSkin() {
-            var request = {
-            url: ApiClient.getUrl('/Css/Set'),
-            type: 'POST'
-            };
 
-            ApiClient.getPluginConfiguration(plugin.guid).then(function (config) {
-                config.selectedCss = $('#cssOptions').val();
+            ApiClient.getServerConfiguration().then(function (config) {
+  
+                ApiClient.updateServerConfiguration(config).then(function() {
+                ApiClient.getNamedConfiguration('branding').then(function(brandingConfig) {
+                    brandingConfig.CustomCss = $('#cssOptions').val();
 
-                ApiClient.updatePluginConfiguration(plugin.guid, config).then(function (result) {
-                    Dashboard.processPluginConfigurationUpdateResult(result);
+                    
 
-                    Dashboard.alert("Changing skin...");
-                    ApiClient.fetch(request).then(function () {
+                    ApiClient.updateNamedConfiguration('branding', brandingConfig).then(function () {
+                        Dashboard.processServerConfigurationUpdateResult();
                         window.location.reload(true);
-                        }).catch(function () {
-                            Dashboard.alert({
-                            message: "Unexpected error occurred!"
-                        });
+                        
                     });
-                });               
+                });
                
             });
-
+        
             
-
-            
-            }
+        });
+    }
 
         </script>
 
