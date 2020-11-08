@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Css</title>
+</head>
+
+<body>
+    <div data-role="page" class="page type-interior pluginConfigurationPage tbsConfigurationPage"
+         data-require="emby-input,emby-button">
+        <div data-role="content">
+            <div class="content-primary">
+                <form class="tbsConfigurationPage">
+                    <div class="sectionTitleContainer flex align-items-center">
+                        <h2 class="sectionTitle">Theme Songs</h2>
+                        <a is="emby-linkbutton" class="raised button-alt headerHelpButton emby-button" target="_blank"
+                           href="https://github.com/danieladov/jellyfin-plugin-themesongs">Help</a>
+                    </div>
+                    <div class="verticalSection">
+                        <p>
+                            This plugin relies on the TVDB provider
+                            Please make sure it is enabled!
+                        </p>
+                        <br />
+                    </div>
+
+                    <div class="selectContainer">
+                        <label for="css">css</label>
+                        <select is="emby-select" id="cssOptions">
+                            <!--<option value='@import url("https://prayag17.github.io/JellyFlix/default.css");'>Netflix</option>
+                            <option value='@import url("https://ctalvio.github.io/Kaleidochromic/default_style.css");'>otra</option>-->
+                        </select>
+
+                            <br />
+                            <button is="emby-button" type="button" class="raised block" id="refresh-library"
+                                    onclick=setSkin()>
+                                <span>Set Skin</span>
+                            </button>
+
+                            <div>
+                                <button is="emby-button" type="submit" class="raised button-submit block emby-button">
+                                    <span>Save</span>
+                                </button>
+                            </div>
+</form>
+            </div>
+        </div>
+
+
+        <script type="text/javascript">
+
+            function setSkin() {
+            var request = {
+            url: ApiClient.getUrl('/Css/Set'),
+            type: 'POST'
+            };
+
+            ApiClient.getPluginConfiguration(plugin.guid).then(function (config) {
+                config.selectedCss = $('#cssOptions').val();
+
+                ApiClient.updatePluginConfiguration(plugin.guid, config).then(function (result) {
+                    Dashboard.processPluginConfigurationUpdateResult(result);
+
+                    Dashboard.alert("Changing skin...");
+                    ApiClient.fetch(request).then(function () {
+                        window.location.reload(true);
+                        }).catch(function () {
+                            Dashboard.alert({
+                            message: "Unexpected error occurred!"
+                        });
+                    });
+                });               
+               
+            });
+
+            
+
+            
+            }
+
+        </script>
+
+        <script type="text/javascript">
+            var plugin = {
+            guid: 'e9ca8b8e-ca6d-40e7-85dc-58e536df8eb3'
+            };
+
+            $('#configPage').on('pageshow', function () {
+            Dashboard.showLoadingMsg();
+            loadSavedConfig();
+            ApiClient.getPluginConfiguration(plugin.guid).then(function (config) {
+                $('#cssOptions').val(config.selectedCss).change();
+                Dashboard.hideLoadingMsg();
+                });
+            });
+
+            $('#configForm').on('submit', function () {
+            Dashboard.showLoadingMsg();
+            ApiClient.getPluginConfiguration(plugin.guid).then(function (config) {
+                config.selectedCss = $('#cssOptions').val();
+                ApiClient.updatePluginConfiguration(plugin.guid, config).then(function (result) {
+                    Dashboard.processPluginConfigurationUpdateResult(result);
+             });
+            });
+
+            return false;
+            });
+
+            function loadSavedConfig(){
+                ApiClient.getPluginConfiguration(plugin.guid).then(function (config) {
+                    var obj = getParsedJson();
+                    var count = 0;
+                    obj.forEach(element => {
+                        if(element.css == config.selectedCss){
+                            document.getElementById("cssOptions").selectIndex=count;
+                        }else{
+                            count ++;
+                        }
+                    });
+                });
+
+            }
+
+            function getParsedJson(){
+                return JSON.parse('[{"name":"Netflix","author":"prayagprajapati17","css": "@import url(\\"https://prayag17.github.io/JellyFlix/default.css\\");"},{"name":"Kaleidochromic","author":"EdgeMentality","css": "@import url(\\"https://ctalvio.github.io/Kaleidochromic/default_style.css\\");"}]');
+            }
+        </script>
+
+
+        <script>
+            var cssOptions = document.getElementById("cssOptions");
+            
+
+            var obj = getParsedJson();
+            obj.forEach(element => {
+                var opt = document.createElement("option");
+                opt.appendChild(document.createTextNode(element.name));
+                opt.value=element.css;
+                cssOptions.appendChild(opt);
+                
+            });
+       </script>
+    </div>
+</body>
+
+</html>
