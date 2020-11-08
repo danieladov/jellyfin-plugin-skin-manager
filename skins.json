@@ -1,0 +1,14 @@
+[
+	{
+		"name":"Netflix",
+		"author":"prayagprajapati17",
+		"css": "@import url(https://prayag17.github.io/JellyFlix/default.css);"
+
+	},
+	{
+		"name":"Kaleidochromic",
+		"author":"EdgeMentality",
+		"css": "@import url(https://ctalvio.github.io/Kaleidochromic/default_style.css);"
+
+	}
+]
