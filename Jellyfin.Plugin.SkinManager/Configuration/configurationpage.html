@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html>
+    
 
 <head>
-    <title>Skin Manager</title>
+    <title>Css</title>
 </head>
 
 <body>
@@ -18,8 +19,7 @@
                     </div>
                     <div class="verticalSection">
                         <p>
-                            This plugin relies on the TVDB provider
-                            Please make sure it is enabled!
+                            Select the skin you want to install and press Set Skin
                         </p>
                         <br />
                     </div>
@@ -27,7 +27,7 @@
                     <div class="selectContainer">
                         <label for="css">css</label>
                         <select is="emby-select" id="cssOptions">
-                          
+                           
                         </select>
 
                             <br />
@@ -45,8 +45,25 @@
             </div>
         </div>
 
-
+        
         <script type="text/javascript">
+
+            function loadSkins(){
+
+            $.getJSON('https://raw.githubusercontent.com/danieladov/jellyfin-plugin-skin-manager/master/skins.json', function(data) {
+
+                var cssOptions = document.getElementById("cssOptions");
+                data.forEach(element => {
+                    var opt = document.createElement("option");
+                    opt.appendChild(document.createTextNode(element.name));
+                    opt.value=element.css;
+                    cssOptions.appendChild(opt);
+
+                });
+
+            });
+            }
+            loadSkins();
 
             function setSkin() {
             var request = {
@@ -105,39 +122,13 @@
             return false;
             });
 
-            function loadSavedConfig(){
-                ApiClient.getPluginConfiguration(plugin.guid).then(function (config) {
-                    var obj = getParsedJson();
-                    var count = 0;
-                    obj.forEach(element => {
-                        if(element.css == config.selectedCss){
-                            document.getElementById("cssOptions").selectIndex=count;
-                        }else{
-                            count ++;
-                        }
-                    });
-                });
-
-            }
-
-            function getParsedJson(){
-                return JSON.parse('[{"name":"Netflix","author":"prayagprajapati17","css": "@import url(\\"https://prayag17.github.io/JellyFlix/default.css\\");"},{"name":"Kaleidochromic","author":"EdgeMentality","css": "@import url(\\"https://ctalvio.github.io/Kaleidochromic/default_style.css\\");"}]');
-            }
-        </script>
-
-
-        <script>
-            var cssOptions = document.getElementById("cssOptions");
+            
             
 
-            var obj = getParsedJson();
-            obj.forEach(element => {
-                var opt = document.createElement("option");
-                opt.appendChild(document.createTextNode(element.name));
-                opt.value=element.css;
-                cssOptions.appendChild(opt);
+            
+
                 
-            });
+            
        </script>
     </div>
 </body>
