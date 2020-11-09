@@ -1,82 +1,33 @@
 [
-  {
-    "name": "Default",
-    "author": "Jellyfin",
-    "versions": [
-      {
-        "name": "Default",
-		"description":"Default Skin",
-        "css": ""
-      }
-    ]
-  },
-  {
-    "name": "Jellyflix",
-    "author": "prayagprajapati17",
-    "versions": [
-      {
-        "name": "Default",
-		"description":"Default Skin",
-        "css": "@import url(https://prayag17.github.io/JellyFlix/default.css);"
-      }
-    ]
-  },
-  {
-    "name": "Monochromic",
-    "author": "EdgeMentality",
-    "versions": [
-      {
-        "name": "Default",
-        "description": "Default Skin",
-        "css": "@import url(https://ctalvio.github.io/Monochromic/default_style.css);"
-      },
-      {
-        "name": "Improve performance",
-        "description": "The theme uses mask-image to fade out items below the top bar as you scroll. This works well on most reasonable hardware but struggles on some phones and especially smart TVs. This switches to a method without using mask-image, but foregoes the fade-out effect. I may switch to this method being the default.",
-        "css": "@import url('https://ctalvio.github.io/Monochromic/improve-performance_style.css');"
-      },
-      {
-        "name": "No rounded corners",
-        "description": "In fact, squares off every rounded corner JF ever had.",
-        "css": "@import url('https://ctalvio.github.io/Monochromic/sharp_style.css');"
-      },
-      {
-        "name": "Accent color preset - blue",
-        "description": "Restores some of the default Jellyfin blue accenting",
-        "css": "@import url('https://ctalvio.github.io/Monochromic/jfblue_style.css');"
-      },
-      {
-        "name": "Accent color preset - purple",
-        "description": "Purple Accents",
-        "css": "@import url('https://ctalvio.github.io/Monochromic/jfpurple_style.css'); );"
-      },
-      {
-        "name": "Restore bottom bar style episode progress",
-        "description": "Don't like my transparent view progress overlay? Use this to go back to the old style.",
-        "css": "@import url('https://ctalvio.github.io/Monochromic/bottom-progress_style.css');"
-      }
-    ]
-  },
-  {
-    "name": "Kaleidochromic",
-    "author": "EdgeMentality",
-    "versions": [
-      {
-        "name": "Default",
-		"description":"Default Skin",
-        "css": "@import url(https://ctalvio.github.io/Kaleidochromic/default_style.css);"
-      }
-    ]
-  },
-  {
-    "name": "JellySkin",
-    "author": "prayagprajapati17",
-    "versions": [
-      {
-        "name": "Default",
-		"description":"Default Skin",
-        "css": "@import url('https://prayag17.github.io/JellySkin/default.css');"
-      }
-    ]
-  }
+	{
+		"name":"Default",
+		"author":"Jellyfin",
+		"css": ""
+
+	},
+	{
+		"name":"Jellyflix",
+		"author":"prayagprajapati17",
+		"css": "@import url(https://prayag17.github.io/JellyFlix/default.css);"
+
+	},
+	{
+		"name":"Monochromic",
+		"author":"EdgeMentality",
+		"css": "@import url('https://ctalvio.github.io/Monochromic/default_style.css');"
+
+	},
+
+	{
+		"name":"Kaleidochromic",
+		"author":"EdgeMentality",
+		"css": "@import url(https://ctalvio.github.io/Kaleidochromic/default_style.css);"
+
+	},
+	{
+		"name":"JellySkin",
+		"author":"prayagprajapati17",
+		"css": "@import url('https://prayag17.github.io/JellySkin/default.css');"
+
+	}
 ]
