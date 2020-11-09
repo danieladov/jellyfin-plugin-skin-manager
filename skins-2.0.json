@@ -16,7 +16,7 @@
     "versions": [
       {
         "name": "Default",
-	"description":"A theme that aims to replicate the red and black look of Netflix. Theme is by <a href='https://github.com/prayag17'>prayag17</a>.",
+	"description":"A theme that aims to replicate the red and black look of Netflix. Theme is by prayag17.",
         "css": "@import url(https://prayag17.github.io/JellyFlix/default.css);"
       }
     ]
@@ -27,7 +27,7 @@
     "versions": [
       {
         "name": "Default",
-        "description": "This theme aims to be minimalistic and somewhat muted in color. Add-ons and custom accent colors are possible, but not entirely supported by this plug-in. Visit the <a href='https://github.com/CTalvio/Monochromic'>github of the theme</a> for more information.",
+        "description": "This theme aims to be minimalistic and somewhat muted in color. Add-ons and custom accent colors are possible, but not entirely supported by this plug-in. Visit the github of the theme for more information.",
         "css": "@import url(https://ctalvio.github.io/Monochromic/default_style.css); @import url('https://ctalvio.github.io/Monochromic/improve-performance_style.css');"
       },
       {
@@ -63,7 +63,7 @@
     "versions": [
 {
         "name": "Default",
-        "description": "This theme aims to be more colorful and minimalistic. Add-ons and custom accent colors are possible, but not entirely supported by this plug-in. Visit the <a href='https://github.com/CTalvio/Kaleidochromic'>github of the theme</a> for more information.",
+        "description": "This theme aims to be more colorful and minimalistic. Add-ons and custom accent colors are possible, but not entirely supported by this plug-in. Visit the github of the theme for more information.",
         "css": "@import url(https://ctalvio.github.io/Kaleidochromic/default_style.css); @import url('https://ctalvio.github.io/Monochromic/improve-performance_style.css');"
       },
       {
@@ -89,7 +89,7 @@
     "versions": [
       {
         "name": "Default",
-	"description":"A very bright and colorful look using lots of drop shadows. Theme is by <a href='https://github.com/prayag17'>prayag17</a>.",
+	"description":"A very bright and colorful look using lots of drop shadows. Theme is by prayag17.",
         "css": "@import url('https://prayag17.github.io/JellySkin/default.css');"
       }
     ]
