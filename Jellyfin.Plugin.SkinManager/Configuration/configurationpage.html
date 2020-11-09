@@ -26,15 +26,19 @@
 
                     <div class="selectContainer">
                         <label for="css">css</label>
-                        <select is="emby-select" id="cssOptions">
-                           
+                        <select is="emby-select" id="cssOptions" onchange="updateVersions()">                          
                         </select>
 
+                        <label for="Version">Version</label>
+                        <select is="emby-select" id="skinVersions" onchange="updateDescription()">
+                        </select>
+                        <p id="description"></p>
                             <br />
-                            <button is="emby-button" type="button" class="raised block" id="refresh-library"
+                        <button is="emby-button" type="button" class="raised block" id="refresh-library"
                                     onclick=setSkin()>
                                 <span>Set Skin</span>
                             </button>
+
 
                             
 </form>
@@ -46,28 +50,88 @@
 
             function loadSkins(){
 
-            $.getJSON('https://raw.githubusercontent.com/danieladov/jellyfin-plugin-skin-manager/master/skins.json', function(data) {
+            $.getJSON('https://raw.githubusercontent.com/danieladov/jellyfin-plugin-skin-manager/master/skins-2.0.json', function(data) {
 
                 var cssOptions = document.getElementById("cssOptions");
+                var skinVersions = document.getElementById("skinVersions");
+                var versionDescription = document.getElementById("versionDescription");
                 data.forEach(element => {
                     var opt = document.createElement("option");
                     opt.appendChild(document.createTextNode(element.name));
-                    opt.value=element.css;
+                    opt.value=element.name;
                     cssOptions.appendChild(opt);
+                    element.versions.forEach(version =>{
+ 
+                    })
 
                 });
-
-            });
+                updateVersions()
+            });         
             }
             loadSkins();
+            
 
+            function updateVersions(){
+                var selected = $('#cssOptions').val();
+                var skinVersions = document.getElementById("skinVersions");
+                
+
+                //clear selector
+                for (i = skinVersions.options.length-1; i >= 0; i--) {
+                    skinVersions.options[i] = null;
+                }
+
+                $.getJSON('https://raw.githubusercontent.com/danieladov/jellyfin-plugin-skin-manager/master/skins-2.0.json', function(data) {
+
+                    var skinVersions = document.getElementById("skinVersions");
+
+                    data.forEach(element => {
+                        if(selected == element.name){
+                            element.versions.forEach(version =>{
+                                var opt = document.createElement("option");
+                                opt.appendChild(document.createTextNode(version.name));
+                                opt.value=version.css;
+                                skinVersions.appendChild(opt);
+                                description.innerHTML=version.description;
+
+
+                        })
+                        }
+                        
+
+                    });
+                    updateDescription()
+                });
+                
+
+            }
+
+            function updateDescription( ){
+                var description = document.getElementById("description");
+                var selected = $('#skinVersions').val();
+
+                $.getJSON('https://raw.githubusercontent.com/danieladov/jellyfin-plugin-skin-manager/master/skins-2.0.json', function(data) {
+
+                    data.forEach(element => {
+                        element.versions.forEach(version => {
+                            if(version.css == selected){
+                                description.innerHTML=version.description;
+                            }
+                            
+                        });
+   
+                    })
+                })
+
+            
+            }
             function setSkin() {
 
             ApiClient.getServerConfiguration().then(function (config) {
   
                 ApiClient.updateServerConfiguration(config).then(function() {
                 ApiClient.getNamedConfiguration('branding').then(function(brandingConfig) {
-                    brandingConfig.CustomCss = $('#cssOptions').val();
+                    brandingConfig.CustomCss = $('#skinVersions').val();
 
                     
 
