@@ -5,7 +5,7 @@
     "versions": [
       {
         "name": "Default",
-		"description":"Default Skin",
+	"description":"Default, stock, Jellyfin.",
         "css": ""
       }
     ]
@@ -16,7 +16,7 @@
     "versions": [
       {
         "name": "Default",
-		"description":"Default Skin",
+	"description":"A theme that aims to replicate the red and black look of Netflix. Theme is by prayag17.",
         "css": "@import url(https://prayag17.github.io/JellyFlix/default.css);"
       }
     ]
@@ -27,33 +27,33 @@
     "versions": [
       {
         "name": "Default",
-        "description": "Default Skin",
-        "css": "@import url(https://ctalvio.github.io/Monochromic/default_style.css);"
+        "description": "This theme aims to be minimalistic and somewhat muted in color. Add-ons and custom accent colors are possible, but not entirely supported by this plug-in. Visit the github of the theme for more information.",
+        "css": "@import url(https://ctalvio.github.io/Monochromic/default_style.css); @import url('https://ctalvio.github.io/Monochromic/improve-performance_style.css');"
       },
       {
-        "name": "Improve performance",
-        "description": "The theme uses mask-image to fade out items below the top bar as you scroll. This works well on most reasonable hardware but struggles on some phones and especially smart TVs. This switches to a method without using mask-image, but foregoes the fade-out effect. I may switch to this method being the default.",
-        "css": "@import url('https://ctalvio.github.io/Monochromic/improve-performance_style.css');"
+        "name": "Sharp corners",
+        "description": "No rounded corners.",
+        "css": "@import url(https://ctalvio.github.io/Monochromic/default_style.css); @import url('https://ctalvio.github.io/Monochromic/improve-performance_style.css'); :root {--rounding: 0px;}"
       },
       {
-        "name": "No rounded corners",
-        "description": "In fact, squares off every rounded corner JF ever had.",
-        "css": "@import url('https://ctalvio.github.io/Monochromic/sharp_style.css');"
+        "name": "Accent color - blue",
+        "description": "Uses the default blue color for accents.",
+        "css": "@import url(https://ctalvio.github.io/Monochromic/default_style.css); @import url('https://ctalvio.github.io/Monochromic/improve-performance_style.css'); @import url('https://ctalvio.github.io/Monochromic/jfblue_style.css');"
       },
       {
-        "name": "Accent color preset - blue",
-        "description": "Restores some of the default Jellyfin blue accenting",
-        "css": "@import url('https://ctalvio.github.io/Monochromic/jfblue_style.css');"
+        "name": "Accent color - purple",
+        "description": "Uses a purple shade, also suited for Jellyfin.",
+        "css": "@import url(https://ctalvio.github.io/Monochromic/default_style.css); @import url('https://ctalvio.github.io/Monochromic/improve-performance_style.css'); @import url('https://ctalvio.github.io/Monochromic/jfpurple_style.css');"
       },
       {
-        "name": "Accent color preset - purple",
-        "description": "Purple Accents",
-        "css": "@import url('https://ctalvio.github.io/Monochromic/jfpurple_style.css'); );"
+        "name": "Accent color - blue - sharp",
+        "description": "Uses the default blue color for accents. Sharp corners.",
+        "css": "@import url(https://ctalvio.github.io/Monochromic/default_style.css); @import url('https://ctalvio.github.io/Monochromic/improve-performance_style.css'); @import url('https://ctalvio.github.io/Monochromic/jfblue_style.css'); :root {--rounding: 0px;}"
       },
       {
-        "name": "Restore bottom bar style episode progress",
-        "description": "Don't like my transparent view progress overlay? Use this to go back to the old style.",
-        "css": "@import url('https://ctalvio.github.io/Monochromic/bottom-progress_style.css');"
+        "name": "Accent color - purple - sharp",
+        "description": "Uses a purple shade, also suited for Jellyfin. Sharp corners.",
+        "css": "@import url(https://ctalvio.github.io/Monochromic/default_style.css); @import url('https://ctalvio.github.io/Monochromic/improve-performance_style.css'); @import url('https://ctalvio.github.io/Monochromic/jfpurple_style.css'); :root {--rounding: 0px;}"
       }
     ]
   },
@@ -63,8 +63,23 @@
     "versions": [
       {
         "name": "Default",
-		"description":"Default Skin",
-        "css": "@import url(https://ctalvio.github.io/Kaleidochromic/default_style.css);"
+        "description": "This theme aims to be more colorful and minimalistic. Add-ons and custom accent colors are possible, but not entirely supported by this plug-in. Visit the github of the theme for more information.",
+        "css": "@import url(https://ctalvio.github.io/Kaleidochromic/default_style.css); @import url('https://ctalvio.github.io/Monochromic/improve-performance_style.css');"
+      },
+      {
+        "name": "Sharp corners",
+        "description": "No rounded corners.",
+        "css": "@import url(https://ctalvio.github.io/Kaleidochromic/default_style.css); @import url('https://ctalvio.github.io/Monochromic/improve-performance_style.css'); :root {--rounding: 0px;}"
+      },
+      {
+        "name": "Accent color - blue",
+        "description": "Uses the default blue color for accents.",
+        "css": "@import url(https://ctalvio.github.io/Kaleidochromic/default_style.css); @import url('https://ctalvio.github.io/Monochromic/improve-performance_style.css'); @import url('https://ctalvio.github.io/Monochromic/jfblue_style.css');"
+      },
+      {
+        "name": "Accent color - blue - sharp",
+        "description": "Uses the default blue color for accents. Sharp corners.",
+        "css": "@import url(https://ctalvio.github.io/Kaleidochromic/default_style.css); @import url('https://ctalvio.github.io/Monochromic/improve-performance_style.css'); @import url('https://ctalvio.github.io/Monochromic/jfblue_style.css'); :root {--rounding: 0px;}"
       }
     ]
   },
@@ -74,7 +89,7 @@
     "versions": [
       {
         "name": "Default",
-		"description":"Default Skin",
+	"description":"A very bright and colorful look using lots of drop shadows. Theme is by prayag17.",
         "css": "@import url('https://prayag17.github.io/JellySkin/default.css');"
       }
     ]
