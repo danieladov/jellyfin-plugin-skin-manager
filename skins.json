@@ -5,6 +5,7 @@
     "versions": [
       {
         "name": "Default",
+		"description":"Default Skin",
         "css": ""
       }
     ]
@@ -15,6 +16,7 @@
     "versions": [
       {
         "name": "Default",
+		"description":"Default Skin",
         "css": "@import url(https://prayag17.github.io/JellyFlix/default.css);"
       }
     ]
@@ -61,6 +63,7 @@
     "versions": [
       {
         "name": "Default",
+		"description":"Default Skin",
         "css": "@import url(https://ctalvio.github.io/Kaleidochromic/default_style.css);"
       }
     ]
@@ -71,6 +74,7 @@
     "versions": [
       {
         "name": "Default",
+		"description":"Default Skin",
         "css": "@import url('https://prayag17.github.io/JellySkin/default.css');"
       }
     ]
