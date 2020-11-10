@@ -69,7 +69,7 @@
         "name": "Modify rounding",
         "description": "By adding this variable at the bottom, after the import lines, the rounding can be removed, reduced or increased.",
         "css": ":root {--rounding: $px;}"
-		"default":""
+		"default":"0"
       },
       {
         "type":"colorPicker",
