@@ -83,12 +83,8 @@
   {
     "name": "JellySkin",
     "author": "prayagprajapati17",
-    "versions": [
-      {
-        "name": "Default",
-        "description": "A very bright and colorful look using lots of drop shadows. Theme is by prayag17.",
-        "css": "@import url('https://prayag17.github.io/JellySkin/default.css');"
-      }
-    ]
+	"description": "A very bright and colorful look using lots of drop shadows. Theme is by prayag17.",
+	"defaultCss": "@import url('https://prayag17.github.io/JellySkin/default.css');",
+    "options": []
   }
 ]
