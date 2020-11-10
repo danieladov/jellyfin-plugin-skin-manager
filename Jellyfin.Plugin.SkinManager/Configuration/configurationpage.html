@@ -15,7 +15,7 @@
                     <div class="sectionTitleContainer flex align-items-center">
                         <h2 class="sectionTitle">Skin Manager</h2>
                         <a is="emby-linkbutton" class="raised button-alt headerHelpButton emby-button" target="_blank"
-                           href="https://github.com/danieladov/jellyfin-plugin-themesongs">Help</a>
+                           href="https://github.com/danieladov/jellyfin-plugin-skin-manager">Help</a>
                     </div>
                     <div class="verticalSection">
                         <p>
@@ -26,13 +26,15 @@
 
                     <div class="selectContainer">
                         <label for="css">css</label>
-                        <select is="emby-select" id="cssOptions" onchange="updateVersions()">                          
+                        <select is="emby-select" id="cssOptions" onchange="updateSelectors()">                          
                         </select>
 
-                        <label for="Version">Version</label>
-                        <select is="emby-select" id="skinVersions" onchange="updateDescription()">
-                        </select>
                         <p id="description"></p>
+                    </div>
+
+                    <div class="checkboxList checkboxList-verticalwrap" id ="options">
+                        
+                    </div>
                             <br />
                         <button is="emby-button" type="button" class="raised block" id="refresh-library"
                                     onclick=setSkin()>
@@ -47,10 +49,13 @@
 
         
         <script type="text/javascript">
+            var data;
+            $.getJSON('https://pastebin.com/raw/X9X5t1wE', function(json) {
+                data=json;
+                loadSkins();           
+            });
 
-            function loadSkins(){
-
-            $.getJSON('https://raw.githubusercontent.com/danieladov/jellyfin-plugin-skin-manager/master/skins-2.0.json', function(data) {
+            function loadSkins(){          
 
                 var cssOptions = document.getElementById("cssOptions");
                 var skinVersions = document.getElementById("skinVersions");
@@ -58,17 +63,64 @@
                 data.forEach(element => {
                     var opt = document.createElement("option");
                     opt.appendChild(document.createTextNode(element.name));
-                    opt.value=element.name;
+                    opt.value=element.defaultCss;
                     cssOptions.appendChild(opt);
-                    element.versions.forEach(version =>{
- 
-                    })
-
+                    
                 });
-                updateVersions()
-            });         
+               // updateVersions()
+                  
             }
-            loadSkins();
+
+
+
+            function loadOptions(options){
+                var page = $.mobile.activePage;
+                var html = "";
+                        html += '<div data-role="controlgroup">';
+                        options.forEach(element=>{
+                            if(element.type == "checkBox"){
+                                html += getCheckBox(element);
+                            }else if(element.type == "colorPicker"){
+                                html += getColorPicker(element);
+                            }else if(element.type == "number"){
+                                html += getNumber(element);
+                            }
+                           
+                        });
+                        html += '</div>';
+                        $('#options', page).html(html).trigger('create');
+
+            }
+
+             function getCheckBox ( option) {
+                        var html = "";
+                            var id = "chkFolder" ;
+                            var name = option.name;
+                            var value = option.css;                            
+                            html += '<label><input is="emby-checkbox" class="chkLibrary" type="checkbox" data-mini="true" id="' + id + '" name="' + id + '" data-value="' + value + '" '+' /><span>' + name  + '</span></label>';
+                        
+                        return html;
+                    }
+
+            function getColorPicker ( option) {
+                var html = "";
+                    var id = "favcolor" ;
+                    var name = option.name;   
+                    var css = option.css;                            
+                    html += '<label><input type=color value="#AA5CC3" class = "color" data-css = "'+ css+ '" data-mini="true" id="' + id + '" name="' + id + '" data-name="' + name + '" ' + ' /><span>' + name  + '</span></label>';
+                        
+                return html;
+                    }
+
+            function getNumber(option){
+                var html = "";
+                    var id = "number" ;
+                    var name = option.name; 
+                    var css = option.css;                           
+                    html += '<label><input type=number value="0" class = "number" data-css = "'+ css+ '" data-mini="true" id="' + id + '" name="' + id + '" data-name="' + name + '" ' + ' /><span>' + name  + '</span></label>';
+                        
+                return html;
+            }
             
 
             function updateVersions(){
@@ -80,8 +132,6 @@
                 for (i = skinVersions.options.length-1; i >= 0; i--) {
                     skinVersions.options[i] = null;
                 }
-
-                $.getJSON('https://raw.githubusercontent.com/danieladov/jellyfin-plugin-skin-manager/master/skins-2.0.json', function(data) {
 
                     var skinVersions = document.getElementById("skinVersions");
 
@@ -100,38 +150,63 @@
                         
 
                     });
-                    updateDescription()
-                });
-                
-
+                    updateDescription()   
             }
 
             function updateDescription( ){
                 var description = document.getElementById("description");
-                var selected = $('#skinVersions').val();
+                var selected = $('#cssOptions').val();
 
-                $.getJSON('https://raw.githubusercontent.com/danieladov/jellyfin-plugin-skin-manager/master/skins-2.0.json', function(data) {
-
-                    data.forEach(element => {
-                        element.versions.forEach(version => {
-                            if(version.css == selected){
-                                description.innerHTML=version.description;
-                            }
-                            
-                        });
-   
-                    })
-                })
-
-            
+                    data.forEach(element => {          
+                        if(element.defaultCss == selected){
+                            description.innerHTML=element.description;
+                        }                       
+                        
+                    })           
             }
+
+            function createCss(){
+                //process checkbox
+                var css = $('#cssOptions').val();
+                var selectedOptions = $('.chkLibrary:checked').map(function () {
+                        return this.getAttribute('data-value');
+                    }).get();
+
+                //process colorPicker
+                selectedOptions.forEach(element=>{
+                    css += element;
+                })
+                
+                var colorPickers = document.getElementsByClassName("color");
+                for (let element of colorPickers) {
+                    var color = hexToRgb( element.value);
+                    rgbColor = color.r + "," +color.g +"," + color.b
+                    css+= element.getAttribute("data-css").replace("$",rgbColor);
+                }
+
+
+                return css;
+                       
+
+            }
+            function updateSelectors(){
+                var selected = $('#cssOptions').val();
+                data.forEach(element=>{
+                    if(element.defaultCss == selected){
+                              loadOptions(element.options);
+                              updateDescription();
+                            }    
+                })
+            }
+
             function setSkin() {
+                
 
             ApiClient.getServerConfiguration().then(function (config) {
   
                 ApiClient.updateServerConfiguration(config).then(function() {
                 ApiClient.getNamedConfiguration('branding').then(function(brandingConfig) {
-                    brandingConfig.CustomCss = $('#skinVersions').val();
+                    brandingConfig.CustomCss = createCss();
 
                     
 
@@ -145,8 +220,24 @@
             });
         
             
-        });
+        });  
+          
     }
+
+    function hexToRgb(hex) {
+            // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
+            var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+            hex = hex.replace(shorthandRegex, function(m, r, g, b) {
+                return r + r + g + g + b + b;
+            });
+
+            var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? {
+                r: parseInt(result[1], 16),
+                g: parseInt(result[2], 16),
+                b: parseInt(result[3], 16)
+            } : null;
+            }
 
         </script>
 
