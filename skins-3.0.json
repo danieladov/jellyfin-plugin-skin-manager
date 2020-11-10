@@ -40,7 +40,7 @@
       {
         "type":"colorPicker",
         "name": "Accent color",
-        "description": "Choose the color for accents.",
+        "description": "Choose a custom accent color to use with the theme.",
         "css": "@import url('https://ctalvio.github.io/Monochromic/customcolor_style.css');:root {--accent: $;}",
 		"default":""
       }
@@ -74,7 +74,7 @@
       {
         "type":"colorPicker",
         "name": "Accent color",
-        "description": "This is now integrated into the theme and requires no additional import line, and uses a variable same as rounding. Use any RGB color picker to find the value for any given color and enter it",
+        "description": "Choose a custom accent color to use with the theme.",
         "css": ":root {--accent: $;}",
 		"default" :""
       }
