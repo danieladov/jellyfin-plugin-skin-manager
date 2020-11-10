@@ -37,6 +37,13 @@
         "description": "Don't like my transparent view progress overlay? Use this to go back to the old style.",
         "css": "@import url('https://ctalvio.github.io/Monochromic/bottom-progress_style.css');"
       },
+	  {
+        "type":"number",
+        "name": "Modify rounding",
+        "description": "By adding this variable at the bottom, after the import lines, the rounding can be removed, reduced or increased.",
+        "css": ":root {--rounding: $px;}",
+		"default":"5"
+      },
       {
         "type":"colorPicker",
         "name": "Accent color",
@@ -69,14 +76,14 @@
         "name": "Modify rounding",
         "description": "By adding this variable at the bottom, after the import lines, the rounding can be removed, reduced or increased.",
         "css": ":root {--rounding: $px;}",
-		"default":"0"
+		"default":"12"
       },
       {
         "type":"colorPicker",
         "name": "Accent color",
         "description": "Choose a custom accent color to use with the theme.",
         "css": ":root {--accent: $;}",
-		"default" :""
+		"default" :"#6279cd"
       }
     ]
   },
