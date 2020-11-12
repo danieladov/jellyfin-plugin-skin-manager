@@ -9,7 +9,9 @@
 			"type":"selector",
 			"name": "Change Font",
 			"description": "Change the font used by jellyfin",
-			"fonts":[
+			"css":"html {font-family: &,sans-serif ;  }h1,h2,h3 { font-family:& ,sans-serif;"
+}",
+			"selections":[
 				{
 					"Name":"Times New Roman"
 				},
