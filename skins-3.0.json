@@ -12,31 +12,31 @@
 			"css":"html {font-family: &,sans-serif ;  }h1,h2,h3 { font-family:& ,sans-serif;}",
 			"selections":[
 				{
-					"Name":"Times New Roman"
+					"name":"Times New Roman"
 				},
 				{
-					"Name":"Arial"
+					"name":"Arial"
 				},
 				{
-					"Name":"Helvetica"
+					"name":"Helvetica"
 				},
 				{
-					"Name":"Times"
+					"name":"Times"
 				},
 				{
-					"Name":"Courier New"
+					"name":"Courier New"
 				},
 				{
-					"Name":"Verdana"
+					"name":"Verdana"
 				},
 				{
-					"Name":"Courier"
+					"name":"Courier"
 				},
 				{
-					"Name":"Arial Narrow"
+					"name":"Arial Narrow"
 				},
 				{
-					"Name":"Candara"
+					"name":"Candara"
 				}
 			]
 		}
