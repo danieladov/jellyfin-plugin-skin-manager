@@ -4,7 +4,42 @@
     "author": "Jellyfin",
     "description": "Default, stock, Jellyfin.",
     "defaultCss":"",
-    "options": []
+    "options": [
+		{
+			"type":"selector",
+			"name": "Change Font",
+			"description": "Change the font used by jellyfin",
+			"fonts":[
+				{
+					"Name":"Times New Roman"
+				},
+				{
+					"Name":"Arial"
+				},
+				{
+					"Name":"Helvetica"
+				},
+				{
+					"Name":"Times"
+				},
+				{
+					"Name":"Courier New"
+				},
+				{
+					"Name":"Verdana"
+				},
+				{
+					"Name":"Courier"
+				},
+				{
+					"Name":"Arial Narrow"
+				},
+				{
+					"Name":"Candara"
+				}
+			]
+		}
+	]
   },
   {
     "name": "Jellyflix",
