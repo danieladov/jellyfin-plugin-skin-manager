@@ -40,6 +40,14 @@
           }
         ]
       },
+	  {
+        "type": "number",
+        "name": "Title Font Size",
+        "description": "Change the size of the font used at titles.",
+		"step":"0.1",
+        "css": "h1 {font-size: $em;}",
+        "default": "1.8"
+      },
       {
         "type": "colorPicker",
         "name": "Accent color",
