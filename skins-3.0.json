@@ -48,6 +48,13 @@
         "css": "h1 {font-size: $em;}",
         "default": "1.8"
       },
+	  {
+        "type": "number",
+        "name": "Modify rounding",
+        "description": "Amount of rounding. Zero is none.",
+        "css": ".innerCardFooter {  border-radius: 0px $ !important;}.countIndicator, .playedIndicator {  border-radius: 0px $ !important;}",
+        "default": "0"
+      },
       {
         "type": "colorPicker",
         "name": "Accent color",
