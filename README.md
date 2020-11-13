@@ -46,3 +46,29 @@ Because the config includes Content-Security-Policy which reduces risk of XSS, y
 
 For example to use Kaleidochromic you need to do [this](https://github.com/CTalvio/Kaleidochromic/blob/main/README.md#using-with-reverse-proxy)
 
+
+## JSON
+  ## Skin Properties
+  - name //The name of the skin
+  - author //The author of the skin
+  - defaultCss //The base css of the skin
+  - options  //An array of options that will modified the skin
+    - ## Options Properties
+    - type //the type of the input (checkBox, number, select, colorPicker)
+    - name // the name of the option
+    - description // the description of the option
+    - css //The css code that will modified the skin $ symbols in this code will be replaced by the value selected by the user (in number, select and color picer)
+    
+    Some option have custom properties:
+    
+    - ## number properties
+      - default //Default value
+      - step //step of the input
+    - ## selector properties
+      - selections //Array of options
+        - ## selections properties
+          - name // name of the option
+          - value // value of the option
+    
+   
+
