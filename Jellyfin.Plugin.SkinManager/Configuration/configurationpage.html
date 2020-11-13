@@ -19,17 +19,18 @@
                     </div>
                     <div class="verticalSection">
                         <p>
-                            Select the skin you want to install and press Set Skin
+                            Select the skin you want to install and click Set Skin
                         </p>
                         <br />
                     </div>
 
                     <div class="selectContainer">
-                        <label for="css">css</label>
+                        <label for="css">Skin</label>
                         <select is="emby-select" id="cssOptions" onchange="updateSelectors()">                          
                         </select>
+                        <br />
 
-                        <p id="description"></p>
+                        <div class="fieldDescription" id="description"></div>
                     </div>
 
                     <div class="checkboxList checkboxList-verticalwrap" id ="options">
@@ -50,7 +51,7 @@
         
         <script type="text/javascript">
             var data;
-            $.getJSON('https://pastebin.com/raw/X9X5t1wE', function(json) {
+            $.getJSON('https://raw.githubusercontent.com/danieladov/jellyfin-plugin-skin-manager/cssEditor/skins-3.0.json', function(json) {
                 data=json;
                 loadSkins();           
             });
@@ -67,7 +68,7 @@
                     cssOptions.appendChild(opt);
                     
                 });
-               // updateVersions()
+               updateSelectors()
                   
             }
 
@@ -84,6 +85,8 @@
                                 html += getColorPicker(element);
                             }else if(element.type == "number"){
                                 html += getNumber(element);
+                            }else if(element.type = "selector"){
+                                html += getSelector(element);
                             }
                            
                         });
@@ -96,9 +99,10 @@
                         var html = "";
                             var id = "chkFolder" ;
                             var name = option.name;
-                            var value = option.css;                            
-                            html += '<label><input is="emby-checkbox" class="chkLibrary" type="checkbox" data-mini="true" id="' + id + '" name="' + id + '" data-value="' + value + '" '+' /><span>' + name  + '</span></label>';
-                        
+                            var value = option.css;
+                            var description = option.description;                         
+                            //html += '<label><input is="emby-checkbox" class="chkLibrary" type="checkbox" data-mini="true" id="' + id + '" name="' + id + '" data-value="' + value + '" '+' /><span>' + name  + '</span></label>';
+                            html += '<div class="checkboxContainer checkboxContainer-withDescription"><label><input type="checkbox" is="emby-checkbox" id="' + id + '"name="' + id + '" data-value="' + value + '" '+' /><span>'+ name +'</span></label><div class="fieldDescription checkboxFieldDescription">'+description+'</div></div>'
                         return html;
                     }
 
@@ -106,8 +110,10 @@
                 var html = "";
                     var id = "favcolor" ;
                     var name = option.name;   
-                    var css = option.css;                            
-                    html += '<label><input type=color value="#AA5CC3" class = "color" data-css = "'+ css+ '" data-mini="true" id="' + id + '" name="' + id + '" data-name="' + name + '" ' + ' /><span>' + name  + '</span></label>';
+                    var defaultValue = option.default;
+                    var css = option.css;
+                    var description = option.description;                              
+                    html += '<div class="inputContainer"><input style="height: 1em; padding: 0px; border: none;" type=color  class = "color" value="' + defaultValue + '"data-css = "'+ css+ '" data-mini="true" id="' + id + '" name="' + id + '" label="'+name +'"  /><div class="fieldDescription">'+description+'</div></div>';
                         
                 return html;
                     }
@@ -116,10 +122,40 @@
                 var html = "";
                     var id = "number" ;
                     var name = option.name; 
-                    var css = option.css;                           
-                    html += '<label><input type=number value="0" class = "number" data-css = "'+ css+ '" data-mini="true" id="' + id + '" name="' + id + '" data-name="' + name + '" ' + ' /><span>' + name  + '</span></label>';
+                    var css = option.css;
+                    var step = option.step==undefined?1:option.step;
+                    var defaultValue = option.default;
+                    var description = option.description;                           
+                    //html += '<label for=number><input is="emby-input" type=number value=' + defaultValue + ' class = "number" data-css = "'+ css+ '" +  data-mini="true" id="' + id + '" name="' + id + '" data-name="' + name + '" ' + ' /><span>' + name  + '</span></label><br>';
+                    html += '<div class="inputContainer"><input is="emby-input" type="number" class = "number" value=' + defaultValue + ' step=' + step + ' data-css = "'+ css+ '" + id="' + id + '" name="' + id + '"  min="1" max="300" label="'+name +'" /><div class="fieldDescription">'+description+'</div></div>'
                         
                 return html;
+            } 
+            
+            function getSelector(option){
+                var html = "";
+                    var id = "selector" ;
+                    var name = option.name; 
+                    var css = option.css;
+                    var defaultValue = option.default;
+                    var description = option.description;                           
+                    //html += '<label for=number><input is="emby-input" type=number value=' + defaultValue + ' class = "number" data-css = "'+ css+ '" +  data-mini="true" id="' + id + '" name="' + id + '" data-name="' + name + '" ' + ' /><span>' + name  + '</span></label><br>';
+                    html += '<div class="selectContainer"><select is="emby-select"  data-css= "'+css + '"class="selector" label="'+name+'">' + getOptions(option)+'</select></div>'
+                        
+                return html;
+
+            }
+
+            function getOptions(option){
+                var html = "";
+                var selections = option.selections
+                var css = option.css;
+                selections.forEach(element=>{
+                    var name = element.name;                 
+                    html+= '<option data-css= "'+css + '"value='+name+'>'+ name +'</option>'
+                })
+                return html;                        
+                   
             }
             
 
@@ -172,6 +208,13 @@
                         return this.getAttribute('data-value');
                     }).get();
 
+                //proccess selector
+                var selectors = document.getElementsByClassName("selector");
+                for (let element of selectors) {
+                    css += element.getAttribute("data-css").replaceAll("$",element.value)
+                
+                }
+
                 //process colorPicker
                 selectedOptions.forEach(element=>{
                     css += element;
@@ -181,8 +224,16 @@
                 for (let element of colorPickers) {
                     var color = hexToRgb( element.value);
                     rgbColor = color.r + "," +color.g +"," + color.b
-                    css+= element.getAttribute("data-css").replace("$",rgbColor);
+                    css+= element.getAttribute("data-css").replaceAll("$",rgbColor);
                 }
+
+                //procces number selector
+                var numberSelectors = document.getElementsByClassName("number");
+                for (let element of numberSelectors) {
+                    css+= element.getAttribute("data-css").replaceAll("$",element.value);
+                }
+
+                
 
 
                 return css;
@@ -275,6 +326,31 @@
                 
             
        </script>
+
+       <style>
+           .color2{
+            
+            display: block;
+            margin: 0;
+            margin-bottom: 0 !important;
+            font-family: inherit;
+            font-weight: inherit;
+            padding: 0.4em 0.25em;
+
+            /* must the 16px or larger to prevent iOS page zoom on focus */
+            font-size: 110%;
+
+            /* prevent padding from causing width overflow */
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+            outline: none !important;
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+            width: 100%;
+        
+           }
+
+
+       </style>
     </div>
 </body>
 
