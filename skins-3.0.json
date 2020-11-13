@@ -11,7 +11,7 @@
         "description": "Change the font used by jellyfin",
         "css": "html {font-family: $,sans-serif ;  }h1,h2,h3 { font-family:$ ,sans-serif;}",
         "selections": [
-		{
+          {
             "name": "Noto Sans"
           },
           {
@@ -43,19 +43,19 @@
           }
         ]
       },
-	  {
+      {
         "type": "number",
         "name": "Title Font Size",
         "description": "Change the size of the font used at titles.",
-		"step":"0.1",
+        "step": "0.1",
         "css": "h1 {font-size: $em;}",
         "default": "1.8"
       },
-	  {
+      {
         "type": "number",
         "name": "Modify rounding",
         "description": "Amount of rounding. Zero is none.",
-        "css": ".formDialogHeader {border-top-left-radius: $px;border-top-right-radius: $px;}formDialogFooter {  border-bottom-left-radius: $px;  border-bottom-right-radius: $px;}.cardOverlayContainer {	border-radius: $px !important;}.cardOverlayButtonIcon {  border-radius: $px !important;}.osdPoster img {  border-radius: $px; }.mdl-slider::-moz-range-thumb {  border-radius: $px;}.mdl-slider::-ms-thumb {  border-radius: $px;}.mdl-slider::-webkit-slider-thumb{  border-radius: $px;}div[data-role='controlgroup'] a[data-role='button']:first-child {	border-bottom-left-radius: $px;	border-top-left-radius: $px;}div[data-role='controlgroup'] a[data-role='button']:last-child {	border-bottom-right-radius: $px;	border-top-right-radius: $px;}progress {   border-radius: $px;}progress::-webkit-progress-bar{  border-radius: $px; }progress::-moz-progress-bar {  border-radius: $px;}progress::-webkit-progress-value {  border-radius: $px;}.taskProgressOuter,.taskProgressInner {  border-radius: $px !important;}::-webkit-scrollbar-thumb { border-radius: var(--rounding);}",
+        "css": ".formDialogHeader {border-top-left-radius: $px;border-top-right-radius: $px;}formDialogFooter{border-bottom-left-radius: $px;border-bottom-right-radius: $px;}.cardOverlayContainer{border-radius: $px !important;}.cardOverlayButtonIcon{border-radius:$px!important;}.osdPoster img{border-radius: $px; }.mdl-slider::-moz-range-thumb {border-radius: $px;}.mdl-slider::-ms-thumb {border-radius: $px;}.mdl-slider::-webkit-slider-thumb{border-radius: $px;}div[data-role='controlgroup'] a[data-role='button']:first-child {border-bottom-left-radius: $px;border-top-left-radius: $px;}div[data-role='controlgroup'] a[data-role='button']:last-child{border-bottom-right-radius: $px;border-top-right-radius:$px;}progress{border-radius: $px;}progress::-webkit-progress-bar{border-radius: $px;}progress::-moz-progress-bar{border-radius:$px;}progress::-webkit-progress-value {border-radius: $px;}.taskProgressOuter,.taskProgressInner{border-radius: $px !important;}::-webkit-scrollbar-thumb{border-radius:$px;}",
         "default": "0"
       },
       {
