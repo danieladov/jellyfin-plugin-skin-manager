@@ -80,6 +80,12 @@
         "description": "Modifies the color of the left menu panel.",
         "css": ".cardContent-button,.itemDetailImage {  border-radius: $em;}",
 		"default":"0"
+      },
+	  {
+        "type": "checkBox",
+        "name": "Enlarge Tab Buttons",
+        "description": "Enlarges the tab buttons, suggested, genres, etc. By default they are really tiny, especially on mobile.",
+        "css": ".headerTabs.sectionTabs {text-size-adjust: 110%;  font-size: 110%;}.pageTitle {margin-top: auto; margin-bottom: auto;}.emby-tab-button {padding: 1.75em 1.7em;}"
       }
     ]
   },
