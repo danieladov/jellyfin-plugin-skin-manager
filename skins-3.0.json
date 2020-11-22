@@ -72,6 +72,14 @@
         "description": "Modifies the color of the left menu panel.",
         "css": ".mainDrawer-scrollContainer { color: $; }",
 		"default":"#ffffff"
+      },
+	  {
+        "type": "number",
+		"step": "0.1",
+        "name": "Image Edge Rounded",
+        "description": "Modifies the color of the left menu panel.",
+        "css": ".cardContent-button,.itemDetailImage {  border-radius: $em;}",
+		"default":"0"
       }
     ]
   },
