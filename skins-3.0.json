@@ -86,6 +86,12 @@
         "name": "Enlarge Tab Buttons",
         "description": "Enlarges the tab buttons, suggested, genres, etc. By default they are really tiny, especially on mobile.",
         "css": ".headerTabs.sectionTabs {text-size-adjust: 110%;  font-size: 110%;}.pageTitle {margin-top: auto; margin-bottom: auto;}.emby-tab-button {padding: 1.75em 1.7em;}"
+      },
+	  {
+        "type": "checkBox",
+        "name": "Stylized Episode Previews",
+        "description": "The episode previews in season view are sized based on horizontal resolution. This leads to a lot of wasted space on the episode summary and a high vertical page, which requires a lot of scrolling. This code reduces the height of episode entries, which solves both problems.",
+        "css": "/* Size episode preview images in a more compact way */.listItemImage.listItemImage-large.itemAction.lazy {height: 110px;}.listItem-content {height: 115px;}.secondary.listItem-overview.listItemBodyText {height: 61px; margin: 0;}"
       }
     ]
   },
