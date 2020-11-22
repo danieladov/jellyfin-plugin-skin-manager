@@ -71,7 +71,7 @@
         "name": "Console Panel Color",
         "description": "Modifies the color of the left menu panel.",
         "css": ".mainDrawer-scrollContainer { color: $; }",
-		"default":""
+		"default":"#ffffff"
       }
     ]
   },
