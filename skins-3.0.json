@@ -92,6 +92,21 @@
         "name": "Stylized Episode Previews",
         "description": "The episode previews in season view are sized based on horizontal resolution. This leads to a lot of wasted space on the episode summary and a high vertical page, which requires a lot of scrolling. This code reduces the height of episode entries, which solves both problems.",
         "css": "/* Size episode preview images in a more compact way */.listItemImage.listItemImage-large.itemAction.lazy {height: 110px;}.listItem-content {height: 115px;}.secondary.listItem-overview.listItemBodyText {height: 61px; margin: 0;}"
+      },
+	  {
+        "type": "colorPicker",
+		"mode": "hex",
+        "name": "Custom Background Color",
+        "description": "Change background color.",
+        "css": ".backgroundContainer, .dialog, html { background-color: #0fd0d0;}"
+      },
+	  {
+        "type": "colorPicker",
+		"mode": "hex",
+        "name": "Right Header Color",
+        "description": "This modifies the colors of the cast, search and user buttons in the top right.",
+        "css": ".headerRight { color: $; }",
+		"default":"#ffffff"
       }
     ]
   },
