@@ -98,7 +98,8 @@
 		"mode": "hex",
         "name": "Custom Background Color",
         "description": "Change background color.",
-        "css": ".backgroundContainer, .dialog, html { background-color: #0fd0d0;}"
+        "css": ".backgroundContainer, .dialog, html { background-color: $;}",
+		"default": "#000000"
       },
 	  {
         "type": "colorPicker",
