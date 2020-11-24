@@ -23,7 +23,7 @@
                         </p>
                         <br />
                     </div>
-
+                    <div class="allOptions">
                     <div class="selectContainer">
                         <label for="css">Skin</label>
                         <select is="emby-select" id="cssOptions" onchange="updateSelectors()">                          
@@ -37,6 +37,7 @@
                         
                     </div>
                             <br />
+                            </div>
                         <button is="emby-button" type="button" class="raised block" id="refresh-library"
                                     onclick=setSkin()>
                                 <span>Set Skin</span>
@@ -51,9 +52,12 @@
         
         <script type="text/javascript">
             var data;
+
+            Dashboard.showLoadingMsg();
             $.getJSON('https://raw.githubusercontent.com/danieladov/jellyfin-plugin-skin-manager/cssEditor/skins-3.0.json', function(json) {
                 data=json;
-                loadSkins();           
+                loadSkins();  
+                Dashboard.hideLoadingMsg();         
             });
 
             function loadSkins(){          
@@ -99,10 +103,10 @@
                         var html = "";
                             var id = "chkFolder" ;
                             var name = option.name;
-                            var value = option.css;
+                            var css = option.css;
                             var description = option.description;                         
                             //html += '<label><input is="emby-checkbox" class="chkLibrary" type="checkbox" data-mini="true" id="' + id + '" name="' + id + '" data-value="' + value + '" '+' /><span>' + name  + '</span></label>';
-                            html += '<div class="checkboxContainer checkboxContainer-withDescription"><label><input type="checkbox" is="emby-checkbox" id="' + id + '"name="' + id + '" data-value="' + value + '" '+' /><span>'+ name +'</span></label><div class="fieldDescription checkboxFieldDescription">'+description+'</div></div>'
+                            html += '<div class="checkboxContainer checkboxContainer-withDescription"><label><input class = "checkbox" type="checkbox" is="emby-checkbox" id="' + id + '"name="' + id + '" data-css="' + css + '" '+' /><span>'+ name +'</span></label><div class="fieldDescription checkboxFieldDescription">'+description+'</div></div>'
                         return html;
                     }
 
@@ -112,8 +116,9 @@
                     var name = option.name;   
                     var defaultValue = option.default;
                     var css = option.css;
-                    var description = option.description;                              
-                    html += '<div class="inputContainer"><input style="height: 1em; padding: 0px; border: none;" type=color  class = "color" value="' + defaultValue + '"data-css = "'+ css+ '" data-mini="true" id="' + id + '" name="' + id + '" label="'+name +'"  /><div class="fieldDescription">'+description+'</div></div>';
+                    var description = option.description;
+                    var mode = option.mode;                           
+                    html += '<div class="inputContainer"><input style="height: 1em; padding: 0px; border: none;" type=color  class = "color" value="' + defaultValue + '"data-css = "'+ css+ '" data-mode="'+mode+'" id="' + id + '" name="' + id + '" label="'+name +'"  /><div class="fieldDescription">'+description+'</div></div>';
                         
                 return html;
                     }
@@ -127,7 +132,7 @@
                     var defaultValue = option.default;
                     var description = option.description;                           
                     //html += '<label for=number><input is="emby-input" type=number value=' + defaultValue + ' class = "number" data-css = "'+ css+ '" +  data-mini="true" id="' + id + '" name="' + id + '" data-name="' + name + '" ' + ' /><span>' + name  + '</span></label><br>';
-                    html += '<div class="inputContainer"><input is="emby-input" type="number" class = "number" value=' + defaultValue + ' step=' + step + ' data-css = "'+ css+ '" + id="' + id + '" name="' + id + '"  min="1" max="300" label="'+name +'" /><div class="fieldDescription">'+description+'</div></div>'
+                    html += '<div class="inputContainer"><input is="emby-input" type="number" class = "number" value=' + defaultValue + ' step=' + step + ' data-css = "'+ css+ '"  id="' + id + '" name="' + id + '"  min="0" max="300" label="'+name +'" /><div class="fieldDescription">'+description+'</div></div>'
                         
                 return html;
             } 
@@ -159,35 +164,6 @@
             }
             
 
-            function updateVersions(){
-                var selected = $('#cssOptions').val();
-                var skinVersions = document.getElementById("skinVersions");
-                
-
-                //clear selector
-                for (i = skinVersions.options.length-1; i >= 0; i--) {
-                    skinVersions.options[i] = null;
-                }
-
-                    var skinVersions = document.getElementById("skinVersions");
-
-                    data.forEach(element => {
-                        if(selected == element.name){
-                            element.versions.forEach(version =>{
-                                var opt = document.createElement("option");
-                                opt.appendChild(document.createTextNode(version.name));
-                                opt.value=version.css;
-                                skinVersions.appendChild(opt);
-                                description.innerHTML=version.description;
-
-
-                        })
-                        }
-                        
-
-                    });
-                    updateDescription()   
-            }
 
             function updateDescription( ){
                 var description = document.getElementById("description");
@@ -202,39 +178,65 @@
             }
 
             function createCss(){
+                var savedHtml = "";
                 //process checkbox
                 var css = $('#cssOptions').val();
-                var selectedOptions = $('.chkLibrary:checked').map(function () {
-                        return this.getAttribute('data-value');
+                savedHtml += document.getElementById("cssOptions").innerHTML;
+                var checkboxes = document.getElementsByClassName("checkbox");
+
+                for (let element of checkboxes) {
+                    savedHtml += element.innerHTML;
+                    
+                
+                }
+             
+              
+                var selectedOptions = $('.checkbox:checked').map(function () {
+                        return this.getAttribute('data-css');
                     }).get();
+
+                selectedOptions.forEach(element => {
+                    css += element +"\n";
+                    
+                });
 
                 //proccess selector
                 var selectors = document.getElementsByClassName("selector");
                 for (let element of selectors) {
-                    css += element.getAttribute("data-css").replaceAll("$",element.value)
+                    css += element.getAttribute("data-css").replaceAll("$",element.value) + "\n";
+                    savedHtml += element.outerHTML;
+                    
                 
                 }
 
                 //process colorPicker
                 selectedOptions.forEach(element=>{
-                    css += element;
+                    css += element + "\n";
                 })
                 
                 var colorPickers = document.getElementsByClassName("color");
                 for (let element of colorPickers) {
-                    var color = hexToRgb( element.value);
-                    rgbColor = color.r + "," +color.g +"," + color.b
-                    css+= element.getAttribute("data-css").replaceAll("$",rgbColor);
+                    savedHtml += element.outerHTML
+                    
+                    if(element.getAttribute("data-mode")=="hex"){
+                        color=element.value;
+                    }else if(element.getAttribute("data-mode")=="rgba"){
+                        var rgbColor = hexToRgb( element.value);
+                        color = rgbColor.r + "," +rgbColor.g +"," + rgbColor.b;
+                    }
+                    
+                    css+= element.getAttribute("data-css").replaceAll("$",color)+ "\n";
                 }
 
                 //procces number selector
                 var numberSelectors = document.getElementsByClassName("number");
                 for (let element of numberSelectors) {
-                    css+= element.getAttribute("data-css").replaceAll("$",element.value);
+                    savedHtml += element.outerHTML;
+                    css+= element.getAttribute("data-css").replaceAll("$",element.value) + "\n";
                 }
 
                 
-
+            
 
                 return css;
                        
