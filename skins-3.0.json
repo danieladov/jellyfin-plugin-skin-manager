@@ -108,7 +108,15 @@
         "description": "This modifies the colors of the cast, search and user buttons in the top right.",
         "css": ".headerRight { color: $; }",
 		"default":"#ffffff"
-      }
+      },
+	  {
+        "type": "slider",
+		"step": "0.1",
+        "name": "test",
+        "description": "test Slider.",
+        "css": ".cardContent-button,.itemDetailImage {  border-radius: $em;}",
+		"default":"5"
+      }	  
     ]
   },
   {
