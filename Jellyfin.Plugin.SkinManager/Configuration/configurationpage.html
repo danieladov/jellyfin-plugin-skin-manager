@@ -89,8 +89,10 @@
                                 html += getColorPicker(element);
                             }else if(element.type == "number"){
                                 html += getNumber(element);
-                            }else if(element.type = "selector"){
+                            }else if(element.type == "selector"){
                                 html += getSelector(element);
+                            }else if(element.type == "slider"){
+                                html += getSlider(element);
                             }
                            
                         });
@@ -162,6 +164,19 @@
                 return html;                        
                    
             }
+
+            function getSlider(option){
+                var html = "";
+                    var id = "slider" ;
+                    var name = option.name; 
+                    var css = option.css;
+                    var step = option.step==undefined?1:option.step;
+                    var defaultValue = option.default;
+                    var description = option.description;                           
+                    html += '<div class="inputContainer"><input is="emby-slider" type="range" class = "slider" value=' + defaultValue + ' step=' + step + ' data-css = "'+ css+ '"  id="' + id + '" name="' + id + '"  min="0" max="300" label="'+name +'" /><div class="fieldDescription">'+description+'</div></div>'
+                        
+                return html;
+            } 
             
 
 
@@ -232,6 +247,13 @@
                 var numberSelectors = document.getElementsByClassName("number");
                 for (let element of numberSelectors) {
                     savedHtml += element.outerHTML;
+                    css+= element.getAttribute("data-css").replaceAll("$",element.value) + "\n";
+                }
+
+                //procces slider
+                var sliders =  document.getElementsByClassName("slider");
+
+                for (let element of sliders) {
                     css+= element.getAttribute("data-css").replaceAll("$",element.value) + "\n";
                 }
 
