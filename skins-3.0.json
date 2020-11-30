@@ -7,7 +7,7 @@
     "options": []
   },
   {
-    "name": "Jellyflix",
+    "name": "JellyFlix",
     "author": "prayagprajapati17",
     "description": "A theme that aims to replicate the red and black look of Netflix. Theme is by prayag17.",
     "defaultCss": "@import url(https://prayag17.github.io/JellyFlix/default.css);",
@@ -92,7 +92,32 @@
     "author": "prayagprajapati17",
     "description": "A very bright and colorful look using lots of drop shadows. Theme is by prayag17.",
     "defaultCss": "@import url('https://prayag17.github.io/JellySkin/default.css');",
-    "options": []
+    "options": [
+      {
+        "type": "checkBox",
+        "name": "Sea Gradient",
+        "description": "changes the Jellyfin themed Hover gradient",
+        "css": "@import url('https://prayag17.github.io/JellySkin/seaGradient.css');",
+      },
+      {
+        "type": "checkBox",
+        "name": "Sunset Gradient",
+        "description": "changes the Jellyfin themed Hover gradient",
+        "css": "@import url('https://prayag17.github.io/JellySkin/sunsetGradient.css');",
+      },
+      {
+        "type": "checkBox",
+        "name": "Night Sky Gradient",
+        "description": "changes the Jellyfin themed Hover gradient",
+        "css": "@import url('https://prayag17.github.io/JellySkin/nightSkyGradient.css');",
+      },
+      {
+        "type": "checkBox",
+        "name": "Morning Gradient",
+        "description": "changes the Jellyfin themed Hover gradient",
+        "css": "@import url('https://prayag17.github.io/JellySkin/morningGradient.css');",
+      }
+    ]
   },
   {
     "name": "Custom",
