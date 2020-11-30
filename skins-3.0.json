@@ -211,17 +211,17 @@
         "type": "slider",
         "step": "0.1",
         "name": "Border Radius",
-        "description": "Change the roundness of text box and more",
-        "css": "@import url('pathtocsslink'); :root{--rounding: $px;}",
-        "default":"1"
+        "description": "Change the roundness of text box and more default is zero",
+        "css": "@import url('https://prayag17.github.io/jellyfin-plugin-skin-manager/src/border-radius.css'); :root{--rounding: $px;}",
+        "default":"0"
       },
       {
         "type": "slider",
         "step": "0.1",
         "name": "Backdrop Blur",
-        "description": "adds blur to the backdrop images",
-        "css": "@import url(''); :root{--bgblur: $px}",
-        "default": "1"
+        "description": "adds blur to the backdrop images default is zero",
+        "css": "@import url('https://prayag17.github.io/jellyfin-plugin-skin-manager/src/bgBlur.css'); :root{--bgblur: blur($px)}",
+        "default": "0"
       }  
     ]
   }
