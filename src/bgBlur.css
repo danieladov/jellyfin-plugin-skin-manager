@@ -1,0 +1,8 @@
+:root{--bgblur: blur($px)}
+/*Blur backdrops, feel free to edit the intensity of the filter values*/
+.backdropImage {
+  filter: var(--bgblur);
+}
+.backgroundContainer.withBackdrop {
+  background-color: rgba(0,0,0,0);
+}
