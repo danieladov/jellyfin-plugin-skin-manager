@@ -42,7 +42,7 @@
       loadSkins();  
       Dashboard.hideLoadingMsg();         
     });
-
+        }
     function loadSkins(){
       var cssOptions = document.getElementById("cssOptions");
       var skinVersions = document.getElementById("skinVersions");
@@ -54,6 +54,7 @@
         cssOptions.appendChild(opt);
       });
       updateSelectors()
+    }
 
     function loadOptions(options){
       var page = $.mobile.activePage;
@@ -127,6 +128,7 @@
           html+= '<option data-css= "'+css + '"value='+name+'>'+ name +'</option>'
         })
         return html;
+      }
         function getSlider(option){
           var html = "";
           var id = "slider" ;
