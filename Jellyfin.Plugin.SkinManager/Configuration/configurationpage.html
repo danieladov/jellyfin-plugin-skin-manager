@@ -54,6 +54,7 @@
         cssOptions.appendChild(opt);
       });
       updateSelectors()
+    }
 
     function loadOptions(options){
       var page = $.mobile.activePage;
@@ -117,7 +118,8 @@
       var description = option.description;                           
       //html += '<label for=number><input is="emby-input" type=number value=' + defaultValue + ' class = "number" data-css = "'+ css+ '" +  data-mini="true" id="' + id + '" name="' + id + '" data-name="' + name + '" ' + ' /><span>' + name  + '</span></label><br>';
       html += '<div class="selectContainer"><select is="emby-select"  data-css= "'+css + '"class="selector" label="'+name+'">' + getOptions(option)+'</select></div>'
-      return html
+      return html;
+    }
       function getOptions(option){
         var html = "";
         var selections = option.selections
@@ -139,15 +141,7 @@
           html += '<div class="inputContainer"><input is="emby-slider" type="range" class = "slider" value=' + defaultValue + ' step=' + step + ' data-css = "'+ css+ '"  id="' + id + '" name="' + id + '"  min="0" max="300" label="'+name +'" /><div class="fieldDescription">'+description+'</div></div>'
           return html
         }             
-        function updateDescription( ){
-          var description = document.getElementById("description");
-          var selected = $('#cssOptions').val();
-          data.forEach(element => {          
-            if(element.defaultCss == selected){
-              description.innerHTML=element.description;
-            }                                               
-          })           
-        }
+        
         function createCss(){
           var savedHtml = "";
           //process checkbox
@@ -198,11 +192,13 @@
           return css;       
         }
         function updateSelectors(){
-          var selected = $('#cssOptions').val();
+          var selected = document.getElementById("cssOptions");
+          var description = document.getElementById("description");
           data.forEach(element=>{
-            if(element.defaultCss == selected){
+            if(element.name == selected.selectedOptions[0].innerText){
               loadOptions(element.options);
-              updateDescription();
+              description.innerHTML=element.description;
+              
             }    
           })
         }
