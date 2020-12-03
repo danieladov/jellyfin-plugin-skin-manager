@@ -97,25 +97,25 @@
         "type": "checkBox",
         "name": "Sea Gradient",
         "description": "changes the Jellyfin themed Hover gradient",
-        "css": "@import url('https://prayag17.github.io/JellySkin/seaGradient.css');",
+        "css": "@import url('https://prayag17.github.io/JellySkin/seaGradient.css');"
       },
       {
         "type": "checkBox",
         "name": "Sunset Gradient",
         "description": "changes the Jellyfin themed Hover gradient",
-        "css": "@import url('https://prayag17.github.io/JellySkin/sunsetGradient.css');",
+        "css": "@import url('https://prayag17.github.io/JellySkin/sunsetGradient.css');"
       },
       {
         "type": "checkBox",
         "name": "Night Sky Gradient",
         "description": "changes the Jellyfin themed Hover gradient",
-        "css": "@import url('https://prayag17.github.io/JellySkin/nightSkyGradient.css');",
+        "css": "@import url('https://prayag17.github.io/JellySkin/nightSkyGradient.css');"
       },
       {
         "type": "checkBox",
         "name": "Morning Gradient",
         "description": "changes the Jellyfin themed Hover gradient",
-        "css": "@import url('https://prayag17.github.io/JellySkin/morningGradient.css');",
+        "css": "@import url('https://prayag17.github.io/JellySkin/morningGradient.css');"
       }
     ]
   },
