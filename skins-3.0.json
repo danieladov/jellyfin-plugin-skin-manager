@@ -221,14 +221,14 @@
         "type": "number",
         "name": "Border Radius",
         "description": "Change the roundness of text box and more default is zero",
-        "css": "@import url('https://prayag17.github.io/jellyfin-plugin-skin-manager/src/border-radius.css'); :root{--rounding: $px;}",
+        "css": "",
         "default":"0"
       },
       {
         "type": "number",
         "name": "Backdrop Blur",
         "description": "adds blur to the backdrop images default is zero",
-        "css": "@import url('https://prayag17.github.io/jellyfin-plugin-skin-manager/src/bgBlur.css'); :root{--bgblur: blur($px)}",
+        "css": ":root{--bgblur: blur($px)}.backdropImage {filter: var(--bgblur);}.backgroundContainer.withBackdrop {background-color: rgba(0,0,0,0);}",
         "default": "0"
       }
     ]
