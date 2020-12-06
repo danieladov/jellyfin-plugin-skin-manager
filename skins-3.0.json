@@ -6,8 +6,10 @@
     "defaultCss": "",
     "options": [],
     "preview": [
+      {
       "home": "",
       "title": ""
+      }
     ]
   },
   {
@@ -17,8 +19,10 @@
     "defaultCss": "@import url(https://prayag17.github.io/JellyFlix/default.css);",
     "options": [],
     "preview": [
+      {
       "home": "https://github.com/prayag17/JellyFlix/raw/main/Public%20Ver%201/Home.png?raw=true",
       "title": "https://github.com/prayag17/JellyFlix/raw/main/Public%20Ver%201/TitlePage.png?raw=true"
+      }
     ]
   },
   {
@@ -61,8 +65,10 @@
       }
     ],
     "preview": [
+      {
       "home": "https://github.com/CTalvio/Monochromic/blob/master/screenshots/1.png?raw=true",
       "title": "https://github.com/CTalvio/Monochromic/blob/master/screenshots/2.png?raw=true"
+      }
     ]
   },
   {
@@ -99,8 +105,10 @@
       }
     ],
     "preview": [
+      {
       "home": "https://github.com/CTalvio/Kaleidochromic/blob/main/screenshots/6.png?raw=true",
       "title": "https://github.com/CTalvio/Kaleidochromic/blob/main/screenshots/1.png?raw=true"
+      }
     ]
   },
   {
@@ -135,8 +143,10 @@
       }
     ],
     "preview": [
+      {
       "home": "https://github.com/prayag17/JellySkin/raw/master/Version%204/Home.png?raw=true",
       "title": "https://github.com/prayag17/JellySkin/raw/master/Version%204/title%202.png?raw=true"
+      }
     ]
   },
   {
