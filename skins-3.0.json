@@ -5,12 +5,12 @@
     "description": "Default, stock, Jellyfin.",
     "defaultCss": "",
     "options": [],
-    "preview": [
+    "preview": 
       {
       "home": "",
       "title": ""
       }
-    ]
+    
   },
   {
     "name": "JellyFlix",
@@ -18,12 +18,12 @@
     "description": "A theme that aims to replicate the red and black look of Netflix. Theme is by prayag17.",
     "defaultCss": "@import url(https://prayag17.github.io/JellyFlix/default.css);",
     "options": [],
-    "preview": [
+    "preview": 
       {
       "home": "https://github.com/prayag17/JellyFlix/raw/main/Public%20Ver%201/Home.png?raw=true",
       "title": "https://github.com/prayag17/JellyFlix/raw/main/Public%20Ver%201/TitlePage.png?raw=true"
       }
-    ]
+    
   },
   {
     "name": "Monochromic",
@@ -64,12 +64,12 @@
         "default": ""
       }
     ],
-    "preview": [
+    "preview": 
       {
       "home": "https://github.com/CTalvio/Monochromic/blob/master/screenshots/1.png?raw=true",
       "title": "https://github.com/CTalvio/Monochromic/blob/master/screenshots/2.png?raw=true"
       }
-    ]
+    
   },
   {
     "name": "Kaleidochromic",
@@ -104,12 +104,12 @@
         "default": "#6279cd"
       }
     ],
-    "preview": [
+    "preview": 
       {
       "home": "https://github.com/CTalvio/Kaleidochromic/blob/main/screenshots/6.png?raw=true",
       "title": "https://github.com/CTalvio/Kaleidochromic/blob/main/screenshots/1.png?raw=true"
       }
-    ]
+    
   },
   {
     "name": "JellySkin",
@@ -142,12 +142,12 @@
         "css": "@import url('https://prayag17.github.io/JellySkin/morningGradient.css');"
       }
     ],
-    "preview": [
+    "preview": 
       {
       "home": "https://github.com/prayag17/JellySkin/raw/master/Version%204/Home.png?raw=true",
       "title": "https://github.com/prayag17/JellySkin/raw/master/Version%204/title%202.png?raw=true"
       }
-    ]
+    
   },
   {
     "name": "Custom",
@@ -262,11 +262,11 @@
         "default": "0"
       }
     ],
-    "preview": [
+    "preview": 
       {
       "home": "",
       "title": ""
       }
-    ]
+    
   }
 ]
