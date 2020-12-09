@@ -80,7 +80,8 @@
       var id = "chkFolder" ;
       var name = option.name;
       var css = option.css;
-      var description = option.description;                         
+      var description = option.description;
+                      
       //html += '<label><input is="emby-checkbox" class="chkLibrary" type="checkbox" data-mini="true" id="' + id + '" name="' + id + '" data-value="' + value + '" '+' /><span>' + name  + '</span></label>';
       html += '<div class="checkboxContainer checkboxContainer-withDescription"><label><input class = "checkbox" type="checkbox" is="emby-checkbox" id="' + id + '"name="' + id + '" data-css="' + css + '" '+' /><span>'+ name +'</span></label><div class="fieldDescription checkboxFieldDescription">'+description+'</div></div>'
       return html;
@@ -169,11 +170,11 @@
           var colorPickers = document.getElementsByClassName("color");
           for (let element of colorPickers) {
             savedHtml += element.outerHTML  
-            if(element.getAttribute("data-mode")=="hex"){
-              color=element.value;
-            }else if(element.getAttribute("data-mode")=="rgba"){
+             if(element.getAttribute("data-mode")=="rgba"){
               var rgbColor = hexToRgb( element.value);
               color = rgbColor.r + "," +rgbColor.g +"," + rgbColor.b;
+            } else{
+              color=element.value;
             }
             css+= element.getAttribute("data-css").replaceAll("$",color)+ "\n";
           }
