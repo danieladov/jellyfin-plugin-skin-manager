@@ -7,15 +7,21 @@
     "options": [],
 	"previews":[
 		{
-			"name": "Home",
+			"name": "Login Page",
 			"url": ""
 		},
 		{
-			"name": "Title",
+			"name": "Home/Index Page",
+			"url": ""
+		},
+		{
+			"name": "Library Page",
+			"url": ""
+		},
+		{
+			"name": "Title page",
 			"url": ""
 		}
-		
-	
 	]
   },
   {
@@ -24,17 +30,23 @@
     "description": "A theme that aims to replicate the red and black look of Netflix. Theme is by prayag17.",
     "defaultCss": "@import url(https://prayag17.github.io/JellyFlix/default.css);",
     "options": [],
-	"previews":[
+    "previews":[
 		{
-			"name": "Home",
+			"name": "Login Page",
+			"url": "https://github.com/prayag17/JellyFlix/raw/main/Public%20Ver%201/LoginMan.png?raw=true"
+		},
+		{
+			"name": "Home/Index Page",
 			"url": "https://github.com/prayag17/JellyFlix/raw/main/Public%20Ver%201/Home.png?raw=true"
 		},
 		{
-			"name": "Title",
-			"url": "https://github.com/prayag17/JellyFlix/raw/main/Public%20Ver%201/TitlePage.png?raw=true"
+			"name": "Library Page",
+			"url": "https://github.com/prayag17/JellyFlix/raw/main/Public%20Ver%201/LibPage.png?raw=true"
+		},
+		{
+			"name": "Title page",
+			"url": "https://github.com/prayag17/JellyFlix/raw/main/Public%20Ver%201/TV-TitlePage.png?raw=true"
 		}
-		
-	
 	]
   },
   {
@@ -76,17 +88,23 @@
         "default": ""
       }
     ],
-	"previews":[
+"previews":[
 		{
-			"name": "Home",
+			"name": "Login Page",
+			"url": "https://github.com/prayag17/jellyfin-plugin-skin-manager/blob/cssEditor/Monochromic/login.jpg?raw=true"
+		},
+		{
+			"name": "Home/Index Page",
 			"url": "https://github.com/CTalvio/Monochromic/blob/master/screenshots/1.png?raw=true"
 		},
 		{
-			"name": "Title",
-			"url": "https://github.com/CTalvio/Monochromic/blob/master/screenshots/2.png?raw=true"
+			"name": "Library Page",
+			"url": "https://github.com/prayag17/jellyfin-plugin-skin-manager/blob/cssEditor/Monochromic/Lib.jpg?raw=true"
+		},
+		{
+			"name": "Title page",
+			"url": "https://github.com/CTalvio/Monochromic/raw/master/screenshots/2.png"
 		}
-		
-	
 	]
   },
   {
@@ -124,14 +142,21 @@
     ],
 	"previews":[
 		{
-			"name": "Home",
-			"url": "https://github.com/CTalvio/Kaleidochromic/blob/main/screenshots/6.png?raw=true"
+			"name": "Login Page",
+			"url": "https://github.com/prayag17/jellyfin-plugin-skin-manager/blob/cssEditor/Kaleidochromic/Login.jpg?raw=true"
 		},
 		{
-			"name": "Title",
-			"url": "https://github.com/CTalvio/Kaleidochromic/blob/main/screenshots/1.png?raw=true"
+			"name": "Home/Index Page",
+			"url": "https://github.com/CTalvio/Kaleidochromic/raw/main/screenshots/6.png"
+		},
+		{
+			"name": "Library Page",
+			"url": "https://github.com/CTalvio/Kaleidochromic/raw/main/screenshots/5.png"
+		},
+		{
+			"name": "Title page",
+			"url": "https://github.com/CTalvio/Kaleidochromic/raw/main/screenshots/1.png"
 		}
-		
 	]
   },
   {
@@ -167,14 +192,21 @@
     ],
 	"previews":[
 		{
-			"name": "Home",
+			"name": "Login Page",
+			"url": "https://github.com/prayag17/JellySkin/raw/master/Version%204/Login.png?raw=true"
+		},
+		{
+			"name": "Home/Index Page",
 			"url": "https://github.com/prayag17/JellySkin/raw/master/Version%204/Home.png?raw=true"
 		},
 		{
-			"name": "Title",
-			"url": "https://github.com/prayag17/JellySkin/raw/master/Version%204/title%202.png?raw=true"
+			"name": "Library Page",
+			"url": "https://github.com/prayag17/JellySkin/raw/master/Version%204/lib%202.png?raw=true"
+		},
+		{
+			"name": "Title page",
+			"url": "https://github.com/prayag17/JellySkin/raw/master/Version%204/title%201.png?raw=true"
 		}
-		
 	]
   },
   {
