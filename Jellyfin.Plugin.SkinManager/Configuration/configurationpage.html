@@ -83,11 +83,12 @@
         return "";
       }
       var html = "";
-          skin.previews.forEach(element => {          
+        html += '<h2 class="sectionTitle" >Previews</h2>';
+        skin.previews.forEach(element => {          
            html += getImage(element.url);
            html += getImgnames(element.name); 
           });
-          return html;
+        return html;
     }
 
     function getCheckBox ( option) {
