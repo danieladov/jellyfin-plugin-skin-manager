@@ -79,10 +79,13 @@
     }
 
     function loadPreviews(skin){
+      if(skin.previews == undefined){
+        return "";
+      }
       var html = "";
-          skin.previews.forEach(element => {
-           html += getImgnames(element.name);  
+          skin.previews.forEach(element => {          
            html += getImage(element.url);
+           html += getImgnames(element.name); 
           });
           return html;
     }
