@@ -81,11 +81,11 @@
     function loadPreviews(skin){
       var html = "";
           skin.previews.forEach(element => {
+           html += getImgnames(element.name);  
            html += getImage(element.url);
           });
           return html;
-        }
-
+    }
 
     function getCheckBox ( option) {
       var html = "";
@@ -155,11 +155,17 @@
       return html
 
       }
-      function getImage(url){
+        function getImage(url){
         var html = "";
-        html += '<img src="'+url+'">';
+        html += '<fieldset class="verticalSection verticalSection-extrabottompadding"><img src="'+url+'">';
         return html;
-      }             
+      }
+
+      function getImgnames(name){
+        var html = "";
+        html += '<legend>'+name+'</legend></fieldset>';
+        return html;
+      }          
         
       function createCss(){
         var savedHtml = "";
@@ -285,7 +291,11 @@
       return false;
     });
     </script>
-    
+    <style>
+        img{
+            width: 100%;
+        }
+    </style>
     </div>
 </body>
 </html>
