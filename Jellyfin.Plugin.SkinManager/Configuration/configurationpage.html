@@ -55,7 +55,8 @@
       updateSelectors()
     }
 
-    function loadOptions(options){
+    function loadOptions(skin){
+      var options = skin.options;
       var page = $.mobile.activePage;
       var html = "";
       html += '<div data-role="controlgroup">';
@@ -72,9 +73,20 @@
           html += getSlider(element);
         }
       });
+      html += loadPreviews(skin);
       html += '</div>';
       $('#options', page).html(html).trigger('create');
     }
+
+    function loadPreviews(skin){
+      var html = "";
+          skin.previews.forEach(element => {
+           html += getImage(element.url);
+          });
+          return html;
+        }
+
+
     function getCheckBox ( option) {
       var html = "";
       var id = "chkFolder" ;
@@ -120,55 +132,65 @@
       html += '<div class="selectContainer"><select is="emby-select"  data-css= "'+css + '"class="selector" label="'+name+'">' + getOptions(option)+'</select></div>'
       return html;
     }
-      function getOptions(option){
-        var html = "";
-        var selections = option.selections
-        var css = option.css;
-        selections.forEach(element=>{
-          var name = element.name;                 
-          html+= '<option data-css= "'+css + '"value='+name+'>'+ name +'</option>'
+    function getOptions(option){
+      var html = "";
+      var selections = option.selections
+      var css = option.css;
+      selections.forEach(element=>{
+        var name = element.name;                 
+        html+= '<option data-css= "'+css + '"value='+name+'>'+ name +'</option>'
         })
         return html;
+    }
+    function getSlider(option){
+
+      var html = "";
+      var id = "slider" ;
+      var name = option.name; 
+      var css = option.css;
+      var step = option.step==undefined?1:option.step;
+      var defaultValue = option.default;
+      var description = option.description;                           
+      html += '<div class="inputContainer"><input is="emby-slider" type="range" class = "slider" value=' + defaultValue + ' step=' + step + ' data-css = "'+ css+ '"  id="' + id + '" name="' + id + '"  min="0" max="300" label="'+name +'" /><div class="fieldDescription">'+description+'</div></div>'
+      return html
+
       }
-        function getSlider(option){
-          var html = "";
-          var id = "slider" ;
-          var name = option.name; 
-          var css = option.css;
-          var step = option.step==undefined?1:option.step;
-          var defaultValue = option.default;
-          var description = option.description;                           
-          html += '<div class="inputContainer"><input is="emby-slider" type="range" class = "slider" value=' + defaultValue + ' step=' + step + ' data-css = "'+ css+ '"  id="' + id + '" name="' + id + '"  min="0" max="300" label="'+name +'" /><div class="fieldDescription">'+description+'</div></div>'
-          return html
-        }             
+      function getImage(url){
+        var html = "";
+        html += '<img src="'+url+'">';
+        return html;
+      }             
         
-        function createCss(){
-          var savedHtml = "";
-          //process checkbox
-          var css = $('#cssOptions').val();
-          savedHtml += document.getElementById("cssOptions").innerHTML;
-          var checkboxes = document.getElementsByClassName("checkbox");
-          for (let element of checkboxes) {
-            savedHtml += element.innerHTML;
-          }
-          var selectedOptions = $('.checkbox:checked').map(function () {
+      function createCss(){
+        var savedHtml = "";
+        //process checkbox
+        var css = $('#cssOptions').val();
+        savedHtml += document.getElementById("cssOptions").innerHTML;
+        var checkboxes = document.getElementsByClassName("checkbox");
+        for (let element of checkboxes) {
+          savedHtml += element.innerHTML;
+        }
+        var selectedOptions = $('.checkbox:checked').map(function () {
             return this.getAttribute('data-css');
           }).get();
+          
           selectedOptions.forEach(element => {
             css += element +"\n";
           });
+          
           //proccess selector
-          var selectors = document.getElementsByClassName("selector");
-          for (let element of selectors) {
+        var selectors = document.getElementsByClassName("selector");
+        for (let element of selectors) {
             css += element.getAttribute("data-css").replaceAll("$",element.value) + "\n";
             savedHtml += element.outerHTML;  
           }
+          
           //process colorPicker
           selectedOptions.forEach(element=>{
             css += element + "\n";
           })
-          var colorPickers = document.getElementsByClassName("color");
-          for (let element of colorPickers) {
+        var colorPickers = document.getElementsByClassName("color");
+        for (let element of colorPickers) {
             savedHtml += element.outerHTML  
              if(element.getAttribute("data-mode")=="rgba"){
               var rgbColor = hexToRgb( element.value);
@@ -178,30 +200,41 @@
             }
             css+= element.getAttribute("data-css").replaceAll("$",color)+ "\n";
           }
+
           //procces number selector
-          var numberSelectors = document.getElementsByClassName("number");
-          for (let element of numberSelectors) {
-            savedHtml += element.outerHTML;
+        var numberSelectors = document.getElementsByClassName("number");
+        for (let element of numberSelectors) {
+          savedHtml += element.outerHTML;
             css+= element.getAttribute("data-css").replaceAll("$",element.value) + "\n";
           }
+
           //procces slider
-          var sliders =  document.getElementsByClassName("slider");
-          for (let element of sliders) {
-            css+= element.getAttribute("data-css").replaceAll("$",element.value) + "\n";
+        var sliders =  document.getElementsByClassName("slider");
+        for (let element of sliders) {
+          css+= element.getAttribute("data-css").replaceAll("$",element.value) + "\n";
           }
           return css;       
         }
+
+
         function updateSelectors(){
           var selected = document.getElementById("cssOptions");
           var description = document.getElementById("description");
           data.forEach(element=>{
             if(element.name == selected.selectedOptions[0].innerText){
-              loadOptions(element.options);
+              loadOptions(element);
               description.innerHTML=element.description;
+              
               
             }    
           })
         }
+
+
+        
+
+
+
         function setSkin() {    
           ApiClient.getServerConfiguration().then(function (config) {
             ApiClient.updateServerConfiguration(config).then(function() {
