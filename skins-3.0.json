@@ -91,7 +91,7 @@
 "previews":[
 		{
 			"name": "Login Page",
-			"url": "https://github.com/prayag17/jellyfin-plugin-skin-manager/blob/cssEditor/Monochromic/login.jpg?raw=true"
+			"url": "https://github.com/danieladov/jellyfin-plugin-skin-manager/blob/master/src/img/Monochromic/login.jpg?raw=true"
 		},
 		{
 			"name": "Home/Index Page",
@@ -99,7 +99,7 @@
 		},
 		{
 			"name": "Library Page",
-			"url": "https://github.com/prayag17/jellyfin-plugin-skin-manager/blob/cssEditor/Monochromic/Lib.jpg?raw=true"
+			"url": "https://raw.githubusercontent.com/danieladov/jellyfin-plugin-skin-manager/master/src/img/Monochromic/Lib.jpg"
 		},
 		{
 			"name": "Title page",
@@ -143,7 +143,7 @@
 	"previews":[
 		{
 			"name": "Login Page",
-			"url": "https://github.com/prayag17/jellyfin-plugin-skin-manager/blob/cssEditor/Kaleidochromic/Login.jpg?raw=true"
+			"url": "https://github.com/danieladov/jellyfin-plugin-skin-manager/blob/master/src/img/Kaleidochromic/Login.jpg?raw=true"
 		},
 		{
 			"name": "Home/Index Page",
@@ -163,7 +163,7 @@
     "name": "JellySkin",
     "author": "prayagprajapati17",
     "description": "A very bright and colorful look using lots of drop shadows. Theme is by prayag17.",
-    "defaultCss": "@import url('https://prayag17.github.io/JellySkin/default.css');",
+    "defaultCss": "@import url('https://prayag17.github.io/JellySkin/default.4');",
     "options": [
       {
         "type": "checkBox",
