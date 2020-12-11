@@ -4,14 +4,38 @@
     "author": "Jellyfin",
     "description": "Default, stock, Jellyfin.",
     "defaultCss": "",
-    "options": []
+    "options": [],
+	"previews":[
+		{
+			"name": "Home",
+			"url": ""
+		},
+		{
+			"name": "Title",
+			"url": ""
+		},
+		
+	
+	]
   },
   {
     "name": "JellyFlix",
     "author": "prayagprajapati17",
     "description": "A theme that aims to replicate the red and black look of Netflix. Theme is by prayag17.",
     "defaultCss": "@import url(https://prayag17.github.io/JellyFlix/default.css);",
-    "options": []
+    "options": [],
+	"previews":[
+		{
+			"name": "Home",
+			"url": "https://github.com/prayag17/JellyFlix/raw/main/Public%20Ver%201/Home.png?raw=true"
+		},
+		{
+			"name": "Title",
+			"url": "https://github.com/prayag17/JellyFlix/raw/main/Public%20Ver%201/TitlePage.png?raw=true"
+		},
+		
+	
+	]
   },
   {
     "name": "Monochromic",
@@ -19,7 +43,7 @@
     "description": "This theme aims to be minimalistic and somewhat muted in color. Add-ons and custom accent colors are possible, but not entirely supported by this plug-in. Visit the github of the theme for more information.",
     "defaultCss": "@import url('https://ctalvio.github.io/Monochromic/default_style.css');",
     "options": [
-      {
+	  {
         "type": "checkBox",
         "name": "Improve performance",
         "description": "The theme uses mask-image to fade out items below the top bar as you scroll. This works well on most reasonable hardware but struggles on some phones and especially smart TVs. This switches to a method without using mask-image, but foregoes the fade-out effect. I may switch to this method being the default.",
@@ -51,7 +75,19 @@
         "css": "@import url('https://ctalvio.github.io/Monochromic/customcolor_style.css');:root {--accent: $;}",
         "default": ""
       }
-    ]
+    ],
+	"previews":[
+		{
+			"name": "Home",
+			"url": "https://github.com/CTalvio/Monochromic/blob/master/screenshots/1.png?raw=true"
+		},
+		{
+			"name": "Title",
+			"url": "https://github.com/CTalvio/Monochromic/blob/master/screenshots/2.png?raw=true"
+		},
+		
+	
+	]
   },
   {
     "name": "Kaleidochromic",
@@ -85,7 +121,19 @@
         "css": ":root {--accent: $;}",
         "default": "#6279cd"
       }
-    ]
+    ],
+	"previews":[
+		{
+			"name": "Home",
+			"url": "https://github.com/CTalvio/Kaleidochromic/blob/main/screenshots/6.png?raw=true"
+		},
+		{
+			"name": "Title",
+			"url": "https://github.com/CTalvio/Kaleidochromic/blob/main/screenshots/1.png?raw=true"
+		},
+		
+	
+	]
   },
   {
     "name": "JellySkin",
@@ -117,7 +165,19 @@
         "description": "changes the Jellyfin themed Hover gradient",
         "css": "@import url('https://prayag17.github.io/JellySkin/morningGradient.css');"
       }
-    ]
+    ],
+	"previews":[
+		{
+			"name": "Home",
+			"url": "https://github.com/prayag17/JellySkin/raw/master/Version%204/Home.png?raw=true"
+		},
+		{
+			"name": "Title",
+			"url": "https://github.com/prayag17/JellySkin/raw/master/Version%204/title%202.png?raw=true"
+		},
+		
+	
+	]
   },
   {
     "name": "Custom",
