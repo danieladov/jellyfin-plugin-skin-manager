@@ -5,10 +5,18 @@
     "description": "Default, stock, Jellyfin.",
     "defaultCss": "",
     "options": [],
-    "preview": {
-      "home": "",
-      "title": ""
-    }
+	"previews":[
+		{
+			"name": "Home",
+			"url": ""
+		},
+		{
+			"name": "Title",
+			"url": ""
+		}
+		
+	
+	]
   },
   {
     "name": "JellyFlix",
@@ -16,10 +24,18 @@
     "description": "A theme that aims to replicate the red and black look of Netflix. Theme is by prayag17.",
     "defaultCss": "@import url(https://prayag17.github.io/JellyFlix/default.css);",
     "options": [],
-    "preview": {
-      "home": "https://github.com/prayag17/JellyFlix/raw/main/Public%20Ver%201/Home.png?raw=true",
-      "title": "https://github.com/prayag17/JellyFlix/raw/main/Public%20Ver%201/TitlePage.png?raw=true"
-    }
+	"previews":[
+		{
+			"name": "Home",
+			"url": "https://github.com/prayag17/JellyFlix/raw/main/Public%20Ver%201/Home.png?raw=true"
+		},
+		{
+			"name": "Title",
+			"url": "https://github.com/prayag17/JellyFlix/raw/main/Public%20Ver%201/TitlePage.png?raw=true"
+		}
+		
+	
+	]
   },
   {
     "name": "Monochromic",
@@ -27,7 +43,7 @@
     "description": "This theme aims to be minimalistic and somewhat muted in color. Add-ons and custom accent colors are possible, but not entirely supported by this plug-in. Visit the github of the theme for more information.",
     "defaultCss": "@import url('https://ctalvio.github.io/Monochromic/default_style.css');",
     "options": [
-      {
+	  {
         "type": "checkBox",
         "name": "Improve performance",
         "description": "The theme uses mask-image to fade out items below the top bar as you scroll. This works well on most reasonable hardware but struggles on some phones and especially smart TVs. This switches to a method without using mask-image, but foregoes the fade-out effect. I may switch to this method being the default.",
@@ -60,10 +76,18 @@
         "default": ""
       }
     ],
-    "preview": {
-      "home": "https://github.com/CTalvio/Monochromic/blob/master/screenshots/1.png?raw=true",
-      "title": "https://github.com/CTalvio/Monochromic/blob/master/screenshots/2.png?raw=true"
-    }
+	"previews":[
+		{
+			"name": "Home",
+			"url": "https://github.com/CTalvio/Monochromic/blob/master/screenshots/1.png?raw=true"
+		},
+		{
+			"name": "Title",
+			"url": "https://github.com/CTalvio/Monochromic/blob/master/screenshots/2.png?raw=true"
+		}
+		
+	
+	]
   },
   {
     "name": "Kaleidochromic",
@@ -98,10 +122,17 @@
         "default": "#6279cd"
       }
     ],
-    "preview": {
-      "home": "https://github.com/CTalvio/Kaleidochromic/blob/main/screenshots/6.png?raw=true",
-      "title": "https://github.com/CTalvio/Kaleidochromic/blob/main/screenshots/1.png?raw=true"
-    }
+	"previews":[
+		{
+			"name": "Home",
+			"url": "https://github.com/CTalvio/Kaleidochromic/blob/main/screenshots/6.png?raw=true"
+		},
+		{
+			"name": "Title",
+			"url": "https://github.com/CTalvio/Kaleidochromic/blob/main/screenshots/1.png?raw=true"
+		}
+		
+	]
   },
   {
     "name": "JellySkin",
@@ -134,10 +165,17 @@
         "css": "@import url('https://prayag17.github.io/JellySkin/morningGradient.css');"
       }
     ],
-    "preview": {
-      "home": "https://github.com/prayag17/JellySkin/raw/master/Version%204/Home.png?raw=true",
-      "title": "https://github.com/prayag17/JellySkin/raw/master/Version%204/title%202.png?raw=true"
-    }
+	"previews":[
+		{
+			"name": "Home",
+			"url": "https://github.com/prayag17/JellySkin/raw/master/Version%204/Home.png?raw=true"
+		},
+		{
+			"name": "Title",
+			"url": "https://github.com/prayag17/JellySkin/raw/master/Version%204/title%202.png?raw=true"
+		}
+		
+	]
   },
   {
     "name": "Custom",
@@ -145,7 +183,7 @@
     "description": "customize the look of jellyfin by your needs",
     "defaultCss": "",
     "options": [
-      {
+    {
         "type": "selector",
         "name": "Change Font",
         "description": "Change the default fonts",
@@ -196,7 +234,7 @@
       },
       {
         "type": "colorPicker",
-        "mode": "rgba",
+        "mode":"rgba",
         "name": "Accent color",
         "description": "Choose a custom accent color to use with the theme.",
         "css": ".countIndicator {background: rgba($,0.8);}.playedIndicator, .innerCardFooter /*Accenting*/.button-flat:hover {background: rgba($,0.25);}.paper-icon-button-light:hover {  background-color: rgba($,0.25) !important;}.subtitleappearance-preview {  background: linear-gradient(140deg,rgba($),#111) !important;}.navMenuOption-selected, .selectionCommandsPanel {    background: rgba($, 0.8) !important;}.raised,.fab,a[data-role='button'] {  background: rgba($, 0.8) !important;\ttransition: all 0.2s !important;} /*Glow accent*/ .raised.homeLibraryButton {box-shadow: 0px 0px 5px rgba($, 0) !important; border: solid 1px rgba($,0) !important;}.cardOverlayContainer:hover,.dialog,..raised.homeLibraryButton:hover {  box-shadow: 0px 0px 5px rgb($) !important;  border: solid 1px rgba($,0.6) !important;}.cardOverlayContainer {  border: solid 1px rgba($,0.0) !important;}"
@@ -207,7 +245,7 @@
         "name": "Console Panel Color",
         "description": "Modifies the color of the left menu panel.",
         "css": ".mainDrawer-scrollContainer { color: $; }",
-        "default": "#ffffff"
+        "default":"#ffffff"
       },
       {
         "type": "checkBox",
@@ -235,26 +273,22 @@
         "name": "Right Header Color",
         "description": "This modifies the colors of the cast, search and user buttons in the top right.",
         "css": ".headerRight { color: $; }",
-        "default": "#ffffff"
+        "default":"#ffffff"
       },
       {
         "type": "number",
         "name": "Border Radius",
-        "description": "Change the roundness of text box and more default is zero",
-        "css": "@import url('https://prayag17.github.io/jellyfin-plugin-skin-manager/src/border-radius.css'); :root{--rounding: $px;}",
-        "default": "0"
+        "description": ":root {--rounding: 0px;}.formDialogHeader {border-top-left-radius: var(--rounding);border-top-right-radius: var(--rounding);}.formDialogFooter {border-bottom-left-radius: var(--rounding);border-bottom-right-radius: var(--rounding);}.cardOverlayContainer {border-radius: var(--rounding) !important;}.toast,.paperList,.cardContent,.sessionNowPlayingInnerContent, .listItem:hover, .cardImage,.fab,.multiSelectCheckboxOutline,.itemSelectionPanel,.cardContent-button, .cardContent-shadow, .itemDetailImage, .cardOverlayButton-hover,.cardImageContainer,.cardPadder,.listItemImage,.listItemImageButton,.listItemButton,.headerButton,.paper-icon-button-light,.innerCardFooter,.blurhash-canvas,.actionSheetMenuItem:hover,.dialog,.listItemIcon,.listItem-border,.button-flat,.visualCardBox,.checkboxOutline,.emby-select-withcolor,.chapterThumbTextContainer,.chapterThumbContainer,.chapterThumb,.emby-input, .emby-textarea, .emby-select-withcolor,.cardOverlayButtonIcon,.subtitleappearance-preview.flex.align-items-center.justify-content-center {border-radius: var(--rounding) !important;}.osdPoster img {border-radius: var(--rounding); border: none;}.mdl-slider::-moz-range-thumb {border-radius: var(--rounding);}.mdl-slider::-ms-thumb {border-radius: var(--rounding);}.mdl-slider::-webkit-slider-thumb {border-radius: var(--rounding);}div[data-role='controlgroup'] a[data-role='button']:first-child {border-bottom-left-radius: var(--rounding);border-top-left-radius: var(--rounding);}div[data-role='controlgroup'] a[data-role='button']:last-child {border-bottom-right-radius: var(--rounding);border-top-right-radius: var(--rounding);}",
+        "css": "",
+        "default":"0"
       },
       {
         "type": "number",
         "name": "Backdrop Blur",
         "description": "adds blur to the backdrop images default is zero",
-        "css": "@import url('https://prayag17.github.io/jellyfin-plugin-skin-manager/src/bgBlur.css'); :root{--bgblur: blur($px)}",
+        "css": ":root{--bgblur: blur($px)}.backdropImage {filter: var(--bgblur);}.backgroundContainer.withBackdrop {background-color: rgba(0,0,0,0);}",
         "default": "0"
       }
-    ],
-    "preview": {
-      "home": "",
-      "title": ""
-    }
+    ]
   }
 ]
