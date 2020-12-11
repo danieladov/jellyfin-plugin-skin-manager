@@ -1,4 +1,4 @@
-<h1 align="center">Jellyfin Theme Songs Plugin</h1>
+<h1 align="center">Jellyfin Skin Manager Plugin</h1>
 <h3 align="center">Part of the <a href="https://jellyfin.media">Jellyfin Project</a></h3>
 
 <p align="center">
@@ -45,4 +45,30 @@ When using the Nginx Reverse proxy config from the [Jellyfin docs](https://jelly
 Because the config includes Content-Security-Policy which reduces risk of XSS, you need to add the URL from the skin repo and the fonts to the list of allowed external sources.
 
 For example to use Kaleidochromic you need to do [this](https://github.com/CTalvio/Kaleidochromic/blob/main/README.md#using-with-reverse-proxy)
+
+
+## JSON
+  ## Skin Properties
+  - name //The name of the skin
+  - author //The author of the skin
+  - defaultCss //The base css of the skin
+  - options  //An array of options that will modified the skin
+    - ## Options Properties
+    - type //the type of the input (checkBox, number, select, colorPicker)
+    - name // the name of the option
+    - description // the description of the option
+    - css //The css code that will modified the skin $ symbols in this code will be replaced by the value selected by the user (in number, select and color picer)
+    
+    Some option have custom properties:
+    
+    - ## number properties
+      - default //Default value
+      - step //step of the input
+    - ## selector properties
+      - selections //Array of options
+        - ## selections properties
+          - name // name of the option
+          - value // value of the option
+    
+   
 
