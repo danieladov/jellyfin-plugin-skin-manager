@@ -166,28 +166,24 @@
     "defaultCss": "@import url('https://prayag17.github.io/JellySkin/default.4');",
     "options": [
       {
-        "type": "checkBox",
-        "name": "Sea Gradient",
-        "description": "changes the Jellyfin themed Hover gradient",
-        "css": "@import url('https://prayag17.github.io/JellySkin/seaGradient.css');"
-      },
-      {
-        "type": "checkBox",
-        "name": "Sunset Gradient",
-        "description": "changes the Jellyfin themed Hover gradient",
-        "css": "@import url('https://prayag17.github.io/JellySkin/sunsetGradient.css');"
-      },
-      {
-        "type": "checkBox",
-        "name": "Night Sky Gradient",
-        "description": "changes the Jellyfin themed Hover gradient",
-        "css": "@import url('https://prayag17.github.io/JellySkin/nightSkyGradient.css');"
-      },
-      {
-        "type": "checkBox",
-        "name": "Morning Gradient",
-        "description": "changes the Jellyfin themed Hover gradient",
-        "css": "@import url('https://prayag17.github.io/JellySkin/morningGradient.css');"
+        "type": "selector",
+        "name": "Gradient",
+        "description": "Changes the Jellyfin themed Hover gradient",
+        "css": "",
+        "selections": [
+          {
+            "name": "seaGradient"
+          },
+          {
+            "name": "sunsetGradient"
+          },
+          {
+            "name": "nightSkyGradient"
+          },
+          {
+            "name": "morningGradient"
+          }
+        ]
       }
     ],
 	"previews":[
