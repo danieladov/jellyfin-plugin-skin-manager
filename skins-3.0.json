@@ -169,7 +169,7 @@
         "type": "selector",
         "name": "Gradient",
         "description": "Changes the Jellyfin themed Hover gradient",
-        "css": "",
+        "css": "@import url('https://prayag17.github.io/JellySkin/$.css');",
         "selections": [
           {
             "name": "seaGradient"
