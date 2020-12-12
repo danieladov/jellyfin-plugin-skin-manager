@@ -163,7 +163,7 @@
     "name": "JellySkin",
     "author": "prayagprajapati17",
     "description": "A very bright and colorful look using lots of drop shadows. Theme is by prayag17.",
-    "defaultCss": "@import url('https://prayag17.github.io/JellySkin/default.4');",
+    "defaultCss": "@import url('https://prayag17.github.io/JellySkin/default.css');",
     "options": [
       {
         "type": "selector",
