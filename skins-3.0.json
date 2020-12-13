@@ -303,6 +303,19 @@
         "css": ".headerRight { color: $; }",
         "default":"#ffffff"
       },
+	  {
+		"type": "section",
+		"name": "Buttons"
+	  },
+	  {
+        "type": "colorPicker",
+        "mode": "hex",
+        "name": "Interact Buttons Color",
+        "description": "This modifies the color of interact buttons.",
+        "css": ".paper-icon-button-light { color: $ !important; } .paper-icon-button-light:hover:not(:disabled) { color:$ !important; background-color: $ !important; } .paper-icon-button-light:focus:not(:disabled) { color:$ !important; background-color: $ !important; }",
+        "default":"#00a4dc",
+		"preview":"https://github.com/LambadaCorez/custom_css_jellyfin/blob/master/ui/buttons/colored_interact_buttons/colored_buttons_example3.png?raw=true"
+      },
       {
         "type": "number",
         "name": "Border Radius",

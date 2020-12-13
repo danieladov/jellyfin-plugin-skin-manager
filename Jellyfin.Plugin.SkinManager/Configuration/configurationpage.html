@@ -72,6 +72,8 @@
           html += getSelector(element);
         }else if(element.type == "slider"){
           html += getSlider(element);
+        }else if(element.type == "section"){
+          html += getSection(element);
         }
       });
       html += loadPreviews(skin);
@@ -172,7 +174,7 @@
       return html
 
       }
-        function getImage(url){
+      function getImage(url){
         var html = "";
         html += '<fieldset class="verticalSection verticalSection-extrabottompadding"><img src="'+url+'">';
         return html;
@@ -182,7 +184,13 @@
         var html = "";
         html += '<legend>'+name+'</legend></fieldset>';
         return html;
-      }          
+      }  
+      
+      function getSection(option){
+        var html = "";
+        var name = option.name;
+        html += html += '<h2 class="sectionTitle" >'+ name +'</h2>';
+      }
         
       function createCss(){
         var savedHtml = "";
