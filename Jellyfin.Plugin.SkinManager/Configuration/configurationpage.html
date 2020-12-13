@@ -121,11 +121,11 @@
       var html = "";
       var id = "favcolor" ;
       var name = option.name;   
-      var defaultValue = option.default;
+      var defaultValue = option.default==undefined?"#000000":option.default;
       var css = option.css;
       var description = option.description;
       var mode = option.mode;                           
-      html += '<div class="inputContainer"><input style="height: 1em; padding: 0px; border: none;" type=color  class = "color" value="' + defaultValue + '"data-css = "'+ css+ '" data-mode="'+mode+'" id="' + id + '" name="' + id + '" label="'+name +'"  /><div class="fieldDescription">'+description+'</div></div>';
+      html += '<div class="inputContainer"><label><input style="height: 1em; padding: 0px; border: none;" type=color  class = "color" value="' + defaultValue + '"data-css = "'+ css+ '" data-mode="'+mode+'" id="' + id + '" name="' + id + '" label="'+name +'"  /><span>'+ name +'</span></label><div class="fieldDescription">'+description+'</div></div>';
       return html;
     }
     function getNumber(option){
@@ -190,6 +190,7 @@
         var html = "";
         var name = option.name;
         html += html += '<h2 class="sectionTitle" >'+ name +'</h2>';
+        return html;
       }
         
       function createCss(){
