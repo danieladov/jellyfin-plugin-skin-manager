@@ -58,7 +58,6 @@
 
     function loadOptions(skin){
       var options = skin.options;
-      var page = $.mobile.activePage;
       var html = "";
       html += '<div data-role="controlgroup">';
       options.forEach(element=>{
@@ -78,7 +77,7 @@
       });
       html += loadPreviews(skin);
       html += '</div>';
-      $('#options', page).html(html).trigger('create');
+      $('#options').html(html).trigger('create');
     }
 
     function preloadPreviews(){
