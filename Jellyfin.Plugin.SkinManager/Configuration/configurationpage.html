@@ -39,7 +39,7 @@
     Dashboard.showLoadingMsg();
     $.getJSON('https://raw.githubusercontent.com/danieladov/jellyfin-plugin-skin-manager/master/skins-3.0.json', function(json) {
       data=json;
-      loadSkins();  
+      loadSkins();
       Dashboard.hideLoadingMsg();         
     });
     function loadSkins(){
@@ -52,7 +52,8 @@
         opt.value=element.defaultCss;
         cssOptions.appendChild(opt);
       });
-      updateSelectors()
+      updateSelectors();
+      preloadPreviews();  
     }
 
     function loadOptions(skin){
@@ -76,6 +77,18 @@
       html += loadPreviews(skin);
       html += '</div>';
       $('#options', page).html(html).trigger('create');
+    }
+
+    function preloadPreviews(){
+      data.forEach(skin => {
+        if(skin.previews != undefined){
+          skin.previews.forEach(img => {
+          var image = new Image();
+          image.src = img.url;
+        }) 
+        }
+         
+      })
     }
 
     function loadPreviews(skin){
