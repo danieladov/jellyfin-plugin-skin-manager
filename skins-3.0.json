@@ -163,31 +163,27 @@
     "name": "JellySkin",
     "author": "prayagprajapati17",
     "description": "A very bright and colorful look using lots of drop shadows. Theme is by prayag17.",
-    "defaultCss": "@import url('https://prayag17.github.io/JellySkin/default.4');",
+    "defaultCss": "@import url('https://prayag17.github.io/JellySkin/default.css');",
     "options": [
       {
-        "type": "checkBox",
-        "name": "Sea Gradient",
-        "description": "changes the Jellyfin themed Hover gradient",
-        "css": "@import url('https://prayag17.github.io/JellySkin/seaGradient.css');"
-      },
-      {
-        "type": "checkBox",
-        "name": "Sunset Gradient",
-        "description": "changes the Jellyfin themed Hover gradient",
-        "css": "@import url('https://prayag17.github.io/JellySkin/sunsetGradient.css');"
-      },
-      {
-        "type": "checkBox",
-        "name": "Night Sky Gradient",
-        "description": "changes the Jellyfin themed Hover gradient",
-        "css": "@import url('https://prayag17.github.io/JellySkin/nightSkyGradient.css');"
-      },
-      {
-        "type": "checkBox",
-        "name": "Morning Gradient",
-        "description": "changes the Jellyfin themed Hover gradient",
-        "css": "@import url('https://prayag17.github.io/JellySkin/morningGradient.css');"
+        "type": "selector",
+        "name": "Gradient",
+        "description": "Changes the Jellyfin themed Hover gradient",
+        "css": "@import url('https://prayag17.github.io/JellySkin/$.css');",
+        "selections": [
+          {
+            "name": "seaGradient"
+          },
+          {
+            "name": "sunsetGradient"
+          },
+          {
+            "name": "nightSkyGradient"
+          },
+          {
+            "name": "morningGradient"
+          }
+        ]
       }
     ],
 	"previews":[
@@ -306,6 +302,19 @@
         "description": "This modifies the colors of the cast, search and user buttons in the top right.",
         "css": ".headerRight { color: $; }",
         "default":"#ffffff"
+      },
+	  {
+		"type": "section",
+		"name": "Buttons"
+	  },
+	  {
+        "type": "colorPicker",
+        "mode": "hex",
+        "name": "Interact Buttons Color",
+        "description": "This modifies the color of interact buttons.",
+        "css": ".paper-icon-button-light { color: $ !important; } .paper-icon-button-light:hover:not(:disabled) { color:$ !important; background-color: $ !important; } .paper-icon-button-light:focus:not(:disabled) { color:$ !important; background-color: $ !important; }",
+        "default":"#00a4dc",
+		"preview":"https://github.com/LambadaCorez/custom_css_jellyfin/blob/master/ui/buttons/colored_interact_buttons/colored_buttons_example3.png?raw=true"
       },
       {
         "type": "number",

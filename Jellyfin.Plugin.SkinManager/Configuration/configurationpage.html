@@ -37,9 +37,9 @@
     <script type="text/javascript">
     var data;
     Dashboard.showLoadingMsg();
-    $.getJSON('https://raw.githubusercontent.com/danieladov/jellyfin-plugin-skin-manager/cssEditor/skins-3.0.json', function(json) {
+    $.getJSON('https://raw.githubusercontent.com/danieladov/jellyfin-plugin-skin-manager/master/skins-3.0.json', function(json) {
       data=json;
-      loadSkins();  
+      loadSkins();
       Dashboard.hideLoadingMsg();         
     });
     function loadSkins(){
@@ -52,12 +52,12 @@
         opt.value=element.defaultCss;
         cssOptions.appendChild(opt);
       });
-      updateSelectors()
+      updateSelectors();
+      preloadPreviews();  
     }
 
     function loadOptions(skin){
       var options = skin.options;
-      var page = $.mobile.activePage;
       var html = "";
       html += '<div data-role="controlgroup">';
       options.forEach(element=>{
@@ -71,11 +71,25 @@
           html += getSelector(element);
         }else if(element.type == "slider"){
           html += getSlider(element);
+        }else if(element.type == "section"){
+          html += getSection(element);
         }
       });
       html += loadPreviews(skin);
       html += '</div>';
-      $('#options', page).html(html).trigger('create');
+      $('#options').html(html).trigger('create');
+    }
+
+    function preloadPreviews(){
+      data.forEach(skin => {
+        if(skin.previews != undefined){
+          skin.previews.forEach(img => {
+          var image = new Image();
+          image.src = img.url;
+        }) 
+        }
+         
+      })
     }
 
     function loadPreviews(skin){
@@ -106,11 +120,11 @@
       var html = "";
       var id = "favcolor" ;
       var name = option.name;   
-      var defaultValue = option.default;
+      var defaultValue = option.default==undefined?"#000000":option.default;
       var css = option.css;
       var description = option.description;
       var mode = option.mode;                           
-      html += '<div class="inputContainer"><input style="height: 1em; padding: 0px; border: none;" type=color  class = "color" value="' + defaultValue + '"data-css = "'+ css+ '" data-mode="'+mode+'" id="' + id + '" name="' + id + '" label="'+name +'"  /><div class="fieldDescription">'+description+'</div></div>';
+      html += '<div class="inputContainer"><label><input style="height: 1em; padding: 0px; border: none;" type=color  class = "color" value="' + defaultValue + '"data-css = "'+ css+ '" data-mode="'+mode+'" id="' + id + '" name="' + id + '" label="'+name +'"  /><span>'+ name +'</span></label><div class="fieldDescription">'+description+'</div></div>';
       return html;
     }
     function getNumber(option){
@@ -159,7 +173,7 @@
       return html
 
       }
-        function getImage(url){
+      function getImage(url){
         var html = "";
         html += '<fieldset class="verticalSection verticalSection-extrabottompadding"><img src="'+url+'">';
         return html;
@@ -169,7 +183,14 @@
         var html = "";
         html += '<legend>'+name+'</legend></fieldset>';
         return html;
-      }          
+      }  
+      
+      function getSection(option){
+        var html = "";
+        var name = option.name;
+        html += html += '<h2 class="sectionTitle" >'+ name +'</h2>';
+        return html;
+      }
         
       function createCss(){
         var savedHtml = "";
