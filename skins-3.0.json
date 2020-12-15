@@ -209,7 +209,7 @@
     "name": "Custom",
     "author": "you",
     "description": "customize the look of jellyfin by your needs",
-    "defaultCss": "",
+    "defaultCss": "/*Custom*/",
     "options": [
     {
         "type": "selector",
