@@ -1,14 +1,18 @@
 ﻿using MediaBrowser.Model.Plugins;
+using System;
+using System.Collections.Generic;
 
 namespace Jellyfin.Plugin.SkinManager.Configuration
 {
     public class PluginConfiguration : BasePluginConfiguration
     {
-        public string selectedCss { get; set; }
+        public string selectedSkin { get; set; }
+        public string[] options { get; set; }
 
         public PluginConfiguration()
         {
-            selectedCss = "";
+            selectedSkin = "";
+            options = Array.Empty<String>();
         }
     }
 }
