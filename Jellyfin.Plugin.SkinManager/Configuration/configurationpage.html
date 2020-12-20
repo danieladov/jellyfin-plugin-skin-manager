@@ -193,7 +193,9 @@
       function getSection(option){
         var html = "";
         var name = option.name;
-        html += html += '<h2 class="sectionTitle" >'+ name +'</h2>';
+        html += '</fieldset>';
+        html += '<fieldset class="verticalSection verticalSection-extrabottompadding">';
+        html += '<legend>'+ name +'</legend>';
         return html;
       }
         
