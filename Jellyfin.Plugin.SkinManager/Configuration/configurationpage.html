@@ -57,24 +57,28 @@
     }
 
     function loadOptions(skin){
-      var options = skin.options;
+      
       var html = "";
       html += '<div data-role="controlgroup">';
-      options.forEach(element=>{
-        if(element.type == "checkBox"){
-          html += getCheckBox(element);
-        }else if(element.type == "colorPicker"){
-          html += getColorPicker(element);
-        }else if(element.type == "number"){
-          html += getNumber(element);
-        }else if(element.type == "selector"){
-          html += getSelector(element);
-        }else if(element.type == "slider"){
-          html += getSlider(element);
-        }else if(element.type == "section"){
-          html += getSection(element);
-        }
+      skin.categories.forEach(categorie=>{
+        html += getSection(categorie.name);
+        categorie.options.forEach(element=>{
+          if(element.type == "checkBox"){
+            html += getCheckBox(element);
+          }else if(element.type == "colorPicker"){
+            html += getColorPicker(element);
+          }else if(element.type == "number"){
+            html += getNumber(element);
+          }else if(element.type == "selector"){
+            html += getSelector(element);
+          }else if(element.type == "slider"){
+            html += getSlider(element);
+          
+          }
       });
+
+      })
+      
       html += loadPreviews(skin);
       html += '</div>';
       $('#options').html(html).trigger('create');
@@ -159,8 +163,9 @@
       var css = option.css;
       selections.forEach(element=>{
         var name = element.name;
+        var value = element.value;
         var selected = saved==name?'selected="selected"' : "";                
-        html+= '<option data-css= "'+css + '"value='+name+'" '+ selected+'>'+ name +'</option>'
+        html+= '<option data-css= "'+css + '"value='+value+'" '+ selected+'>'+ name +'</option>'
         })
         return html;
     }
@@ -190,9 +195,8 @@
         return html;
       }  
       
-      function getSection(option){
+      function getSection(name){
         var html = "";
-        var name = option.name;
         html += '</fieldset>';
         html += '<fieldset class="verticalSection verticalSection-extrabottompadding">';
         html += '<legend>'+ name +'</legend>';
