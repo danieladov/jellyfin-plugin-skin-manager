@@ -101,7 +101,8 @@
         return "";
       }
       var html = "";
-        html += '<h2 class="sectionTitle" >Previews</h2>';
+      html += '</fieldset>';
+      html += '<h2 class="sectionTitle" >Previews</h2>';
         skin.previews.forEach(element => {          
            html += getImage(element.url);
            html += getImgnames(element.name); 
