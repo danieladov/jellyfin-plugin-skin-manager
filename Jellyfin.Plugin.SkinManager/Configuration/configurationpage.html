@@ -307,11 +307,15 @@
             count ++;
           }
           
-          var options = skin.options;
+          
           var savedOptions = config.options;
           var html = "";
           html += '<div data-role="controlgroup">';
-          options.forEach(element=>{
+          skin.categories.forEach(categorie=>{
+            html+=getSection(categorie.name);
+            var options = categorie.options;
+
+            options.forEach(element=>{
             var savedValue = undefined;
             var count = 0;
             savedOptions.forEach(savedOption => {
@@ -330,10 +334,11 @@
               html += getSelector(element,savedValue);
             }else if(element.type == "slider"){
               html += getSlider(element,savedValue);
-            }else if(element.type == "section"){
-              html += getSection(element,savedValue);
             }
           });
+
+          })
+          
       html += loadPreviews(skin);
       html += '</div>';
       $('#options').html(html).trigger('create');
@@ -345,11 +350,13 @@
           
           var options = [];
           var count = 0;
-          data[document.getElementById("cssOptions").selectedIndex].options.forEach(option => {
-            options[count] = option.css;
-            options[count +1 ] = getValue(option);
-            count += 2;
-          });
+          data[document.getElementById("cssOptions").selectedIndex].categories.forEach(categorie=>{
+            categorie.options.forEach(option => {
+              options[count] = option.css;
+              options[count +1 ] = getValue(option);
+              count += 2;
+            });
+          })
           config.options = options;
 
           ApiClient.getPluginConfiguration(pluginId).then(function (oldConfig){
