@@ -213,16 +213,20 @@
                         "css": "@import url('https://prayag17.github.io/JellySkin/$.css');",
                         "selections": [
                             {
-                                "name": "seaGradient"
+                                "name": "Sea Gradient",
+								"value": "seaGradient"
                             },
                             {
-                                "name": "sunsetGradient"
+                                "name": "Sunset Gradient",
+								"value": "sunsetGradient"
                             },
                             {
-                                "name": "nightSkyGradient"
+                                "name": "Night Sky Gradient",
+								"value": "nightSkyGradient"
                             },
                             {
-                                "name": "morningGradient"
+                                "name": "Morning Gradient",
+								"value": "morningGradient"
                             }
                         ]
                     }
@@ -245,39 +249,50 @@
                         "description": "Change the default fonts",
                         "css": "html {font-family: $,sans-serif ;  } body,h1,h2,h3 { font-family:$ ,sans-serif;} @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,800;1,900&display=swap');",
                         "selections": [
-                            {
-                                "name": "Noto Sans"
-                            },
-                            {
-                                "name": "Times New Roman"
-                            },
-                            {
-                                "name": "Arial"
-                            },
-                            {
-                                "name": "Helvetica"
-                            },
-                            {
-                                "name": "Times"
-                            },
-                            {
-                                "name": "Courier New"
-                            },
-                            {
-                                "name": "Verdana"
-                            },
-                            {
-                                "name": "Courier"
-                            },
-                            {
-                                "name": "Arial Narrow"
-                            },
-                            {
-                                "name": "Candara"
-                            },
-                            {
-                                "name": "Poppins"
-                            }
+						  {
+							"name": "Noto Sans",
+							"value": "Noto Sans"
+						  },
+						  {
+							"name": "Times New Roman",
+							"value": "Times New Roman"
+						  },
+						  {
+							"name": "Arial",
+							"value": "Arial"
+						  },
+						  {
+							"name": "Helvetica",
+							"value": "Helvetica"
+						  },
+						  {
+							"name": "Times",
+							"value": "Times"
+						  },
+						  {
+							"name": "Courier New",
+							"value": "Courier New"
+						  },
+						  {
+							"name": "Verdana",
+							"value":  "Verdana"
+						  },
+						  {
+							"name": "Courier",
+							"value":"Courier"
+						  },
+						  {
+							"name": "Arial Narrow",
+							"value": "Arial Narrow"
+						  },
+						  {
+							"name": "Candara",
+							"value":"Candara"
+						  },
+						  {
+							"name": "Poppins",
+							"value":"Poppins"
+						  }
                         ]
                     },
                     {
