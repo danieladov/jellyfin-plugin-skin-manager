@@ -1,0 +1,97 @@
+body{
+  margin: 0;
+  font-family: Arial;
+}
+.body {
+  margin: 2em;
+}
+.header {
+  height: 80px;
+  width: 100%;
+  background: #101010;
+  display: block;
+  top: 0;
+  position: sticky;
+}
+.innerHeader {
+  height: 100%;
+  margin: 0 1.5em;
+  display: block;
+}
+
+.nav a{
+  display: table;
+  height: 100%;
+  float: right;
+  padding: 0px 10px !important;
+}
+.nav a li {
+  vertical-align: middle;
+  display: table-cell;
+}
+fieldset {
+  border-radius: 15px;
+  background: #dadada;
+  border: none;
+  padding: 1em;
+  margin-top: 2em;
+}
+.link{
+  text-decoration: none;
+  color: white;
+}
+a.logo.link {
+  float: left;
+}
+.About {
+  margin: 2em;
+}
+.inner {
+  background: #c4c4c4;
+  padding: 1em;
+  border-radius: 15px;
+  color: #3a3a3a;
+}
+a {
+  text-decoration: none;
+  color: black;
+}
+.cont {
+  display: flex;
+}
+.contibutorsNames {
+    padding: 1em;
+    border-radius: 15px;
+    width: fit-content;
+    max-width: 10em;
+    min-width: 10em;
+    flex-wrap: wrap;
+    height: fit-content;
+    transition: box-shadow .2s;
+    max-height: 20em;
+    min-height: 15em;
+    background-size: cover !important;
+}
+.contibutorsNames:hover {
+  box-shadow: 0 0 17px -3px black;
+}
+.contributorsLink {
+  color: #3a3a3a !important;
+}
+.text li {
+  color: #9a9a9a;
+  transition: color .25s, border .25s;
+  border-bottom: 5px solid rgba(0,0,0,0);
+}
+.text li:hover {
+  color: white !important;
+  border-bottom-color: #00a4dc !important;
+}
+.selected {
+  color: white !important;
+  border-bottom-color: #aa5cc3 !important;
+}
+img.userImg {
+  width: 50%;
+  border-radius: 15px;
+}
