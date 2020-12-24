@@ -119,7 +119,7 @@
       var description = option.description;
                       
       //html += '<label><input is="emby-checkbox" class="chkLibrary" type="checkbox" data-mini="true" id="' + id + '" name="' + id + '" data-value="' + value + '" '+' /><span>' + name  + '</span></label>';
-      html += '<div class="checkboxContainer checkboxContainer-withDescription"><label><input class = "checkbox" type="checkbox" is="emby-checkbox" id="' + id + '"name="' + id + '" data-css="' + css + '" '+ checked + ' /><span>'+ name +'</span></label><div class="fieldDescription checkboxFieldDescription">'+description+'</div></div>'
+      html += '<div class="checkboxContainer checkboxContainer-withDescription"><label><input class = "checkbox" type="checkbox" is="emby-checkbox" id="' + id + '"name="' + id + '" data-css="' + css + '" '+ checked + ' /><span>'+ name +'</span>'+getToolTip(option)+'</label><div class="fieldDescription checkboxFieldDescription">'+description+'</div></div>'
       return html;
     }
     function getColorPicker ( option,saved) {
@@ -131,7 +131,7 @@
       var css = option.css;
       var description = option.description;
       var mode = option.mode;                           
-      html += '<div class="inputContainer"><label><input style="height: 1em; padding: 0px; border: none;" type=color  class = "color" value="' + defaultValue + '"data-css = "'+ css+ '" data-mode="'+mode+'" id="' + id + '" name="' + id + '" label="'+name +'"  /><span>'+ name +'</span></label><div class="fieldDescription">'+description+'</div></div>';
+      html += '<div class="inputContainer"><label><input style="height: 1em; padding: 0px; border: none;" type=color  class = "color" value="' + defaultValue + '"data-css = "'+ css+ '" data-mode="'+mode+'" id="' + id + '" name="' + id + '" label="'+name +'"  /><span>'+ name +'</span>'+ getToolTip(option)+'</label><div class="fieldDescription">'+description+'</div></div>';
       return html;
     }
     function getNumber(option,saved){
@@ -166,7 +166,7 @@
         var name = element.name;
         var value = element.value;
         var selected = saved==name?'selected="selected"' : "";                
-        html+= '<option data-css= "'+css + '"value='+value+'" '+ selected+'>'+ name +'</option>'
+        html+= '<option data-css= "'+css + '"value='+value+ selected+'>'+ name +'</option>'
         })
         return html;
     }
@@ -202,6 +202,18 @@
         html += '<fieldset class="verticalSection verticalSection-extrabottompadding">';
         html += '<legend>'+ name +'</legend>';
         return html;
+      }
+
+      function getToolTip(option){
+        if(option.preview == undefined){
+          return "";
+        }
+        html ="";
+        html += '<div class="tooltip">   🛈<span class="tooltiptext">'
+        html += '<img src="' + option.preview + '">';
+        html += '</span></div>'
+        return html;
+
       }
         
       function createCss(){
@@ -474,7 +486,35 @@
         legend {
             font-size: 135%;
         }
+        
     </style>
+    <style>
+      .tooltip {
+        position: relative;
+        display: inline-block;
+        border-bottom: 1px dotted black;
+      }
+      
+      .tooltip .tooltiptext {
+        visibility: hidden;
+        width: auto;
+        background-color: transparent;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px 0;
+        
+        /* Position the tooltip */
+        position: absolute;
+        z-index: 1;
+        top: -5px;
+        left: 105%;
+      }
+      
+      .tooltip:hover .tooltiptext {
+        visibility: visible;
+      }
+      </style>
     </div>
 </body>
 </html>
