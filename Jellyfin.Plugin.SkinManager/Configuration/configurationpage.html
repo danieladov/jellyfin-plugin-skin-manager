@@ -2,6 +2,8 @@
 <html>
 <head>
     <title>Skin Manager</title>
+      
+    
 </head>
 <body>
   <div data-role="page" class="page type-interior pluginConfigurationPage tbsConfigurationPage" data-require="emby-input,emby-button">
@@ -28,9 +30,7 @@
             <div class="checkboxList checkboxList-verticalwrap" id ="options"></div>
             <br>
           </div>
-          <button is="emby-button" type="button" class="raised block" id="refresh-library" onclick=setSkin()>
-            <span>Set Skin</span>
-          </button>
+          
         </form>
       </div>
     </div>
@@ -40,8 +40,10 @@
     $.getJSON('https://raw.githubusercontent.com/danieladov/jellyfin-plugin-skin-manager/master/skins-3.0.json', function(json) {
       data=json;
       loadSkins();
-      Dashboard.hideLoadingMsg();         
+      Dashboard.hideLoadingMsg();  
+      checkEasterEggs();       
     });
+    
     function loadSkins(){
       var cssOptions = document.getElementById("cssOptions");
  
@@ -78,7 +80,8 @@
       });
 
       })
-      
+      html += '</fieldset>';
+      html += '<button is="emby-button" type="button" class="raised block" id="refresh-library" onclick=setSkin()><span>Set Skin</span></button>'
       html += loadPreviews(skin);
       html += '</div>';
       $('#options').html(html).trigger('create');
@@ -101,7 +104,7 @@
         return "";
       }
       var html = "";
-      html += '</fieldset>';
+      
       html += '<h2 class="sectionTitle" >Previews</h2>';
         skin.previews.forEach(element => {          
            html += getImage(element.url);
@@ -351,7 +354,8 @@
           });
 
           })
-          
+      html += '</fieldset>';
+      html += '<button is="emby-button" type="button" class="raised block" id="refresh-library" onclick=setSkin()><span>Set Skin</span></button>'
       html += loadPreviews(skin);
       html += '</div>';
       $('#options').html(html).trigger('create');
@@ -418,6 +422,26 @@
              
           }
           return result;
+        }
+
+        function checkEasterEggs(){
+          var d = new Date();
+
+
+          if((d.getDate()>=18 && d.getMonth()==11) || (d.getDate()>=10 && d.getMonth()==0)){
+            startChristmas();
+          }
+        }
+
+        function startChristmas(){
+
+          $.getScript("https://unpkg.com/magic-snowflakes/dist/snowflakes.min.js", function(){
+            var sf = new Snowflakes({
+              count: 200,
+              maxSize: 25
+          });
+        }); 
+        
         }
 
 
@@ -497,7 +521,7 @@
       
       .tooltip .tooltiptext {
         visibility: hidden;
-        width: auto;
+        width: 400px;
         background-color: transparent;
         color: #fff;
         text-align: center;
@@ -515,6 +539,6 @@
         visibility: visible;
       }
       </style>
-    </div>
+    </div>  
 </body>
 </html>
