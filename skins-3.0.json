@@ -309,7 +309,8 @@
                         "name": "Accent color",
                         "description": "Choose a custom accent color to use with the theme.",
                         "css": ".countIndicator {background: rgba($,0.8);}.playedIndicator, .innerCardFooter /*Accenting*/.button-flat:hover {background: rgba($,0.25);}.paper-icon-button-light:hover {  background-color: rgba($,0.25) !important;}.subtitleappearance-preview {  background: linear-gradient(140deg,rgba($),#111) !important;}.navMenuOption-selected, .selectionCommandsPanel {    background: rgba($, 0.8) !important;}.raised,.fab,a[data-role='button'] {  background: rgba($, 0.8) !important;transition: all 0.2s !important;} /*Glow accent*/ .raised.homeLibraryButton {box-shadow: 0px 0px 5px rgba($, 0) !important; border: solid 1px rgba($,0) !important;}.cardOverlayContainer:hover,.dialog,..raised.homeLibraryButton:hover {  box-shadow: 0px 0px 5px rgb($) !important;  border: solid 1px rgba($,0.6) !important;}.cardOverlayContainer {  border: solid 1px rgba($,0.0) !important;}"
-                    },
+			"default": "#303030"    
+		    },
                     {
                         "type": "colorPicker",
                         "mode": "hex",
@@ -341,7 +342,7 @@
                         "name": "Custom Background Color",
                         "description": "Change background color.",
                         "css": ".backgroundContainer, .dialog, html { background-color: $;}",
-                        "default": "#000000"
+                        "default": "rgba(0,0,0,.86)"
                     }
                 ]
             },
@@ -357,16 +358,12 @@
                         "default": "#ffffff"
                     },
                     {
-                        "type": "section",
-                        "name": "Buttons"
-                    },
-                    {
                         "type": "colorPicker",
                         "mode": "hex",
                         "name": "Interact Buttons Color",
                         "description": "This modifies the color of interact buttons.",
                         "css": ".paper-icon-button-light { color: $ !important; } .paper-icon-button-light:hover:not(:disabled) { color:$ !important; background-color: $ !important; } .paper-icon-button-light:focus:not(:disabled) { color:$ !important; background-color: $ !important; }",
-                        "default": "#00a4dc",
+                        "default": "#ffffff",
                         "preview": "https://github.com/LambadaCorez/custom_css_jellyfin/blob/master/ui/buttons/colored_interact_buttons/colored_buttons_example3.png?raw=true"
                     },
                     {
