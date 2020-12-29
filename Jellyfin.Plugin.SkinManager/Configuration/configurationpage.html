@@ -212,7 +212,7 @@
           return "";
         }
         html ="";
-        html += '<div class="tooltip">   🛈<span class="tooltiptext">'
+        html += '<div class="tooltip"><span class="material-icons">info</span><span class="tooltiptext">'
         html += '<img src="' + option.preview + '">';
         html += '</span></div>'
         return html;
@@ -382,48 +382,43 @@
                 Dashboard.processPluginConfigurationUpdateResult(res);});
             });
         }
-
         function getValue(option){
-          var result = "";
-          switch(option.type){
-           
-            case "checkBox":
-              document.getElementsByClassName("checkbox emby-checkbox").forEach(element =>{
-                if(option.css == element.getAttribute("data-css")){
-                  result =  element.checked?"true":"false";
-                  
-                }
-              })
-              
-            case "number":
-              document.getElementsByClassName("number emby-input").forEach(element =>{
-                  if(option.css == element.getAttribute("data-css")){
-                    result = element.value;
-                  }
-                })
-            case "colorPicker":
-              document.getElementsByClassName("color").forEach(element =>{
-                    if(option.css == element.getAttribute("data-css")){
-                      result = element.value;
-                    }
-                  })
-            case "slider":
-              document.getElementsByClassName("slider").forEach(element =>{
-                      if(option.css == element.getAttribute("data-css")){
-                        result = element.value;
-                      }
-                    })
-            case "selector":
-            document.getElementsByClassName("selector emby-select-withcolor emby-select").forEach(element =>{
-                      if(option.css == element.getAttribute("data-css")){
-                        result = element.selectedOptions[0].innerText;;
-                      }
-                    })
-             
-          }
-          return result;
-        }
+        var result = "";
+        switch(option.type){
+          case "checkBox":
+          Array.from(document.getElementsByClassName("checkbox emby-checkbox")).forEach(element =>{
+            if(option.css == element.getAttribute("data-css")){
+              result =  element.checked?"true":"false";
 
+            }
+          })
+          case "number":
+          Array.from(document.getElementsByClassName("number emby-input")).forEach(element =>{
+            if(option.css == element.getAttribute("data-css")){
+              result = element.value;
+            }
+          })
+          case "colorPicker":
+          Array.from(document.getElementsByClassName("color")).forEach(element =>{
+            if(option.css == element.getAttribute("data-css")){
+              result = element.value;
+            }
+          })
+          case "slider":
+          Array.from(document.getElementsByClassName("slider")).forEach(element =>{
+            if(option.css == element.getAttribute("data-css")){
+              result = element.value;
+            }
+          })
+          case "selector":
+          Array.from(document.getElementsByClassName("selector emby-select-withcolor emby-select")).forEach(element =>{
+            if(option.css == element.getAttribute("data-css")){
+              result = element.selectedOptions[0].innerText;;
+            }
+          })
+        }
+        return result;
+      }
         function checkEasterEggs(){
           var d = new Date();
 
@@ -441,14 +436,7 @@
               maxSize: 25
           });
         }); 
-        
         }
-
-
-        
-
-
-
         function setSkin() { 
           saveConfig()   
           ApiClient.getServerConfiguration().then(function (config) {
@@ -538,6 +526,12 @@
       .tooltip:hover .tooltiptext {
         visibility: visible;
       }
+        input#favcolor {
+    width: 100%;
+    height: 3em !important;
+    background: none;
+    border: none;
+}
       </style>
     </div>  
 </body>
