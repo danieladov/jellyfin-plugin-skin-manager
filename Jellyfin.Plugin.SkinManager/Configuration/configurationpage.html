@@ -161,6 +161,16 @@
       html += '<div class="selectContainer"><select is="emby-select"  data-css= "'+css + '"class="selector" label="'+name+'">' + getOptions(option,saved)+'</select></div>'
       return html;
     }
+    function getFontPreview(categories,option,selections,name){
+      var html = "";
+      if (name == "Fonts"){
+        html += '<div class="fontCont><p style="font-family: '+ categories.option.selections.value +';">Hello, This is your selected font-family.</p></div>"'
+        return html;
+      }
+      else {
+        return"";
+      }
+    }
     function getOptions(option,saved){
       var html = "";
       var selections = option.selections
