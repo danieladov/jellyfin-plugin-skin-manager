@@ -303,6 +303,9 @@
                         "css": "h1 {font-size: $em;}",
                         "default": "1.8"
                     },
+					{
+                        "type": "googleFonts",        
+                    },
                     {
                         "type": "colorPicker",
                         "mode": "rgba",
