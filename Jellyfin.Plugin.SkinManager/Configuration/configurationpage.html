@@ -36,13 +36,18 @@
     </div>
     <script type="text/javascript">
     var data;
+    var fonts;
     Dashboard.showLoadingMsg();
     $.getJSON('https://raw.githubusercontent.com/danieladov/jellyfin-plugin-skin-manager/master/skins-3.0.json', function(json) {
+      $.getJSON('https://www.googleapis.com/webfonts/v1/webfonts?sort=popularity&key=AIzaSyB_bPGsf0vxnpO9GmkBjeoEIQ7rE9rbNck', function(jsonFonts) {
+           fonts = jsonFonts          
+    });
       data=json;
       loadSkins();
       Dashboard.hideLoadingMsg();  
       checkEasterEggs();       
     });
+
     
     function loadSkins(){
       var cssOptions = document.getElementById("cssOptions");
@@ -63,7 +68,10 @@
       var html = "";
       html += '<div data-role="controlgroup">';
       skin.categories.forEach(categorie=>{
-        html += getSection(categorie.name);
+        if(categorie.options.length != 0){
+          html += getSection(categorie.name);
+        }
+        
         categorie.options.forEach(element=>{
           if(element.type == "checkBox"){
             html += getCheckBox(element);
@@ -75,8 +83,13 @@
             html += getSelector(element);
           }else if(element.type == "slider"){
             html += getSlider(element);
-          
+          }else if(element.type == "googleFonts"){
+            html += getFonts(fonts);
+
+            
           }
+          
+          
       });
 
       })
@@ -161,6 +174,18 @@
       html += '<div class="selectContainer"><select is="emby-select"  data-css= "'+css + '"class="selector" label="'+name+'">' + getOptions(option,saved)+'</select></div>'
       return html;
     }
+
+    function getFontPreview(categories,option,selections,name){
+      var html = "";
+      if (name == "Fonts"){
+        html += '<div class="fontCont><p style="font-family: '+ categories.option.selections.value +';">Hello, This is your selected font-family.</p></div>"'
+        return html;
+      }
+      else {
+        return"";
+      }
+    }
+
     function getOptions(option,saved){
       var html = "";
       var selections = option.selections
@@ -274,6 +299,35 @@
           return css;       
         }
 
+        function getFonts(json) { 
+          var fonts = undefined;
+          var html = "";
+          fonts=json; 
+            
+          var id = "selector" ;
+          var name = "Change Font"; 
+          var css = "html {font-family:  '$',sans-serif ;  } body,h1,h2,h3 { font-family: '$' ,sans-serif;}";
+          var description = "Change the default fonts";                           
+          //html += '<label for=number><input is="emby-input" type=number value=' + defaultValue + ' class = "number" data-css = "'+ css+ '" +  data-mini="true" id="' + id + '" name="' + id + '" data-name="' + name + '" ' + ' /><span>' + name  + '</span></label><br>';
+          html += '<div class="selectContainer"><select is="emby-select"  data-css= "'+css + '"class="selector" label="'+name+'">' + getFontOptions(fonts)+'</select></div>'
+          return html; 
+
+         
+        }
+
+        function getFontOptions(fonts){
+          var html = "";
+          var selections = fonts.items;
+          selections.forEach(element=>{
+            var name = element.family;
+            var value = element.family;
+            //var selected = saved==name?'selected="selected"' : "";  
+            var selected = ""              
+            html+= '<option value='+value+ selected+'>'+ name +'</option>'
+          })
+          return html;
+        }
+
 
         function updateSelectors(){
           var selected = document.getElementById("cssOptions");
@@ -328,7 +382,9 @@
           var html = "";
           html += '<div data-role="controlgroup">';
           skin.categories.forEach(categorie=>{
-            html+=getSection(categorie.name);
+          if(categorie.options.length != 0){
+            html += getSection(categorie.name);
+          }
             var options = categorie.options;
 
             options.forEach(element=>{
