@@ -309,11 +309,13 @@
           var css = "html {font-family:  '$',sans-serif ;  } body,h1,h2,h3 { font-family: '$' ,sans-serif;}";
           var description = "Change the default fonts";                           
           //html += '<label for=number><input is="emby-input" type=number value=' + defaultValue + ' class = "number" data-css = "'+ css+ '" +  data-mini="true" id="' + id + '" name="' + id + '" data-name="' + name + '" ' + ' /><span>' + name  + '</span></label><br>';
-          html += '<div class="selectContainer"><select is="emby-select"  data-css= "'+css + '"class="selector" label="'+name+'">' + getFontOptions(fonts)+'</select></div>'
+          html += '<div class="selectContainer" ><select is="emby-select" id = "googleFonts" data-css= "'+css + '"class="selector" label="'+name+' " onchange="updateFontPreview()">' + getFontOptions(fonts)+'</select></div>'
+          html += '<div class = "fontPreview"> This is a preview </div>';
           return html; 
 
          
         }
+        
 
         function getFontOptions(fonts){
           var html = "";
@@ -328,6 +330,24 @@
           return html;
         }
 
+        function updateFontPreview(){
+          var preview = document.getElementsByClassName("fontPreview")[0];
+          var selectedOption = document.getElementById("googleFonts").selectedOptions[0].innerText;
+          var url = "https://fonts.googleapis.com/css?family=" + selectedOption.replaceAll(" ", "+");
+          
+          fetch (url)
+          .then(function(response){
+            response.text().then(function(text){
+              var sheet = document.createElement('style');
+              sheet.innerHTML = text + ".fontPreview{font-family:'" + selectedOption+ "'}";
+              preview.appendChild(sheet);
+            })
+            
+          })
+         
+
+        }
+
 
         function updateSelectors(){
           var selected = document.getElementById("cssOptions");
@@ -336,6 +356,7 @@
             if(element.name == selected.selectedOptions[0].innerText){
               loadOptions(element);
               description.innerHTML=element.description;
+
               
               
             }    
