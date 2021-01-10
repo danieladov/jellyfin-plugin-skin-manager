@@ -754,8 +754,49 @@
         legend {
           font-size: 135%;
         }
-      </style>
-      <style>
+        .font-select {
+          width: 100%;
+        }
+        .font-select-active > span {
+          background-color: #292929;
+          border-bottom-left-radius: 0;
+          border-bottom-right-radius: 0;
+        }
+        .font-select .fs-search input {
+          background: #292929;
+          border-bottom: 1px solid #292929;
+        }
+        .fs-drop {
+          color: white !important;
+        }
+        .font-select .fs-drop {
+          position: absolute;
+          top: 38px;
+          left: 0;
+          z-index: 999;
+          background: #292929;
+          color: #000;
+          width: 100%;
+          border: 1px solid #292929;
+          border-top: 0;
+          box-shadow: 0 4px 5px rgba(0, 0, 0, 0.15);
+          border-radius: 0 0 4px 4px;
+        }
+        .font-select > span {
+          outline: 0;
+          border-radius: 0.25rem;
+          border: .07em solid #292929;
+          display: block;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          height: 38px;
+          line-height: 32px;
+          padding: 3px 8px 3px 8px;
+          color: inherit;
+          user-select: none;
+          background: #292929;
+        }
         .tooltip {
           position: relative;
           display: inline-block;
