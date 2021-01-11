@@ -101,7 +101,7 @@
               } else if (element.type == "slider") {
                 html += getSlider(element);
               } else if (element.type == "googleFonts") {
-                html += getFonts(fonts);
+                html += getFonts();
               }
             });
           });
@@ -244,6 +244,26 @@
             "</select></div>";
           return html;
         }
+        var savedGoogleFont;
+
+        function getFonts(saved) {
+          var html = "";
+         
+          var name = "Change Font";
+          var css =
+            "html {font-family:  '$',sans-serif ;  } body,h1,h2,h3 { font-family: '$' ,sans-serif;}";
+          var description = "Change the default fonts";
+          //html += '<label for=number><input is="emby-input" type=number value=' + defaultValue + ' class = "number" data-css = "'+ css+ '" +  data-mini="true" id="' + id + '" name="' + id + '" data-name="' + name + '" ' + ' /><span>' + name  + '</span></label><br>';
+          //html += '<div class="selectContainer" ><select is="emby-select" id = "googleFonts" data-css= "'+css + '"class="selector" label="'+name+' " onchange="updateFontPreview()">' + getFontOptions(fonts)+'</select></div>'
+          //html += '<div class = "fontPreview"> This is a preview </div>';
+          //html += '<div id="font-picker"></div><div class = "apply-font"> This is a preview </div>'
+          html += '	<div class="selectContainer"><label>Change Font </label><br> <input id="font-picker" type="text"> </div>';
+          if(saved != undefined){
+            savedGoogleFont = saved;
+          }         
+          hasGoogleFont = true;
+          return html;
+        }
 
         function getFontPreview(categories, option, selections, name) {
           var html = "";
@@ -341,7 +361,7 @@
           return html;
         }
 
-        function createCss() {
+         async function  createCss() {
           var savedHtml = "";
           //process checkbox
           var css = $("#cssOptions").val();
@@ -402,26 +422,33 @@
               element.getAttribute("data-css").replaceAll("$", element.value) +
               "\n";
           }
+         
+
+          //procces google Fonts
+         
+          if(document.getElementById("font-picker") != undefined){
+            var font = document.getElementById("font-picker").value
+            var url = "https://fonts.googleapis.com/css?family=" + font;
+            var promise  = await fetch(url);
+             css += await promise.text();
+             css += "html {font-family:  '$',sans-serif ;  } body,h1,h2,h3 { font-family: '$' ,sans-serif;}".replaceAll("$",font.replaceAll("+"," "));
+
+            return css;
+          //  fetch(url).then(function (response) {
+          //   response.text().then(function (text) {
+          //     css += text;
+          //     return css;
+          //   });
+          // });
+          
+        }else{
           return css;
         }
+          
 
-        function getFonts(json) {
-          var fonts = undefined;
-          var html = "";
-          fonts = json;
-          var id = "selector";
-          var name = "Change Font";
-          var css =
-            "html {font-family:  '$',sans-serif ;  } body,h1,h2,h3 { font-family: '$' ,sans-serif;}";
-          var description = "Change the default fonts";
-          //html += '<label for=number><input is="emby-input" type=number value=' + defaultValue + ' class = "number" data-css = "'+ css+ '" +  data-mini="true" id="' + id + '" name="' + id + '" data-name="' + name + '" ' + ' /><span>' + name  + '</span></label><br>';
-          //html += '<div class="selectContainer" ><select is="emby-select" id = "googleFonts" data-css= "'+css + '"class="selector" label="'+name+' " onchange="updateFontPreview()">' + getFontOptions(fonts)+'</select></div>'
-          //html += '<div class = "fontPreview"> This is a preview </div>';
-          //html += '<div id="font-picker"></div><div class = "apply-font"> This is a preview </div>'
-          html += '	<input id="font-picker" type="text">';
-          hasGoogleFont = true;
-          return html;
         }
+
+        
 
         function generateFontPicker() {
           if (hasGoogleFont) {
@@ -440,8 +467,14 @@
                 "|"
               ),
             });
+
+            if(savedGoogleFont != undefined){
+              $('#font-picker').trigger('setFont',[savedGoogleFont,900])
+            } 
             });
-            $("#font-picker").trigger("setFont", ["Orbitron", 900]);
+            
+
+                    
           }
         }
 
@@ -577,6 +610,8 @@
                 html += getSelector(element, savedValue);
               } else if (element.type == "slider") {
                 html += getSlider(element, savedValue);
+              } else if (element.type == "googleFonts") {
+                html += getFonts(savedValue);
               }
             });
           });
@@ -586,6 +621,8 @@
           html += loadPreviews(skin);
           html += "</div>";
           $("#options").html(html).trigger("create");
+          generateFontPicker();
+
         }
 
         function saveConfig() {
@@ -624,7 +661,9 @@
                 if (option.css == element.getAttribute("data-css")) {
                   result = element.checked ? "true" : "false";
                 }
+                
               });
+              break;
             case "number":
               Array.from(
                 document.getElementsByClassName("number emby-input")
@@ -632,7 +671,9 @@
                 if (option.css == element.getAttribute("data-css")) {
                   result = element.value;
                 }
+                
               });
+              break;
             case "colorPicker":
               Array.from(document.getElementsByClassName("color")).forEach(
                 (element) => {
@@ -641,6 +682,7 @@
                   }
                 }
               );
+              break;
             case "slider":
               Array.from(document.getElementsByClassName("slider")).forEach(
                 (element) => {
@@ -649,6 +691,7 @@
                   }
                 }
               );
+              break;
             case "selector":
               Array.from(
                 document.getElementsByClassName(
@@ -658,7 +701,13 @@
                 if (option.css == element.getAttribute("data-css")) {
                   result = element.selectedOptions[0].innerText;
                 }
+              
+            
               });
+              break;
+            case "googleFonts":
+                result += document.getElementById("font-picker").value.replaceAll("+"," ");
+                break;
           }
           return result;
         }
@@ -684,14 +733,14 @@
             }
           );
         }
-        function setSkin() {
+        async function setSkin() {
           saveConfig();
           ApiClient.getServerConfiguration().then(function (config) {
             ApiClient.updateServerConfiguration(config).then(function () {
-              ApiClient.getNamedConfiguration("branding").then(function (
+              ApiClient.getNamedConfiguration("branding").then(async function (
                 brandingConfig
               ) {
-                brandingConfig.CustomCss = createCss();
+                brandingConfig.CustomCss = await createCss();
                 ApiClient.updateNamedConfiguration(
                   "branding",
                   brandingConfig
