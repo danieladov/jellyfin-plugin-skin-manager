@@ -318,7 +318,7 @@
                           "css": "/*Dynamic Poster effect-option2*/.itemsContainer>.card>.cardBox {margin: 1em;background: rgba(0,0,0,0.5);transition: transform .2s, box-shadow .2s;}.cardBox:hover {transform: translatey(-5px);box-shadow: 0px 5px 10px black;}"
                         }
                       ]
-                    }
+                    },
                     {
                         "type": "colorPicker",
                         "mode": "hex",
