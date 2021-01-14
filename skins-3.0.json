@@ -269,7 +269,7 @@
           {
             "type": "colorPicker",
             "mode": "hex",
-            "name": "Console Panel Color",
+            "name": "SideBar Text Color",
             "description": "Modifies the color of the left menu panel.",
             "css": ".mainDrawer-scrollContainer { color: $; }",
             "default": "#ffffff"
