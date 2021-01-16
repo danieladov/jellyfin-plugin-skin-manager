@@ -1,391 +1,369 @@
 [
-    {
+  {
+    "name": "Default",
+    "author": "Jellyfin",
+    "description": "Default, stock, Jellyfin.",
+    "defaultCss": "",
+    "previews": [
+      {
+        "name": "Login Page",
+        "url": ""
+      },
+      {
+        "name": "Home/Index Page",
+        "url": ""
+      },
+      {
+        "name": "Library Page",
+        "url": ""
+      },
+      {
+        "name": "Title page",
+        "url": ""
+      }
+    ],
+    "categories": [
+      {
         "name": "Default",
-        "author": "Jellyfin",
-        "description": "Default, stock, Jellyfin.",
-        "defaultCss": "",
-        "previews": [
-            {
-                "name": "Login Page",
-                "url": ""
-            },
-            {
-                "name": "Home/Index Page",
-                "url": ""
-            },
-            {
-                "name": "Library Page",
-                "url": ""
-            },
-            {
-                "name": "Title page",
-                "url": ""
-            }
-        ],
-        "categories": [
-            {
+        "options": []
+      }
+    ]
+  },
+  {
+    "name": "JellyFlix",
+    "author": "prayagprajapati17",
+    "description": "A theme that aims to replicate the red and black look of Netflix. Theme is by prayag17.",
+    "defaultCss": "@import url(https://prayag17.github.io/JellyFlix/default.css);",
+    "previews": [
+      {
+        "name": "Login Page",
+        "url": "https://github.com/prayag17/JellyFlix/raw/main/Public%20Ver%201/LoginMan.png?raw=true"
+      },
+      {
+        "name": "Home/Index Page",
+        "url": "https://github.com/prayag17/JellyFlix/raw/main/Public%20Ver%201/Home.png?raw=true"
+      },
+      {
+        "name": "Library Page",
+        "url": "https://github.com/prayag17/JellyFlix/raw/main/Public%20Ver%201/LibPage.png?raw=true"
+      },
+      {
+        "name": "Title page",
+        "url": "https://github.com/prayag17/JellyFlix/raw/main/Public%20Ver%201/TV-TitlePage.png?raw=true"
+      }
+    ],
+    "categories": [
+      {
+        "name": "Default",
+        "options": []
+      }
+    ]
+  },
+  {
+    "name": "Monochromic",
+    "author": "EdgeMentality",
+    "description": "This theme aims to be minimalistic and somewhat muted in color. Add-ons and custom accent colors are possible, but not entirely supported by this plug-in. Visit the github of the theme for more information.",
+    "defaultCss": "@import url('https://ctalvio.github.io/Monochromic/default_style.css');",
+    "previews": [
+      {
+        "name": "Login Page",
+        "url": "https://github.com/danieladov/jellyfin-plugin-skin-manager/blob/master/src/img/Monochromic/login.jpg?raw=true"
+      },
+      {
+        "name": "Home/Index Page",
+        "url": "https://github.com/CTalvio/Monochromic/blob/master/screenshots/1.png?raw=true"
+      },
+      {
+        "name": "Library Page",
+        "url": "https://raw.githubusercontent.com/danieladov/jellyfin-plugin-skin-manager/master/src/img/Monochromic/Lib.jpg"
+      },
+      {
+        "name": "Title page",
+        "url": "https://github.com/CTalvio/Monochromic/raw/master/screenshots/2.png"
+      }
+    ],
+    "categories": [
+      {
+        "name": "Default",
+        "options": [
+          {
+            "type": "checkBox",
+            "name": "Improve performance",
+            "description": "The theme uses mask-image to fade out items below the top bar as you scroll. This works well on most reasonable hardware but struggles on some phones and especially smart TVs. This switches to a method without using mask-image, but foregoes the fade-out effect. I may switch to this method being the default.",
+            "css": "@import url('https://ctalvio.github.io/Monochromic/improve-performance_style.css');"
+          },
+          {
+            "type": "checkBox",
+            "name": "No rounded corners",
+            "description": "In fact, squares off every rounded corner JF ever had.",
+            "css": "@import url('https://ctalvio.github.io/Monochromic/sharp_style.css'); "
+          },
+          {
+            "type": "checkBox",
+            "name": "Restore bottom bar style episode progress",
+            "description": "Don't like my transparent view progress overlay? Use this to go back to the old style.",
+            "css": "@import url('https://ctalvio.github.io/Monochromic/bottom-progress_style.css');"
+          },
+          {
+            "type": "number",
+            "name": "Modify rounding",
+            "description": "Amount of rounding. Zero is none.",
+            "css": ":root {--rounding: $px;}",
+            "default": "5"
+          },
+          {
+            "type": "colorPicker",
+            "name": "Accent color",
+            "description": "Choose a custom accent color to use with the theme.",
+            "css": "@import url('https://ctalvio.github.io/Monochromic/customcolor_style.css');:root {--accent: $;}",
+            "default": ""
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Kaleidochromic",
+    "author": "EdgeMentality",
+    "description": "This theme aims to be more colorful and minimalistic. Add-ons and custom accent colors are possible, but not entirely supported by this plug-in. Visit the github of the theme for more information.",
+    "defaultCss": "@import url('https://ctalvio.github.io/Kaleidochromic/default_style.css');",
+    "previews": [
+      {
+        "name": "Login Page",
+        "url": "https://github.com/danieladov/jellyfin-plugin-skin-manager/blob/master/src/img/Kaleidochromic/Login.jpg?raw=true"
+      },
+      {
+        "name": "Home/Index Page",
+        "url": "https://github.com/CTalvio/Kaleidochromic/raw/main/screenshots/6.png"
+      },
+      {
+        "name": "Library Page",
+        "url": "https://github.com/CTalvio/Kaleidochromic/raw/main/screenshots/5.png"
+      },
+      {
+        "name": "Title page",
+        "url": "https://github.com/CTalvio/Kaleidochromic/raw/main/screenshots/1.png"
+      }
+    ],
+    "categories": [
+      {
+        "name": "Default",
+        "options": [
+          {
+            "type": "checkBox",
+            "name": "Improve performance",
+            "description": "The theme uses mask-image to fade out items below the top bar as you scroll. This works well on most reasonable hardware but struggles on some phones and especially smart TVs. This switches to a method without using mask-image, but foregoes the fade-out effect.",
+            "css": "@import url('https://ctalvio.github.io/Monochromic/improve-performance_style.css');"
+          },
+          {
+            "type": "checkBox",
+            "name": "Restore bottom bar style episode progress",
+            "description": "Don't like my transparent view progress overlay? Use this to go back to the old style.",
+            "css": "@import url('https://ctalvio.github.io/Monochromic/bottom-progress_style.css');"
+          },
+          {
+            "type": "number",
+            "name": "Modify rounding",
+            "description": "Amount of rounding. Zero is none.",
+            "css": ":root {--rounding: $px;}",
+            "default": "12"
+          },
+          {
+            "type": "colorPicker",
+            "name": "Accent color",
+            "description": "Choose a custom accent color to use with the theme.",
+            "css": ":root {--accent: $;}",
+            "default": "#6279cd"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "JellySkin",
+    "author": "prayagprajapati17",
+    "description": "A very bright and colorful look using lots of drop shadows. Theme is by prayag17.",
+    "defaultCss": "@import url('https://prayag17.github.io/JellySkin/default.css');",
+    "previews": [
+      {
+        "name": "Login Page",
+        "url": "https://github.com/prayag17/JellySkin/raw/master/Version%204/Login.png?raw=true"
+      },
+      {
+        "name": "Home/Index Page",
+        "url": "https://github.com/prayag17/JellySkin/raw/master/Version%204/Home.png?raw=true"
+      },
+      {
+        "name": "Library Page",
+        "url": "https://github.com/prayag17/JellySkin/raw/master/Version%204/lib%202.png?raw=true"
+      },
+      {
+        "name": "Title page",
+        "url": "https://github.com/prayag17/JellySkin/raw/master/Version%204/title%201.png?raw=true"
+      }
+    ],
+    "categories": [
+      {
+        "name": "Default",
+        "options": [
+          {
+            "type": "selector",
+            "name": "Gradient",
+            "description": "Changes the Jellyfin themed Hover gradient",
+            "css": "@import url('https://prayag17.github.io/JellySkin/$.css');",
+            "selections": [
+              {
                 "name": "Default",
-                "options": []
-            }
+                "value": ""
+              },
+              {
+                "name": "Sea Gradient",
+                "value": "seaGradient"
+              },
+              {
+                "name": "Sunset Gradient",
+                "value": "sunsetGradient"
+              },
+              {
+                "name": "Night Sky Gradient",
+                "value": "nightSkyGradient"
+              },
+              {
+                "name": "Morning Gradient",
+                "value": "morningGradient"
+              }
+            ]
+          }
         ]
-    },
-    {
-        "name": "JellyFlix",
-        "author": "prayagprajapati17",
-        "description": "A theme that aims to replicate the red and black look of Netflix. Theme is by prayag17.",
-        "defaultCss": "@import url(https://prayag17.github.io/JellyFlix/default.css);",
-        "previews": [
-            {
-                "name": "Login Page",
-                "url": "https://github.com/prayag17/JellyFlix/raw/main/Public%20Ver%201/LoginMan.png?raw=true"
-            },
-            {
-                "name": "Home/Index Page",
-                "url": "https://github.com/prayag17/JellyFlix/raw/main/Public%20Ver%201/Home.png?raw=true"
-            },
-            {
-                "name": "Library Page",
-                "url": "https://github.com/prayag17/JellyFlix/raw/main/Public%20Ver%201/LibPage.png?raw=true"
-            },
-            {
-                "name": "Title page",
-                "url": "https://github.com/prayag17/JellyFlix/raw/main/Public%20Ver%201/TV-TitlePage.png?raw=true"
-            }
-        ],
-        "categories": [
-            {
-                "name": "Default",
-                "options": []
-            }
+      }
+    ]
+  },
+  {
+    "name": "Custom",
+    "author": "you",
+    "description": "customize the look of jellyfin by your needs",
+    "defaultCss": "/*Custom*/",
+    "categories": [
+      {
+        "name": "Fonts",
+        "options": [
+          {
+            "type": "googleFonts"
+          },
+          {
+            "type": "number",
+            "name": "Title Font Size",
+            "description": "Change the size of the font used at titles.",
+            "step": "0.1",
+            "css": "h1 {font-size: $em;}",
+            "default": "1.8"
+          },
+          {
+            "type": "colorPicker",
+            "mode": "rgba",
+            "name": "Accent color",
+            "description": "Choose a custom accent color to use with the theme.",
+            "css": ".countIndicator {background: rgba($,0.8);}.playedIndicator, .innerCardFooter /*Accenting*/.button-flat:hover {background: rgba($,0.25);}.paper-icon-button-light:hover {  background-color: rgba($,0.25) !important;}.subtitleappearance-preview {  background: linear-gradient(140deg,rgba($),#111) !important;}.navMenuOption-selected, .selectionCommandsPanel {    background: rgba($, 0.8) !important;}.raised,.fab,a[data-role='button'] {  background: rgba($, 0.8) !important;transition: all 0.2s !important;} /*Glow accent*/ .raised.homeLibraryButton {box-shadow: 0px 0px 5px rgba($, 0) !important; border: solid 1px rgba($,0) !important;}.cardOverlayContainer:hover,.dialog,..raised.homeLibraryButton:hover {  box-shadow: 0px 0px 5px rgb($) !important;  border: solid 1px rgba($,0.6) !important;}.cardOverlayContainer {  border: solid 1px rgba($,0.0) !important;}",
+            "default": "#303030"
+          },
+          {
+            "type": "colorPicker",
+            "mode": "hex",
+            "name": "SideBar Text Color",
+            "description": "Modifies the color of the left menu panel.",
+            "css": ".mainDrawer-scrollContainer { color: $; }",
+            "default": "#ffffff"
+          }
         ]
-    },
-    {
-        "name": "Monochromic",
-        "author": "EdgeMentality",
-        "description": "This theme aims to be minimalistic and somewhat muted in color. Add-ons and custom accent colors are possible, but not entirely supported by this plug-in. Visit the github of the theme for more information.",
-        "defaultCss": "@import url('https://ctalvio.github.io/Monochromic/default_style.css');",
-        "previews": [
-            {
-                "name": "Login Page",
-                "url": "https://github.com/danieladov/jellyfin-plugin-skin-manager/blob/master/src/img/Monochromic/login.jpg?raw=true"
-            },
-            {
-                "name": "Home/Index Page",
-                "url": "https://github.com/CTalvio/Monochromic/blob/master/screenshots/1.png?raw=true"
-            },
-            {
-                "name": "Library Page",
-                "url": "https://raw.githubusercontent.com/danieladov/jellyfin-plugin-skin-manager/master/src/img/Monochromic/Lib.jpg"
-            },
-            {
-                "name": "Title page",
-                "url": "https://github.com/CTalvio/Monochromic/raw/master/screenshots/2.png"
-            }
-        ],
-        "categories": [
-            {
-                "name": "Default",
-                "options": [
-                    {
-                        "type": "checkBox",
-                        "name": "Improve performance",
-                        "description": "The theme uses mask-image to fade out items below the top bar as you scroll. This works well on most reasonable hardware but struggles on some phones and especially smart TVs. This switches to a method without using mask-image, but foregoes the fade-out effect. I may switch to this method being the default.",
-                        "css": "@import url('https://ctalvio.github.io/Monochromic/improve-performance_style.css');"
-                    },
-                    {
-                        "type": "checkBox",
-                        "name": "No rounded corners",
-                        "description": "In fact, squares off every rounded corner JF ever had.",
-                        "css": "@import url('https://ctalvio.github.io/Monochromic/sharp_style.css'); "
-                    },
-                    {
-                        "type": "checkBox",
-                        "name": "Restore bottom bar style episode progress",
-                        "description": "Don't like my transparent view progress overlay? Use this to go back to the old style.",
-                        "css": "@import url('https://ctalvio.github.io/Monochromic/bottom-progress_style.css');"
-                    },
-                    {
-                        "type": "number",
-                        "name": "Modify rounding",
-                        "description": "Amount of rounding. Zero is none.",
-                        "css": ":root {--rounding: $px;}",
-                        "default": "5"
-                    },
-                    {
-                        "type": "colorPicker",
-                        "name": "Accent color",
-                        "description": "Choose a custom accent color to use with the theme.",
-                        "css": "@import url('https://ctalvio.github.io/Monochromic/customcolor_style.css');:root {--accent: $;}",
-                        "default": ""
-                    }
-                ]
-            }
+      },
+      {
+        "name": "Home/Dashboard Page",
+        "options": [
+          {
+            "type": "checkBox",
+            "name": "Enlarge Tab Buttons",
+            "description": "Enlarges the tab buttons, suggested, genres, etc. By default they are really tiny, especially on mobile.",
+            "css": ".headerTabs.sectionTabs {text-size-adjust: 110%;  font-size: 110%;}.pageTitle {margin-top: auto; margin-bottom: auto;}.emby-tab-button {padding: 1.75em 1.7em;}"
+          },
+          {
+            "type": "checkBox",
+            "name": "Stylized Episode Previews",
+            "description": "The episode previews in season view are sized based on horizontal resolution. This leads to a lot of wasted space on the episode summary and a high vertical page, which requires a lot of scrolling. This code reduces the height of episode entries, which solves both problems.",
+            "css": "/* Size episode preview images in a more compact way */.listItemImage.listItemImage-large.itemAction.lazy {height: 110px;}.listItem-content {height: 115px;}.secondary.listItem-overview.listItemBodyText {height: 61px; margin: 0;}"
+          },
+          {
+            "type": "colorPicker",
+            "mode": "hex",
+            "name": "Custom Background Color",
+            "description": "Change background color.",
+            "css": ".backgroundContainer, .dialog, html { background-color: $;}",
+            "default": "rgba(0,0,0,.86)"
+          }
         ]
-    },
-    {
-        "name": "Kaleidochromic",
-        "author": "EdgeMentality",
-        "description": "This theme aims to be more colorful and minimalistic. Add-ons and custom accent colors are possible, but not entirely supported by this plug-in. Visit the github of the theme for more information.",
-        "defaultCss": "@import url('https://ctalvio.github.io/Kaleidochromic/default_style.css');",
-        "previews": [
-            {
-                "name": "Login Page",
-                "url": "https://github.com/danieladov/jellyfin-plugin-skin-manager/blob/master/src/img/Kaleidochromic/Login.jpg?raw=true"
-            },
-            {
-                "name": "Home/Index Page",
-                "url": "https://github.com/CTalvio/Kaleidochromic/raw/main/screenshots/6.png"
-            },
-            {
-                "name": "Library Page",
-                "url": "https://github.com/CTalvio/Kaleidochromic/raw/main/screenshots/5.png"
-            },
-            {
-                "name": "Title page",
-                "url": "https://github.com/CTalvio/Kaleidochromic/raw/main/screenshots/1.png"
-            }
-        ],
-        "categories": [
-            {
-                "name": "Default",
-                "options": [
-                    {
-                        "type": "checkBox",
-                        "name": "Improve performance",
-                        "description": "The theme uses mask-image to fade out items below the top bar as you scroll. This works well on most reasonable hardware but struggles on some phones and especially smart TVs. This switches to a method without using mask-image, but foregoes the fade-out effect.",
-                        "css": "@import url('https://ctalvio.github.io/Monochromic/improve-performance_style.css');"
-                    },
-                    {
-                        "type": "checkBox",
-                        "name": "Restore bottom bar style episode progress",
-                        "description": "Don't like my transparent view progress overlay? Use this to go back to the old style.",
-                        "css": "@import url('https://ctalvio.github.io/Monochromic/bottom-progress_style.css');"
-                    },
-                    {
-                        "type": "number",
-                        "name": "Modify rounding",
-                        "description": "Amount of rounding. Zero is none.",
-                        "css": ":root {--rounding: $px;}",
-                        "default": "12"
-                    },
-                    {
-                        "type": "colorPicker",
-                        "name": "Accent color",
-                        "description": "Choose a custom accent color to use with the theme.",
-                        "css": ":root {--accent: $;}",
-                        "default": "#6279cd"
-                    }
-                ]
-            }
+      },
+      {
+        "name": "Miscellaneous",
+        "options": [
+          {
+            "type": "selector",
+            "name": "Poster card hover effect",
+            "description": "Changes the hover effect on Movie/TV show/Music poster card.",
+            "selections": [
+              {
+                "name": "Scale in and out",
+                "css": "/*Dynamic Poster effect-option1*/.cardBox-bottompadded{margin-bottom; 1em !important;}.itemsContainer>.card>.cardBox {margin: 1em;background: rgba(0,0,0,0.5);transition: transform .2s;}.cardBox:hover {transform: scale(1.1);}"
+              },
+              {
+                "name": "Pop up and down",
+                "css": "/*Dynamic Poster effect-option2*/.itemsContainer>.card>.cardBox {margin: 1em;background: rgba(0,0,0,0.5);transition: transform .2s, box-shadow .2s;}.cardBox:hover {transform: translatey(-5px);box-shadow: 0px 5px 10px black;}"
+              },
+              {
+                "name": "Poster Image in and out",
+                "css": "/*Dynamic Poster effect-option3*/button.cardImageContainer:hover {filter: brightness(30%);transform: scale(1.1);}button.cardImageContainer {z-index: 1;transition: filter .2s, transform .25s;}.cardScalable {overflow: hidden;}"
+              },
+              {
+                "name": "Poster Image blur",
+                "css": "/*Dynamic Poster effect-option4*/button.cardImageContainer:hover {filter: brightness(30%) blur(2px);}button.cardImageContainer {z-index: 1;transition: filter .2s;}"
+              },
+              {
+                "name": "Poster Image in and out",
+                "css": "/*Dynamic Poster effect-option4*/button.cardImageContainer:hover {filter: brightness(30%) blur(2px);transform: scale(1.1);}button.cardImageContainer {z-index: 1;transition: filter .2s, transform .25s;}.cardScalable {overflow: hidden;}"
+              }
+            ]
+          },
+          {
+            "type": "colorPicker",
+            "mode": "hex",
+            "name": "Right Header Color",
+            "description": "This modifies the colors of the cast, search and user buttons in the top right.",
+            "css": ".headerRight { color: $; }",
+            "default": "#ffffff"
+          },
+          {
+            "type": "colorPicker",
+            "mode": "hex",
+            "name": "Interact Buttons Color",
+            "description": "This modifies the color of interact buttons.",
+            "css": ".paper-icon-button-light { color: $ !important; } .paper-icon-button-light:hover:not(:disabled) { color:$ !important; background-color: $ !important; } .paper-icon-button-light:focus:not(:disabled) { color:$ !important; background-color: $ !important; }",
+            "default": "#ffffff",
+            "preview": "https://github.com/LambadaCorez/custom_css_jellyfin/blob/master/ui/buttons/colored_interact_buttons/colored_buttons_example3.png?raw=true"
+          },
+          {
+            "type": "number",
+            "name": "Border Radius",
+            "description": "Change the rounding",
+            "css": ":root {--rounding: $px;}.formDialogHeader {border-top-left-radius: var(--rounding);border-top-right-radius: var(--rounding);}.formDialogFooter {border-bottom-left-radius: var(--rounding);border-bottom-right-radius: var(--rounding);}.cardOverlayContainer {border-radius: var(--rounding) !important;}.toast,.paperList,.cardContent,.sessionNowPlayingInnerContent, .listItem:hover, .cardImage,.fab,.multiSelectCheckboxOutline,.itemSelectionPanel,.cardContent-button, .cardContent-shadow, .itemDetailImage, .cardOverlayButton-hover,.cardImageContainer,.cardPadder,.listItemImage,.listItemImageButton,.listItemButton,.headerButton,.paper-icon-button-light,.innerCardFooter,.blurhash-canvas,.actionSheetMenuItem:hover,.dialog,.listItemIcon,.listItem-border,.button-flat,.visualCardBox,.checkboxOutline,.emby-select-withcolor,.chapterThumbTextContainer,.chapterThumbContainer,.chapterThumb,.emby-input, .emby-textarea, .emby-select-withcolor,.cardOverlayButtonIcon,.subtitleappearance-preview.flex.align-items-center.justify-content-center {border-radius: var(--rounding) !important;}.osdPoster img {border-radius: var(--rounding); border: none;}.mdl-slider::-moz-range-thumb {border-radius: var(--rounding);}.mdl-slider::-ms-thumb {border-radius: var(--rounding);}.mdl-slider::-webkit-slider-thumb {border-radius: var(--rounding);}div[data-role='controlgroup'] a[data-role='button']:first-child {border-bottom-left-radius: var(--rounding);border-top-left-radius: var(--rounding);}div[data-role='controlgroup'] a[data-role='button']:last-child {border-bottom-right-radius: var(--rounding);border-top-right-radius: var(--rounding);}",
+            "default": "0"
+          },
+          {
+            "type": "number",
+            "name": "Backdrop Blur",
+            "description": "adds blur to the backdrop images default is zero",
+            "css": ":root{--bgblur: blur($px)}.backdropImage {filter: var(--bgblur);}.backgroundContainer.withBackdrop {background-color: rgba(0,0,0,0);}",
+            "default": "0"
+          }
         ]
-    },
-    {
-        "name": "JellySkin",
-        "author": "prayagprajapati17",
-        "description": "A very bright and colorful look using lots of drop shadows. Theme is by prayag17.",
-        "defaultCss": "@import url('https://prayag17.github.io/JellySkin/default.css');",
-        "previews": [
-            {
-                "name": "Login Page",
-                "url": "https://github.com/prayag17/JellySkin/raw/master/Version%204/Login.png?raw=true"
-            },
-            {
-                "name": "Home/Index Page",
-                "url": "https://github.com/prayag17/JellySkin/raw/master/Version%204/Home.png?raw=true"
-            },
-            {
-                "name": "Library Page",
-                "url": "https://github.com/prayag17/JellySkin/raw/master/Version%204/lib%202.png?raw=true"
-            },
-            {
-                "name": "Title page",
-                "url": "https://github.com/prayag17/JellySkin/raw/master/Version%204/title%201.png?raw=true"
-            }
-        ],
-        "categories": [
-            {
-                "name": "Default",
-                "options": [
-                    {
-                        "type": "selector",
-                        "name": "Gradient",
-                        "description": "Changes the Jellyfin themed Hover gradient",
-                        "css": "@import url('https://prayag17.github.io/JellySkin/$.css');",
-                        "selections": [
-                            {
-                                "name": "Sea Gradient",
-								"value": "seaGradient"
-                            },
-                            {
-                                "name": "Sunset Gradient",
-								"value": "sunsetGradient"
-                            },
-                            {
-                                "name": "Night Sky Gradient",
-								"value": "nightSkyGradient"
-                            },
-                            {
-                                "name": "Morning Gradient",
-								"value": "morningGradient"
-                            }
-                        ]
-                    }
-                ]
-            }
-        ]
-    },
-    {
-        "name": "Custom",
-        "author": "you",
-        "description": "customize the look of jellyfin by your needs",
-        "defaultCss": "/*Custom*/",
-        "categories": [
-            {
-                "name": "Fonts",
-                "options": [
-                    {
-                        "type": "selector",
-                        "name": "Change Font",
-                        "description": "Change the default fonts",
-                        "css": "html {font-family: $,sans-serif ;  } body,h1,h2,h3 { font-family:$ ,sans-serif;} @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,800;1,900&display=swap');",
-                        "selections": [
-						  {
-							"name": "Noto Sans",
-							"value": "Noto Sans"
-						  },
-						  {
-							"name": "Times New Roman",
-							"value": "Times New Roman"
-						  },
-						  {
-							"name": "Arial",
-							"value": "Arial"
-						  },
-						  {
-							"name": "Helvetica",
-							"value": "Helvetica"
-						  },
-						  {
-							"name": "Times",
-							"value": "Times"
-						  },
-						  {
-							"name": "Courier New",
-							"value": "Courier New"
-						  },
-						  {
-							"name": "Verdana",
-							"value":  "Verdana"
-						  },
-						  {
-							"name": "Courier",
-							"value":"Courier"
-						  },
-						  {
-							"name": "Arial Narrow",
-							"value": "Arial Narrow"
-						  },
-						  {
-							"name": "Candara",
-							"value":"Candara"
-						  },
-						  {
-							"name": "Poppins",
-							"value":"Poppins"
-						  }
-                        ]
-                    },
-                    {
-                        "type": "number",
-                        "name": "Title Font Size",
-                        "description": "Change the size of the font used at titles.",
-                        "step": "0.1",
-                        "css": "h1 {font-size: $em;}",
-                        "default": "1.8"
-                    },
-					{
-                        "type": "googleFonts",
-						"css" : "/*googleFonts*/"
-                    },
-                    {
-                        "type": "colorPicker",
-                        "mode": "rgba",
-                        "name": "Accent color",
-                        "description": "Choose a custom accent color to use with the theme.",
-                        "css": ".countIndicator {background: rgba($,0.8);}.playedIndicator, .innerCardFooter /*Accenting*/.button-flat:hover {background: rgba($,0.25);}.paper-icon-button-light:hover {  background-color: rgba($,0.25) !important;}.subtitleappearance-preview {  background: linear-gradient(140deg,rgba($),#111) !important;}.navMenuOption-selected, .selectionCommandsPanel {    background: rgba($, 0.8) !important;}.raised,.fab,a[data-role='button'] {  background: rgba($, 0.8) !important;transition: all 0.2s !important;} /*Glow accent*/ .raised.homeLibraryButton {box-shadow: 0px 0px 5px rgba($, 0) !important; border: solid 1px rgba($,0) !important;}.cardOverlayContainer:hover,.dialog,..raised.homeLibraryButton:hover {  box-shadow: 0px 0px 5px rgb($) !important;  border: solid 1px rgba($,0.6) !important;}.cardOverlayContainer {  border: solid 1px rgba($,0.0) !important;}",
-			"default": "#303030"    
-		    },
-                    {
-                        "type": "colorPicker",
-                        "mode": "hex",
-                        "name": "Console Panel Color",
-                        "description": "Modifies the color of the left menu panel.",
-                        "css": ".mainDrawer-scrollContainer { color: $; }",
-                        "default": "#ffffff"
-                    }
-                ]
-            },
-            {
-                "name": "Home/Dashboard Page",
-                "options": [
-                    {
-                        "type": "checkBox",
-                        "name": "Enlarge Tab Buttons",
-                        "description": "Enlarges the tab buttons, suggested, genres, etc. By default they are really tiny, especially on mobile.",
-                        "css": ".headerTabs.sectionTabs {text-size-adjust: 110%;  font-size: 110%;}.pageTitle {margin-top: auto; margin-bottom: auto;}.emby-tab-button {padding: 1.75em 1.7em;}"
-                    },
-                    {
-                        "type": "checkBox",
-                        "name": "Stylized Episode Previews",
-                        "description": "The episode previews in season view are sized based on horizontal resolution. This leads to a lot of wasted space on the episode summary and a high vertical page, which requires a lot of scrolling. This code reduces the height of episode entries, which solves both problems.",
-                        "css": "/* Size episode preview images in a more compact way */.listItemImage.listItemImage-large.itemAction.lazy {height: 110px;}.listItem-content {height: 115px;}.secondary.listItem-overview.listItemBodyText {height: 61px; margin: 0;}"
-                    },
-                    {
-                        "type": "colorPicker",
-                        "mode": "hex",
-                        "name": "Custom Background Color",
-                        "description": "Change background color.",
-                        "css": ".backgroundContainer, .dialog, html { background-color: $;}",
-                        "default": "rgba(0,0,0,.86)"
-                    }
-                ]
-            },
-            {
-                "name": "Miscellaneous",
-                "options": [
-                    {
-                        "type": "colorPicker",
-                        "mode": "hex",
-                        "name": "Right Header Color",
-                        "description": "This modifies the colors of the cast, search and user buttons in the top right.",
-                        "css": ".headerRight { color: $; }",
-                        "default": "#ffffff"
-                    },
-                    {
-                        "type": "colorPicker",
-                        "mode": "hex",
-                        "name": "Interact Buttons Color",
-                        "description": "This modifies the color of interact buttons.",
-                        "css": ".paper-icon-button-light { color: $ !important; } .paper-icon-button-light:hover:not(:disabled) { color:$ !important; background-color: $ !important; } .paper-icon-button-light:focus:not(:disabled) { color:$ !important; background-color: $ !important; }",
-                        "default": "#ffffff",
-                        "preview": "https://github.com/LambadaCorez/custom_css_jellyfin/blob/master/ui/buttons/colored_interact_buttons/colored_buttons_example3.png?raw=true"
-                    },
-                    {
-                        "type": "number",
-                        "name": "Border Radius",
-                        "description": "Change the rounding",
-                        "css": ":root {--rounding: $px;}.formDialogHeader {border-top-left-radius: var(--rounding);border-top-right-radius: var(--rounding);}.formDialogFooter {border-bottom-left-radius: var(--rounding);border-bottom-right-radius: var(--rounding);}.cardOverlayContainer {border-radius: var(--rounding) !important;}.toast,.paperList,.cardContent,.sessionNowPlayingInnerContent, .listItem:hover, .cardImage,.fab,.multiSelectCheckboxOutline,.itemSelectionPanel,.cardContent-button, .cardContent-shadow, .itemDetailImage, .cardOverlayButton-hover,.cardImageContainer,.cardPadder,.listItemImage,.listItemImageButton,.listItemButton,.headerButton,.paper-icon-button-light,.innerCardFooter,.blurhash-canvas,.actionSheetMenuItem:hover,.dialog,.listItemIcon,.listItem-border,.button-flat,.visualCardBox,.checkboxOutline,.emby-select-withcolor,.chapterThumbTextContainer,.chapterThumbContainer,.chapterThumb,.emby-input, .emby-textarea, .emby-select-withcolor,.cardOverlayButtonIcon,.subtitleappearance-preview.flex.align-items-center.justify-content-center {border-radius: var(--rounding) !important;}.osdPoster img {border-radius: var(--rounding); border: none;}.mdl-slider::-moz-range-thumb {border-radius: var(--rounding);}.mdl-slider::-ms-thumb {border-radius: var(--rounding);}.mdl-slider::-webkit-slider-thumb {border-radius: var(--rounding);}div[data-role='controlgroup'] a[data-role='button']:first-child {border-bottom-left-radius: var(--rounding);border-top-left-radius: var(--rounding);}div[data-role='controlgroup'] a[data-role='button']:last-child {border-bottom-right-radius: var(--rounding);border-top-right-radius: var(--rounding);}",
-                        "default": "0"
-                    },
-                    {
-                        "type": "number",
-                        "name": "Backdrop Blur",
-                        "description": "adds blur to the backdrop images default is zero",
-                        "css": ":root{--bgblur: blur($px)}.backdropImage {filter: var(--bgblur);}.backgroundContainer.withBackdrop {background-color: rgba(0,0,0,0);}",
-                        "default": "0"
-                    }
-                ]
-            }
-        ]
-    }
+      }
+    ]
+  }
 ]

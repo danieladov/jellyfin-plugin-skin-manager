@@ -1,1388 +1,1387 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Skin Manager</title>
-  </head>
-  <body>
-    <div
-      data-role="page"
-      class="page type-interior pluginConfigurationPage tbsConfigurationPage"
-      data-require="emby-input,emby-button"
-    >
-      <div data-role="content">
-        <div class="content-primary">
-          <form class="tbsConfigurationPage">
-            <div class="sectionTitleContainer flex align-items-center">
-              <h2 class="sectionTitle">Skin Manager</h2>
-              <a
-                is="emby-linkbutton"
-                class="raised button-alt headerHelpButton emby-button"
-                target="_blank"
-                href="https://prayag17.github.io/jellyfin-plugin-skin-manager/src/html/help.html"
-                >Help</a
-              >
-            </div>
-            <div class="verticalSection">
-              <p>Select the skin you want to install and click Set Skin</p>
-              <br />
-            </div>
-            <div class="allOptions">
-              <div class="selectContainer">
-                <label for="css">Skin</label>
-                <select
-                  is="emby-select"
-                  id="cssOptions"
-                  onchange="updateSelectors()"
-                ></select>
-                <br />
-                <div class="fieldDescription" id="description"></div>
-              </div>
-              <div
-                class="checkboxList checkboxList-verticalwrap"
-                id="options"
-              ></div>
-              <br />
-            </div>
-          </form>
+<head>
+  <title>Skin Manager</title>
+</head>
+<body>
+  <div
+  data-role="page"
+  class="page type-interior pluginConfigurationPage tbsConfigurationPage"
+  data-require="emby-input,emby-button"
+  >
+  <div data-role="content">
+    <div class="content-primary">
+      <form class="tbsConfigurationPage">
+        <div class="sectionTitleContainer flex align-items-center">
+          <h2 class="sectionTitle">Skin Manager</h2>
+          <a
+          is="emby-linkbutton"
+          class="raised button-alt headerHelpButton emby-button"
+          target="_blank"
+          href="https://prayag17.github.io/jellyfin-plugin-skin-manager/src/html/help.html"
+          >Help</a
+          >
         </div>
-      </div>
-      <script type="text/javascript">
-        var data;
-        var fonts;
-        var hasGoogleFont = false;
-        Dashboard.showLoadingMsg();
-        $.getJSON(
-          "https://raw.githubusercontent.com/danieladov/jellyfin-plugin-skin-manager/master/skins-3.0.json",
-          function (json) {
-            $.getJSON(
-              "https://www.googleapis.com/webfonts/v1/webfonts?sort=popularity&key=AIzaSyB_bPGsf0vxnpO9GmkBjeoEIQ7rE9rbNck",
-              function (jsonFonts) {
-                fonts = jsonFonts;
+        <div class="verticalSection">
+          <p>Select the skin you want to install and click Set Skin</p>
+          <br />
+        </div>
+        <div class="allOptions">
+          <div class="selectContainer">
+            <label for="css">Skin</label>
+            <select
+            is="emby-select"
+            id="cssOptions"
+            onchange="updateSelectors()"
+            ></select>
+            <br />
+            <div class="fieldDescription" id="description"></div>
+          </div>
+          <div
+          class="checkboxList checkboxList-verticalwrap"
+          id="options"
+          ></div>
+          <br />
+        </div>
+      </form>
+    </div>
+  </div>
+  <script type="text/javascript">
+  var data;
+  var fonts;
+  var hasGoogleFont = false;
+  Dashboard.showLoadingMsg();
+  $.getJSON(
+    "https://raw.githubusercontent.com/danieladov/jellyfin-plugin-skin-manager/master/skins-3.0.json",
+    function (json) {
+      $.getJSON(
+        "https://www.googleapis.com/webfonts/v1/webfonts?sort=popularity&key=AIzaSyB_bPGsf0vxnpO9GmkBjeoEIQ7rE9rbNck",
+        function (jsonFonts) {
+          fonts = jsonFonts;
+        }
+      );
+      data = json;
+      loadSkins();
+      Dashboard.hideLoadingMsg();
+      checkEasterEggs();
+    }
+  );
+
+  function loadSkins() {
+    var cssOptions = document.getElementById("cssOptions");
+
+    data.forEach((element) => {
+      var opt = document.createElement("option");
+      opt.appendChild(document.createTextNode(element.name));
+      opt.value = element.defaultCss;
+      cssOptions.appendChild(opt);
+    });
+    updateSelectors();
+    loadConfig();
+    preloadPreviews();
+  }
+
+  function loadOptions(skin) {
+    var html = "";
+    html += '<div data-role="controlgroup">';
+    skin.categories.forEach((categorie) => {
+      if (categorie.options.length != 0) {
+        html += getSection(categorie.name);
+      }
+
+      categorie.options.forEach((element) => {
+        if (element.type == "checkBox") {
+          html += getCheckBox(element);
+        } else if (element.type == "colorPicker") {
+          html += getColorPicker(element);
+        } else if (element.type == "number") {
+          html += getNumber(element);
+        } else if (element.type == "selector") {
+          html += getSelector(element);
+        } else if (element.type == "slider") {
+          html += getSlider(element);
+        } else if (element.type == "googleFonts") {
+          html += getFonts();
+        }
+      });
+    });
+    html += "</fieldset>";
+    html +=
+    '<button is="emby-button" type="button" class="raised block" id="refresh-library" onclick=setSkin()><span>Set Skin</span></button>';
+    html += loadPreviews(skin);
+    html += "</div>";
+    $("#options").html(html).trigger("create");
+    generateFontPicker();
+  }
+
+  function preloadPreviews() {
+    data.forEach((skin) => {
+      if (skin.previews != undefined) {
+        skin.previews.forEach((img) => {
+          var image = new Image();
+          image.src = img.url;
+        });
+      }
+    });
+  }
+
+  function loadPreviews(skin) {
+    if (skin.previews == undefined) {
+      return "";
+    }
+    var html = "";
+
+    html += '<h2 class="sectionTitle" >Previews</h2>';
+    skin.previews.forEach((element) => {
+      html += getImage(element.url);
+      html += getImgnames(element.name);
+    });
+    return html;
+  }
+
+  function getCheckBox(option, saved) {
+    var html = "";
+    var checked = saved == "true" ? 'checked="checked"' : "";
+    var id = "chkFolder";
+    var name = option.name;
+    var css = option.css;
+    var description = option.description;
+
+    //html += '<label><input is="emby-checkbox" class="chkLibrary" type="checkbox" data-mini="true" id="' + id + '" name="' + id + '" data-value="' + value + '" '+' /><span>' + name  + '</span></label>';
+    html +=
+    '<div class="checkboxContainer checkboxContainer-withDescription"><label><input class = "checkbox" type="checkbox" is="emby-checkbox" id="' +
+    id +
+    '"name="' +
+    id +
+    '" data-css="' +
+    css +
+    '" ' +
+    checked +
+    " /><span>" +
+    name +
+    "</span>" +
+    getToolTip(option) +
+    '</label><div class="fieldDescription checkboxFieldDescription">' +
+    description +
+    "</div></div>";
+    return html;
+  }
+  function getColorPicker(option, saved) {
+    var html = "";
+    var id = "favcolor";
+    var name = option.name;
+    var defaultValue =
+    option.default == undefined ? "#000000" : option.default;
+    defaultValue = saved == undefined ? defaultValue : saved;
+    var css = option.css;
+    var description = option.description;
+    var mode = option.mode;
+    html +=
+    '<div class="inputContainer"><label><input style="height: 1em; padding: 0px; border: none;" type=color  class = "color" value="' +
+    defaultValue +
+    '"data-css = "' +
+    css +
+    '" data-mode="' +
+    mode +
+    '" id="' +
+    id +
+    '" name="' +
+    id +
+    '" label="' +
+    name +
+    '"  /><span>' +
+    name +
+    "</span>" +
+    getToolTip(option) +
+    '</label><div class="fieldDescription">' +
+    description +
+    "</div></div>";
+    return html;
+  }
+  function getNumber(option, saved) {
+    var html = "";
+    var id = "number";
+    var name = option.name;
+    var css = option.css;
+    var step = option.step == undefined ? 1 : option.step;
+    var defaultValue = option.default;
+    defaultValue = saved == undefined ? defaultValue : saved;
+    var description = option.description;
+    //html += '<label for=number><input is="emby-input" type=number value=' + defaultValue + ' class = "number" data-css = "'+ css+ '" +  data-mini="true" id="' + id + '" name="' + id + '" data-name="' + name + '" ' + ' /><span>' + name  + '</span></label><br>';
+    html +=
+    '<div class="inputContainer"><input is="emby-input" type="number" class = "number" value=' +
+    defaultValue +
+    " step=" +
+    step +
+    ' data-css = "' +
+    css +
+    '"  id="' +
+    id +
+    '" name="' +
+    id +
+    '"  min="0" max="300" label="' +
+    name +
+    '" /><div class="fieldDescription">' +
+    description +
+    "</div></div>";
+    return html;
+  }
+  function getSelector(option, saved) {
+    var html = "";
+    var id = "selector";
+    var name = option.name;
+    var css = option.css;
+    var defaultValue = option.default;
+    var description = option.description;
+    //html += '<label for=number><input is="emby-input" type=number value=' + defaultValue + ' class = "number" data-css = "'+ css+ '" +  data-mini="true" id="' + id + '" name="' + id + '" data-name="' + name + '" ' + ' /><span>' + name  + '</span></label><br>';
+    html +=
+    '<div class="selectContainer"><select is="emby-select"  data-css= "' +
+    css +
+    '"class="selector" label="' +
+    name +
+    '">' +
+    getOptions(option, saved) +
+    "</select></div>";
+    return html;
+  }
+  var savedGoogleFont;
+
+  function getFonts(saved) {
+    var html = "";
+
+    var name = "Change Font";
+    var css =
+    "html {font-family:  '$',sans-serif ;  } body,h1,h2,h3 { font-family: '$' ,sans-serif;}";
+    var description = "Change the default fonts";
+    //html += '<label for=number><input is="emby-input" type=number value=' + defaultValue + ' class = "number" data-css = "'+ css+ '" +  data-mini="true" id="' + id + '" name="' + id + '" data-name="' + name + '" ' + ' /><span>' + name  + '</span></label><br>';
+    //html += '<div class="selectContainer" ><select is="emby-select" id = "googleFonts" data-css= "'+css + '"class="selector" label="'+name+' " onchange="updateFontPreview()">' + getFontOptions(fonts)+'</select></div>'
+    //html += '<div class = "fontPreview"> This is a preview </div>';
+    //html += '<div id="font-picker"></div><div class = "apply-font"> This is a preview </div>'
+    html += '	<div class="selectContainer"><label>Change Font </label><br> <input id="font-picker" type="text"> </div>';
+    if(saved != undefined){
+      savedGoogleFont = saved;
+    }
+    hasGoogleFont = true;
+    return html;
+  }
+
+  function getFontPreview(categories, option, selections, name) {
+    var html = "";
+    if (name == "Fonts") {
+      html +=
+      '<div class="fontCont><p style="font-family: ' +
+      categories.option.selections.value +
+      ';">Hello, This is your selected font-family.</p></div>"';
+      return html;
+    } else {
+      return "";
+    }
+  }
+
+  function getOptions(option, saved) {
+    var html = "";
+    var selections = option.selections;
+    var css = option.css;
+    selections.forEach((element) => {
+      var name = element.name;
+      var value = element.value;
+      var selected = saved == name ? 'selected="selected"' : "";
+      html +=
+      '<option data-css= "' +
+      css +
+      '"value=' +
+      value +
+      selected +
+      ">" +
+      name +
+      "</option>";
+    });
+    return html;
+  }
+  function getSlider(option, saved) {
+    var html = "";
+    var id = "slider";
+    var name = option.name;
+    var css = option.css;
+    var step = option.step == undefined ? 1 : option.step;
+    var defaultValue = option.default;
+    defaultValue = saved == undefined ? defaultValue : saved;
+    var description = option.description;
+    html +=
+    '<div class="inputContainer"><input is="emby-slider" type="range" class = "slider" value=' +
+    defaultValue +
+    " step=" +
+    step +
+    ' data-css = "' +
+    css +
+    '"  id="' +
+    id +
+    '" name="' +
+    id +
+    '"  min="0" max="300" label="' +
+    name +
+    '" /><div class="fieldDescription">' +
+    description +
+    "</div></div>";
+    return html;
+  }
+  function getImage(url) {
+    var html = "";
+    html +=
+    '<fieldset class="verticalSection verticalSection-extrabottompadding"><img src="' +
+    url +
+    '">';
+    return html;
+  }
+
+  function getImgnames(name) {
+    var html = "";
+    html += "<legend>" + name + "</legend></fieldset>";
+    return html;
+  }
+
+  function getSection(name) {
+    var html = "";
+    html += "</fieldset>";
+    html +=
+    '<fieldset class="verticalSection verticalSection-extrabottompadding">';
+    html += "<legend>" + name + "</legend>";
+    return html;
+  }
+
+  function getToolTip(option) {
+    if (option.preview == undefined) {
+      return "";
+    }
+    html = "";
+    html +=
+    '<div class="tooltip"><span class="material-icons">info</span><span class="tooltiptext">';
+    html += '<img src="' + option.preview + '">';
+    html += "</span></div>";
+    return html;
+  }
+
+  async function  createCss() {
+    var savedHtml = "";
+    //process checkbox
+    var css = $("#cssOptions").val();
+    savedHtml += document.getElementById("cssOptions").innerHTML;
+    var checkboxes = document.getElementsByClassName("checkbox");
+    for (let element of checkboxes) {
+      savedHtml += element.innerHTML;
+    }
+    var selectedOptions = $(".checkbox:checked")
+    .map(function () {
+      return this.getAttribute("data-css");
+    })
+    .get();
+
+    selectedOptions.forEach((element) => {
+      css += element + "\n";
+    });
+
+    //proccess selector
+    var selectors = document.getElementsByClassName("selector");
+    for (let element of selectors) {
+      css +=
+      element.getAttribute("data-css").replaceAll("$", element.value) +
+      "\n";
+      savedHtml += element.outerHTML;
+    }
+
+    //process colorPicker
+    selectedOptions.forEach((element) => {
+      css += element + "\n";
+    });
+    var colorPickers = document.getElementsByClassName("color");
+    for (let element of colorPickers) {
+      savedHtml += element.outerHTML;
+      if (element.getAttribute("data-mode") == "rgba") {
+        var rgbColor = hexToRgb(element.value);
+        color = rgbColor.r + "," + rgbColor.g + "," + rgbColor.b;
+      } else {
+        color = element.value;
+      }
+      css +=
+      element.getAttribute("data-css").replaceAll("$", color) + "\n";
+    }
+
+    //procces number selector
+    var numberSelectors = document.getElementsByClassName("number");
+    for (let element of numberSelectors) {
+      savedHtml += element.outerHTML;
+      css +=
+      element.getAttribute("data-css").replaceAll("$", element.value) +
+      "\n";
+    }
+
+    //procces slider
+    var sliders = document.getElementsByClassName("slider");
+    for (let element of sliders) {
+      css +=
+      element.getAttribute("data-css").replaceAll("$", element.value) +
+      "\n";
+    }
+
+
+    //procces google Fonts
+
+    if(document.getElementById("font-picker") != undefined){
+      var font = document.getElementById("font-picker").value
+      var url = "https://fonts.googleapis.com/css?family=" + font;
+      var promise  = await fetch(url);
+      css += await promise.text();
+      css += "html {font-family:  '$',sans-serif ;  } body,h1,h2,h3 { font-family: '$' ,sans-serif;}".replaceAll("$",font.replaceAll("+"," "));
+
+      return css;
+      //  fetch(url).then(function (response) {
+      //   response.text().then(function (text) {
+      //     css += text;
+      //     return css;
+      //   });
+      // });
+
+    }else{
+      return css;
+    }
+
+
+  }
+
+
+
+  function generateFontPicker() {
+    if (hasGoogleFont) {
+      $(function () {
+        $("#font-picker").fontselect({
+          style: "font-select",
+          placeholder: "Select a font",
+          placeholderSearch: "Search...",
+          searchable: true,
+          lookahead: 2,
+          systemFonts: "Arial|Helvetica+Neue|Courier+New|Times+New+Roman|Comic+Sans+MS|Impact".split(
+            "|"
+          ),
+          localFontsUrl: "/fonts/",
+          googleFonts: "Aclonica|Allan|Annie+Use+Your+Telescope|Anonymous+Pro|Allerta+Stencil|Allerta|Amaranth|Anton|Architects+Daughter|Arimo|Artifika|Arvo|Asset|Astloch|Bangers|Bentham|Bevan|Bigshot+One|Bowlby+One|Bowlby+One+SC|Brawler|Buda:300|Cabin|Calligraffitti|Candal|Cantarell|Cardo|Carter+One|Caudex|Cedarville+Cursive|Cherry+Cream+Soda|Chewy|Coda|Coming+Soon|Copse|Corben|Cousine|Covered+By+Your+Grace|Crafty+Girls|Crimson+Text|Crushed|Cuprum|Damion|Dancing+Script|Dawning+of+a+New+Day|Didact+Gothic|Droid+Sans|Droid+Serif|EB+Garamond|Expletus+Sans|Fontdiner+Swanky|Forum|Francois+One|Geo|Give+You+Glory|Goblin+One|Goudy+Bookletter+1911|Gravitas+One|Gruppo|Hammersmith+One|Holtwood+One+SC|Homemade+Apple|Inconsolata|Indie+Flower|Irish+Grover|Istok+Web|Josefin+Sans|Josefin+Slab|Judson|Jura|Just+Another+Hand|Just+Me+Again+Down+Here|Kameron|Kenia|Kranky|Kreon|Kristi|La+Belle+Aurore|Lato|League+Script|Lekton|Limelight|Lobster|Lobster+Two|Lora|Love+Ya+Like+A+Sister|Loved+by+the+King|Luckiest+Guy|Maiden+Orange|Mako|Maven+Pro|Maven+Pro:900|Meddon|MedievalSharp|Megrim|Merriweather|Metrophobic|Michroma|Miltonian+Tattoo|Miltonian|Modern+Antiqua|Monofett|Molengo|Mountains+of+Christmas|Muli:300|Muli|Neucha|Neuton|News+Cycle|Nixie+One|Nobile|Nova+Cut|Nova+Flat|Nova+Mono|Nova+Oval|Nova+Round|Nova+Script|Nova+Slim|Nova+Square|Nunito|Old+Standard+TT|Open+Sans:300|Open+Sans|Open+Sans:600|Open+Sans:800|Open+Sans+Condensed:300|Orbitron|Orbitron:500|Orbitron:700|Orbitron:900|Oswald|Over+the+Rainbow|Reenie+Beanie|Pacifico|Patrick+Hand|Paytone+One|Permanent+Marker|Philosopher|Play|Playfair+Display|Podkova|Press+Start+2P|Puritan|Quattrocento|Quattrocento+Sans|Radley|Raleway:100|Redressed|Rock+Salt|Rokkitt|Ruslan+Display|Schoolbell|Shadows+Into+Light|Shanti|Sigmar+One|Six+Caps|Slackey|Smythe|Sniglet|Sniglet:800|Special+Elite|Stardos+Stencil|Sue+Elen+Francisco|Sunshiney|Swanky+and+Moo+Moo|Syncopate|Tangerine|Tenor+Sans|Terminal+Dosis+Light|The+Girl+Next+Door|Tinos|Ubuntu|Ultra|Unkempt|UnifrakturCook:bold|UnifrakturMaguntia|Varela|Varela+Round|Vibur|Vollkorn|VT323|Waiting+for+the+Sunrise|Wallpoet|Walter+Turncoat|Wire+One|Yanone+Kaffeesatz|Yeseva+One|Zeyada".split(
+            "|"
+          ),
+        });
+
+        if(savedGoogleFont != undefined){
+          $('#font-picker').trigger('setFont',[savedGoogleFont,900])
+        }
+      });
+
+
+
+    }
+  }
+
+  function applyFont(font) {
+    console.log("You selected font: " + font);
+
+    // Replace + signs with spaces for css
+    font = font.replace(/\+/g, " ");
+
+    // Split font into family and weight
+    font = font.split(":");
+
+    var fontFamily = font[0];
+    var fontWeight = font[1] || 400;
+
+    // Set selected font on paragraphs
+    $("fontPreview").css({
+      fontFamily: "'" + fontFamily + "'",
+      fontWeight: fontWeight,
+    });
+  }
+
+  $("#font-picker")
+  .fontselect()
+  .on("change", function () {
+    applyFont(this.value);
+  });
+
+  function getFontOptions(fonts) {
+    var html = "";
+    var selections = fonts.items;
+    selections.forEach((element) => {
+      var name = element.family;
+      var value = element.family;
+      //var selected = saved==name?'selected="selected"' : "";
+      var selected = "";
+      html +=
+      "<option value=" + value + selected + ">" + name + "</option>";
+    });
+    return html;
+  }
+
+  function updateFontPreview() {
+    var preview = document.getElementsByClassName("fontPreview")[0];
+    var selectedOption = document.getElementById("googleFonts")
+    .selectedOptions[0].innerText;
+    var url =
+    "https://fonts.googleapis.com/css?family=" +
+    selectedOption.replaceAll(" ", "+");
+
+    fetch(url).then(function (response) {
+      response.text().then(function (text) {
+        var sheet = document.createElement("style");
+        sheet.innerHTML =
+        text + ".fontPreview{font-family:'" + selectedOption + "'}";
+        preview.appendChild(sheet);
+      });
+    });
+  }
+
+  function updateSelectors() {
+    var selected = document.getElementById("cssOptions");
+    var description = document.getElementById("description");
+    data.forEach((element) => {
+      if (element.name == selected.selectedOptions[0].innerText) {
+        loadOptions(element);
+        description.innerHTML = element.description;
+      }
+    });
+  }
+
+  var config = undefined;
+
+  function loadConfig() {
+    var pluginId = "e9ca8b8e-ca6d-40e7-85dc-58e536df8eb3";
+
+    ApiClient.getPluginConfiguration(pluginId).then(function (
+      savedConfig
+    ) {
+      config = savedConfig;
+
+      if (!config) {
+        config.selectedSkin = "";
+        config.options = [];
+      }
+      loadSavedOptions();
+    });
+  }
+
+  function loadSavedOptions() {
+    var skin = undefined;
+    data.forEach((element) => {
+      if (element.defaultCss == config.selectedSkin) {
+        skin = element;
+      }
+    });
+    if (skin == undefined) {
+      return;
+    }
+    var count = 0;
+    for (let option of document.getElementById("cssOptions").options) {
+      if (option.value == config.selectedSkin) {
+        document.getElementById("cssOptions").selectedIndex = count;
+      }
+      count++;
+    }
+
+    var savedOptions = config.options;
+    var html = "";
+    html += '<div data-role="controlgroup">';
+    skin.categories.forEach((categorie) => {
+      if (categorie.options.length != 0) {
+        html += getSection(categorie.name);
+      }
+      var options = categorie.options;
+
+      options.forEach((element) => {
+        var savedValue = undefined;
+        var count = 0;
+        savedOptions.forEach((savedOption) => {
+          if (element.css == savedOption) {
+            savedValue = savedOptions[count + 1];
+          }
+          count++;
+        });
+        if (element.type == "checkBox") {
+          html += getCheckBox(element, savedValue);
+        } else if (element.type == "colorPicker") {
+          html += getColorPicker(element, savedValue);
+        } else if (element.type == "number") {
+          html += getNumber(element, savedValue);
+        } else if (element.type == "selector") {
+          html += getSelector(element, savedValue);
+        } else if (element.type == "slider") {
+          html += getSlider(element, savedValue);
+        } else if (element.type == "googleFonts") {
+          html += getFonts(savedValue);
+        }
+      });
+    });
+    html += "</fieldset>";
+    html +=
+    '<button is="emby-button" type="button" class="raised block" id="refresh-library" onclick=setSkin()><span>Set Skin</span></button>';
+    html += loadPreviews(skin);
+    html += "</div>";
+    $("#options").html(html).trigger("create");
+    generateFontPicker();
+
+  }
+
+  function saveConfig() {
+    var pluginId = "e9ca8b8e-ca6d-40e7-85dc-58e536df8eb3";
+    config.selectedSkin = $("#cssOptions").val();
+
+    var options = [];
+    var count = 0;
+    data[
+      document.getElementById("cssOptions").selectedIndex
+    ].categories.forEach((categorie) => {
+      categorie.options.forEach((option) => {
+        options[count] = option.css;
+        options[count + 1] = getValue(option);
+        count += 2;
+      });
+    });
+    config.options = options;
+
+    ApiClient.getPluginConfiguration(pluginId).then(function (oldConfig) {
+      oldConfig = config;
+      ApiClient.updatePluginConfiguration(pluginId, oldConfig).then(
+        function (res) {
+          Dashboard.processPluginConfigurationUpdateResult(res);
+        }
+      );
+    });
+  }
+  function getValue(option) {
+    var result = "";
+    switch (option.type) {
+      case "checkBox":
+      Array.from(
+        document.getElementsByClassName("checkbox emby-checkbox")
+      ).forEach((element) => {
+        if (option.css == element.getAttribute("data-css")) {
+          result = element.checked ? "true" : "false";
+        }
+
+      });
+      break;
+      case "number":
+      Array.from(
+        document.getElementsByClassName("number emby-input")
+      ).forEach((element) => {
+        if (option.css == element.getAttribute("data-css")) {
+          result = element.value;
+        }
+
+      });
+      break;
+      case "colorPicker":
+      Array.from(document.getElementsByClassName("color")).forEach(
+        (element) => {
+          if (option.css == element.getAttribute("data-css")) {
+            result = element.value;
+          }
+        }
+      );
+      break;
+      case "slider":
+      Array.from(document.getElementsByClassName("slider")).forEach(
+        (element) => {
+          if (option.css == element.getAttribute("data-css")) {
+            result = element.value;
+          }
+        }
+      );
+      break;
+      case "selector":
+      Array.from(
+        document.getElementsByClassName(
+          "selector emby-select-withcolor emby-select"
+        )
+      ).forEach((element) => {
+        if (option.css == element.getAttribute("data-css")) {
+          result = element.selectedOptions[0].innerText;
+        }
+
+
+      });
+      break;
+      case "googleFonts":
+      result += document.getElementById("font-picker").value.replaceAll("+"," ");
+      break;
+    }
+    return result;
+  }
+  function checkEasterEggs() {
+    var d = new Date();
+
+    if (
+      (d.getDate() >= 18 && d.getMonth() == 11) ||
+      (d.getDate() >= 10 && d.getMonth() == 0)
+    ) {
+      startChristmas();
+    }
+  }
+
+  function startChristmas() {
+    $.getScript(
+      "https://unpkg.com/magic-snowflakes/dist/snowflakes.min.js",
+      function () {
+        var sf = new Snowflakes({
+          count: 200,
+          maxSize: 25,
+        });
+      }
+    );
+  }
+  async function setSkin() {
+    saveConfig();
+    ApiClient.getServerConfiguration().then(function (config) {
+      ApiClient.updateServerConfiguration(config).then(function () {
+        ApiClient.getNamedConfiguration("branding").then(async function (
+          brandingConfig
+        ) {
+          brandingConfig.CustomCss = await createCss();
+          ApiClient.updateNamedConfiguration(
+            "branding",
+            brandingConfig
+          ).then(function () {
+            Dashboard.processServerConfigurationUpdateResult();
+            window.location.reload(true);
+          });
+        });
+      });
+    });
+  }
+  function hexToRgb(hex) {
+    // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
+    var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+    hex = hex.replace(shorthandRegex, function (m, r, g, b) {
+      return r + r + g + g + b + b;
+    });
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result
+    ? {
+      r: parseInt(result[1], 16),
+      g: parseInt(result[2], 16),
+      b: parseInt(result[3], 16),
+    }
+    : null;
+  }
+  </script>
+  <script type="text/javascript">
+  var plugin = {
+    guid: "e9ca8b8e-ca6d-40e7-85dc-58e536df8eb3",
+  };
+  $("#configPage").on("pageshow", function () {
+    Dashboard.showLoadingMsg();
+    ApiClient.getPluginConfiguration(plugin.guid).then(function (config) {
+      $("#cssOptions").val(config.selectedCss).change();
+      Dashboard.hideLoadingMsg();
+    });
+  });
+  $("#configForm").on("submit", function () {
+    Dashboard.showLoadingMsg();
+    ApiClient.getPluginConfiguration(plugin.guid).then(function (config) {
+      config.selectedCss = $("#cssOptions").val();
+      ApiClient.updatePluginConfiguration(plugin.guid, config).then(
+        function (result) {
+          Dashboard.processPluginConfigurationUpdateResult(result);
+        }
+      );
+    });
+    return false;
+  });
+  </script>
+  <style>
+  img {
+    width: 100%;
+  }
+  fieldset.verticalSection.verticalSection-extrabottompadding {
+    border: 1px solid #333333;
+    border-radius: 10px;
+  }
+  legend {
+    font-size: 135%;
+  }
+
+
+  </style>
+  <style>
+  .tooltip {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black;
+  }
+
+  .tooltip .tooltiptext {
+    visibility: hidden;
+    width: 400px;
+    background-color: transparent;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 1;
+    top: -5px;
+    left: 105%;
+  }
+
+  .tooltip:hover .tooltiptext {
+    visibility: visible;
+  }
+  input#favcolor {
+    width: 100%;
+    height: 3em !important;
+    background: none;
+    border: none;
+  }
+  </style>
+  <style>
+
+  .font-select * {
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+  }
+
+  .font-select {
+    font-size: 16px;
+    width: 240px;
+    position: relative;
+    display: inline-block;
+    border-color: red;
+  }
+
+  .font-select .fs-drop {
+    position: absolute;
+    top: 38px;
+    left: 0;
+    z-index: 999;
+    background: #292929;
+    color: #fff;
+    width: 100%;
+    border: 1px solid #aaa;
+    border-top: 0;
+    box-shadow: 0 4px 5px rgba(0, 0, 0, 0.15);
+    border-radius: 0 0 4px 4px;
+
+  }
+
+  .font-select > span {
+    outline: 0;
+    border-radius: 0.25rem;
+    border: 1px solid #ced4da;
+    display: block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    height: 38px;
+    line-height: 32px;
+    padding: 3px 8px 3px 8px;
+    color: #fff;
+    background: #292929
+    url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3e%3cpath fill='%23303030' d='M2 0L0 2h4zm0 5L0 3h4z'/%3e%3c/svg%3e")
+    no-repeat right 0.75rem center/8px 10px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+
+  .font-select-active > span {
+    background-color: #292929;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  .font-select .fs-results {
+    max-height: 190px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    margin: 0;
+    padding: 0;
+  }
+
+  .font-select .fs-results li {
+    line-height: 80%;
+    padding: 8px;
+    margin: 0;
+    list-style: none;
+    font-size: 18px;
+    white-space: nowrap;
+  }
+
+  .font-select .fs-results li.active {
+    background-color: #3875d7;
+    color: #fff;
+    cursor: pointer;
+  }
+
+  .font-select .fs-search {
+    border-bottom: 1px solid #aaa;
+    padding: 4px;
+    background: #292929;
+  }
+
+  .font-select .fs-search input {
+    padding: 7px;
+    width: 100%;
+    border: 1px solid #aaa;
+    font: 16px Helvetica, Sans-serif;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.06);
+    border-radius: 0.1875rem;
+    background: #292929;
+    color: #fff
+  }
+  </style>
+
+  <script>
+  /*
+  * jQuery.fontselect - A font selector for system fonts, local fonts and Google Web Fonts
+  *
+  * Made by Arjan Haverkamp, https://www.webgear.nl
+  * Based on original by Tom Moor, http://tommoor.com
+  * Copyright (c) 2011 Tom Moor, 2019-2020 Arjan Haverkamp
+  * MIT Licensed
+  * @version 0.9 - 2020-02-12
+  * @url https://github.com/av01d/fontselect-jquery-plugin
+  */
+
+  (function ($) {
+    var fontsLoaded = {};
+
+    $.fn.fontselect = function (options) {
+      var __bind = function (fn, me) {
+        return function () {
+          return fn.apply(me, arguments);
+        };
+      };
+
+      var settings = {
+        style: "font-select",
+        placeholder: "Select a font",
+        placeholderSearch: "Search...",
+        searchable: true,
+        lookahead: 2,
+        googleApi: "https://fonts.googleapis.com/css?family=",
+        localFontsUrl: "/fonts/",
+        systemFonts: "Arial|Helvetica+Neue|Courier+New|Times+New+Roman|Comic+Sans+MS|Verdana|Impact".split(
+          "|"
+        ),
+        googleFonts: "ABeeZee|Abel|Abhaya+Libre|Abril+Fatface|Aclonica|Acme|Actor|Adamina|Advent+Pro|Aguafina+Script|Akronim|Aladin|Alata|Alatsi|Aldrich|Alef|Alegreya|Alegreya+Sans|Alegreya+Sans+SC|Alegreya+SC|Aleo|Alex+Brush|Alfa+Slab+One|Alice|Alike|Alike+Angular|Allan|Allerta|Allerta+Stencil|Allura|Almarai|Almendra|Almendra+Display|Almendra+SC|Amarante|Amaranth|Amatic+SC|Amethysta|Amiko|Amiri|Amita|Anaheim|Andada|Andika|Angkor|Annie+Use+Your+Telescope|Anonymous+Pro|Antic|Antic+Didone|Antic+Slab|Anton|Arapey|Arbutus|Arbutus+Slab|Architects+Daughter|Archivo|Archivo+Black|Archivo+Narrow|Aref+Ruqaa|Arima+Madurai|Arimo|Arizonia|Armata|Arsenal|Artifika|Arvo|Arya|Asap|Asap+Condensed|Asar|Asset|Assistant|Astloch|Asul|Athiti|Atma|Atomic+Age|Aubrey|Audiowide|Autour+One|Average|Average+Sans|Averia+Gruesa+Libre|Averia+Libre|Averia+Sans+Libre|Averia+Serif+Libre|B612|B612+Mono|Bad+Script|Bahiana|Bahianita|Bai+Jamjuree|Baloo|Baloo+Bhai|Baloo+Bhaijaan|Baloo+Bhaina|Baloo+Chettan|Baloo+Da|Baloo+Paaji|Baloo+Tamma|Baloo+Tammudu|Baloo+Thambi|Balthazar|Bangers|Barlow|Barlow+Condensed|Barlow+Semi+Condensed|Barriecito|Barrio|Basic|Baskervville|Battambang|Baumans|Bayon|Be+Vietnam|Bebas+Neue|Belgrano|Bellefair|Belleza|BenchNine|Bentham|Berkshire+Swash|Beth+Ellen|Bevan|Big+Shoulders+Display|Big+Shoulders+Text|Bigelow+Rules|Bigshot+One|Bilbo|Bilbo+Swash+Caps|BioRhyme|BioRhyme+Expanded|Biryani|Bitter|Black+And+White+Picture|Black+Han+Sans|Black+Ops+One|Blinker|Bokor|Bonbon|Boogaloo|Bowlby+One|Bowlby+One+SC|Brawler|Bree+Serif|Bubblegum+Sans|Bubbler+One|Buda|Buenard|Bungee|Bungee+Hairline|Bungee+Inline|Bungee+Outline|Bungee+Shade|Butcherman|Butterfly+Kids|Cabin|Cabin+Condensed|Cabin+Sketch|Caesar+Dressing|Cagliostro|Cairo|Calistoga|Calligraffitti|Cambay|Cambo|Candal|Cantarell|Cantata+One|Cantora+One|Capriola|Cardo|Carme|Carrois+Gothic|Carrois+Gothic+SC|Carter+One|Catamaran|Caudex|Caveat|Caveat+Brush|Cedarville+Cursive|Ceviche+One|Chakra+Petch|Changa|Changa+One|Chango|Charm|Charmonman|Chathura|Chau+Philomene+One|Chela+One|Chelsea+Market|Chenla|Cherry+Cream+Soda|Cherry+Swash|Chewy|Chicle|Chilanka|Chivo|Chonburi|Cinzel|Cinzel+Decorative|Clicker+Script|Coda|Coda+Caption|Codystar|Coiny|Combo|Comfortaa|Coming+Soon|Concert+One|Condiment|Content|Contrail+One|Convergence|Cookie|Copse|Corben|Cormorant|Cormorant+Garamond|Cormorant+Infant|Cormorant+SC|Cormorant+Unicase|Cormorant+Upright|Courgette|Courier+Prime|Cousine|Coustard|Covered+By+Your+Grace|Crafty+Girls|Creepster|Crete+Round|Crimson+Pro|Crimson+Text|Croissant+One|Crushed|Cuprum|Cute+Font|Cutive|Cutive+Mono|Damion|Dancing+Script|Dangrek|Darker+Grotesque|David+Libre|Dawning+of+a+New+Day|Days+One|Dekko|Delius|Delius+Swash+Caps|Delius+Unicase|Della+Respira|Denk+One|Devonshire|Dhurjati|Didact+Gothic|Diplomata|Diplomata+SC|DM+Sans|DM+Serif+Display|DM+Serif+Text|Do+Hyeon|Dokdo|Domine|Donegal+One|Doppio+One|Dorsa|Dosis|Dr+Sugiyama|Duru+Sans|Dynalight|Eagle+Lake|East+Sea+Dokdo|Eater|EB+Garamond|Economica|Eczar|El+Messiri|Electrolize|Elsie|Elsie+Swash+Caps|Emblema+One|Emilys+Candy|Encode+Sans|Encode+Sans+Condensed|Encode+Sans+Expanded|Encode+Sans+Semi+Condensed|Encode+Sans+Semi+Expanded|Engagement|Englebert|Enriqueta|Erica+One|Esteban|Euphoria+Script|Ewert|Exo|Exo+2|Expletus+Sans|Fahkwang|Fanwood+Text|Farro|Farsan|Fascinate|Fascinate+Inline|Faster+One|Fasthand|Fauna+One|Faustina|Federant|Federo|Felipa|Fenix|Finger+Paint|Fira+Code|Fira+Mono|Fira+Sans|Fira+Sans+Condensed|Fira+Sans+Extra+Condensed|Fjalla+One|Fjord+One|Flamenco|Flavors|Fondamento|Fontdiner+Swanky|Forum|Francois+One|Frank+Ruhl+Libre|Freckle+Face|Fredericka+the+Great|Fredoka+One|Freehand|Fresca|Frijole|Fruktur|Fugaz+One|Gabriela|Gaegu|Gafata|Galada|Galdeano|Galindo|Gamja+Flower|Gayathri|Gelasio|Gentium+Basic|Gentium+Book+Basic|Geo|Geostar|Geostar+Fill|Germania+One|GFS+Didot|GFS+Neohellenic|Gidugu|Gilda+Display|Girassol|Give+You+Glory|Glass+Antiqua|Glegoo|Gloria+Hallelujah|Goblin+One|Gochi+Hand|Gorditas|Gothic+A1|Goudy+Bookletter+1911|Graduate|Grand+Hotel|Gravitas+One|Great+Vibes|Grenze|Griffy|Gruppo|Gudea|Gugi|Gupter|Gurajada|Habibi|Halant|Hammersmith+One|Hanalei|Hanalei+Fill|Handlee|Hanuman|Happy+Monkey|Harmattan|Headland+One|Heebo|Henny+Penny|Hepta+Slab|Herr+Von+Muellerhoff|Hi+Melody|Hind|Hind+Guntur|Hind+Madurai|Hind+Siliguri|Hind+Vadodara|Holtwood+One+SC|Homemade+Apple|Homenaje|Ibarra+Real+Nova|IBM+Plex+Mono|IBM+Plex+Sans|IBM+Plex+Sans+Condensed|IBM+Plex+Serif|Iceberg|Iceland|IM+Fell+Double+Pica|IM+Fell+Double+Pica+SC|IM+Fell+DW+Pica|IM+Fell+DW+Pica+SC|IM+Fell+English|IM+Fell+English+SC|IM+Fell+French+Canon|IM+Fell+French+Canon+SC|IM+Fell+Great+Primer|IM+Fell+Great+Primer+SC|Imprima|Inconsolata|Inder|Indie+Flower|Inika|Inknut+Antiqua|Inria+Serif|Irish+Grover|Istok+Web|Italiana|Italianno|Itim|Jacques+Francois|Jacques+Francois+Shadow|Jaldi|Jim+Nightshade|Jockey+One|Jolly+Lodger|Jomhuria|Jomolhari|Josefin+Sans|Josefin+Slab|Joti+One|Jua|Judson|Julee|Julius+Sans+One|Junge|Jura|Just+Another+Hand|Just+Me+Again+Down+Here|K2D|Kadwa|Kalam|Kameron|Kanit|Kantumruy|Karla|Karma|Katibeh|Kaushan+Script|Kavivanar|Kavoon|Kdam+Thmor|Keania+One|Kelly+Slab|Kenia|Khand|Khmer|Khula|Kirang+Haerang|Kite+One|Knewave|Kodchasan|KoHo|Kosugi|Kosugi+Maru|Kotta+One|Koulen|Kranky|Kreon|Kristi|Krona+One|Krub|Kulim+Park|Kumar+One|Kumar+One+Outline|Kurale|La+Belle+Aurore|Lacquer|Laila|Lakki+Reddy|Lalezar|Lancelot|Lateef|Lato|League+Script|Leckerli+One|Ledger|Lekton|Lemon|Lemonada|Lexend+Deca|Lexend+Exa|Lexend+Giga|Lexend+Mega|Lexend+Peta|Lexend+Tera|Lexend+Zetta|Libre+Barcode+128|Libre+Barcode+128+Text|Libre+Barcode+39|Libre+Barcode+39+Extended|Libre+Barcode+39+Extended+Text|Libre+Barcode+39+Text|Libre+Baskerville|Libre+Caslon+Display|Libre+Caslon+Text|Libre+Franklin|Life+Savers|Lilita+One|Lily+Script+One|Limelight|Linden+Hill|Literata|Liu+Jian+Mao+Cao|Livvic|Lobster|Lobster+Two|Londrina+Outline|Londrina+Shadow|Londrina+Sketch|Londrina+Solid|Long+Cang|Lora|Love+Ya+Like+A+Sister|Loved+by+the+King|Lovers+Quarrel|Luckiest+Guy|Lusitana|Lustria|M+PLUS+1p|M+PLUS+Rounded+1c|Ma+Shan+Zheng|Macondo|Macondo+Swash+Caps|Mada|Magra|Maiden+Orange|Maitree|Major+Mono+Display|Mako|Mali|Mallanna|Mandali|Manjari|Mansalva|Manuale|Marcellus|Marcellus+SC|Marck+Script|Margarine|Markazi+Text|Marko+One|Marmelad|Martel|Martel+Sans|Marvel|Mate|Mate+SC|Maven+Pro|McLaren|Meddon|MedievalSharp|Medula+One|Meera+Inimai|Megrim|Meie+Script|Merienda|Merienda+One|Merriweather|Merriweather+Sans|Metal|Metal+Mania|Metamorphous|Metrophobic|Michroma|Milonga|Miltonian|Miltonian+Tattoo|Mina|Miniver|Miriam+Libre|Mirza|Miss+Fajardose|Mitr|Modak|Modern+Antiqua|Mogra|Molengo|Molle|Monda|Monofett|Monoton|Monsieur+La+Doulaise|Montaga|Montez|Montserrat|Montserrat+Alternates|Montserrat+Subrayada|Moul|Moulpali|Mountains+of+Christmas|Mouse+Memoirs|Mr+Bedfort|Mr+Dafoe|Mr+De+Haviland|Mrs+Saint+Delafield|Mrs+Sheppards|Mukta|Mukta+Mahee|Mukta+Malar|Mukta+Vaani|Muli|Mystery+Quest|Nanum+Brush+Script|Nanum+Gothic|Nanum+Gothic+Coding|Nanum+Myeongjo|Nanum+Pen+Script|Neucha|Neuton|New+Rocker|News+Cycle|Niconne|Niramit|Nixie+One|Nobile|Nokora|Norican|Nosifer|Notable|Nothing+You+Could+Do|Noticia+Text|Noto+Sans|Noto+Sans+HK|Noto+Sans+JP|Noto+Sans+KR|Noto+Sans+SC|Noto+Sans+TC|Noto+Serif|Noto+Serif+JP|Noto+Serif+KR|Noto+Serif+SC|Noto+Serif+TC|Nova+Cut|Nova+Flat|Nova+Mono|Nova+Oval|Nova+Round|Nova+Script|Nova+Slim|Nova+Square|NTR|Numans|Nunito|Nunito+Sans|Odibee+Sans|Odor+Mean+Chey|Offside|Old+Standard+TT|Oldenburg|Oleo+Script|Oleo+Script+Swash+Caps|Open+Sans:300|Open+Sans|Open+Sans:600|Open+Sans:800|Open+Sans+Condensed:300|Oranienbaum|Orbitron|Oregano|Orienta|Original+Surfer|Oswald|Over+the+Rainbow|Overlock|Overlock+SC|Overpass|Overpass+Mono|Ovo|Oxygen|Oxygen+Mono|Pacifico|Padauk|Palanquin|Palanquin+Dark|Pangolin|Paprika|Parisienne|Passero+One|Passion+One|Pathway+Gothic+One|Patrick+Hand|Patrick+Hand+SC|Pattaya|Patua+One|Pavanam|Paytone+One|Peddana|Peralta|Permanent+Marker|Petit+Formal+Script|Petrona|Philosopher|Piedra|Pinyon+Script|Pirata+One|Plaster|Play|Playball|Playfair+Display|Playfair+Display+SC|Podkova|Poiret+One|Poller+One|Poly|Pompiere|Pontano+Sans|Poor+Story|Poppins|Port+Lligat+Sans|Port+Lligat+Slab|Pragati+Narrow|Prata|Preahvihear|Press+Start+2P|Pridi|Princess+Sofia|Prociono|Prompt|Prosto+One|Proza+Libre|PT+Mono|PT+Sans|PT+Sans+Caption|PT+Sans+Narrow|PT+Serif|PT+Serif+Caption|Public+Sans|Puritan|Purple+Purse|Quando|Quantico|Quattrocento|Quattrocento+Sans|Questrial|Quicksand|Quintessential|Qwigley|Racing+Sans+One|Radley|Rajdhani|Rakkas|Raleway|Raleway+Dots|Ramabhadra|Ramaraja|Rambla|Rammetto+One|Ranchers|Rancho|Ranga|Rasa|Rationale|Ravi+Prakash|Red+Hat+Display|Red+Hat+Text|Redressed|Reem+Kufi|Reenie+Beanie|Revalia|Rhodium+Libre|Ribeye|Ribeye+Marrow|Righteous|Risque|Roboto|Roboto+Condensed|Roboto+Mono|Roboto+Slab|Rochester|Rock+Salt|Rokkitt|Romanesco|Ropa+Sans|Rosario|Rosarivo|Rouge+Script|Rozha+One|Rubik|Rubik+Mono+One|Ruda|Rufina|Ruge+Boogie|Ruluko|Rum+Raisin|Ruslan+Display|Russo+One|Ruthie|Rye|Sacramento|Sahitya|Sail|Saira|Saira+Condensed|Saira+Extra+Condensed|Saira+Semi+Condensed|Saira+Stencil+One|Salsa|Sanchez|Sancreek|Sansita|Sarabun|Sarala|Sarina|Sarpanch|Satisfy|Sawarabi+Gothic|Sawarabi+Mincho|Scada|Scheherazade|Schoolbell|Scope+One|Seaweed+Script|Secular+One|Sedgwick+Ave|Sedgwick+Ave+Display|Sevillana|Seymour+One|Shadows+Into+Light|Shadows+Into+Light+Two|Shanti|Share|Share+Tech|Share+Tech+Mono|Shojumaru|Short+Stack|Shrikhand|Siemreap|Sigmar+One|Signika|Signika+Negative|Simonetta|Single+Day|Sintony|Sirin+Stencil|Six+Caps|Skranji|Slabo+13px|Slabo+27px|Slackey|Smokum|Smythe|Sniglet|Snippet|Snowburst+One|Sofadi+One|Sofia|Solway|Song+Myung|Sonsie+One|Sorts+Mill+Goudy|Source+Code+Pro|Source+Sans+Pro|Source+Serif+Pro|Space+Mono|Special+Elite|Spectral|Spectral+SC|Spicy+Rice|Spinnaker|Spirax|Squada+One|Sree+Krushnadevaraya|Sriracha|Srisakdi|Staatliches|Stalemate|Stalinist+One|Stardos+Stencil|Stint+Ultra+Condensed|Stint+Ultra+Expanded|Stoke|Strait|Stylish|Sue+Ellen+Francisco|Suez+One|Sulphur+Point|Sumana|Sunflower|Sunshiney|Supermercado+One|Sura|Suranna|Suravaram|Suwannaphum|Swanky+and+Moo+Moo|Syncopate|Tajawal|Tangerine|Taprom|Tauri|Taviraj|Teko|Telex|Tenali+Ramakrishna|Tenor+Sans|Text+Me+One|Thasadith|The+Girl+Next+Door|Tienne|Tillana|Timmana|Tinos|Titan+One|Titillium+Web|Tomorrow|Trade+Winds|Trirong|Trocchi|Trochut|Trykker|Tulpen+One|Turret+Road|Ubuntu|Ubuntu+Condensed|Ubuntu+Mono|Ultra|Uncial+Antiqua|Underdog|Unica+One|UnifrakturCook|UnifrakturMaguntia|Unkempt|Unlock|Unna|Vampiro+One|Varela|Varela+Round|Vast+Shadow|Vesper+Libre|Vibes|Vibur|Vidaloka|Viga|Voces|Volkhov|Vollkorn|Vollkorn+SC|Voltaire|VT323|Waiting+for+the+Sunrise|Wallpoet|Walter+Turncoat|Warnes|Wellfleet|Wendy+One|Wire+One|Work+Sans|Yanone+Kaffeesatz|Yantramanav|Yatra+One|Yellowtail|Yeon+Sung|Yeseva+One|Yesteryear|Yrsa|ZCOOL+KuaiLe|ZCOOL+QingKe+HuangYou|ZCOOL+XiaoWei|Zeyada|Zhi+Mang+Xing|Zilla+Slab|Zilla+Slab+Highlight".split(
+          "|"
+        ),
+      };
+
+      var Fontselect = (function () {
+        function Fontselect(original, o) {
+          if (!o.systemFonts) {
+            o.systemFonts = [];
+          }
+          if (!o.localFonts) {
+            o.localFonts = [];
+          }
+          if (!o.googleFonts) {
+            o.googleFonts = [];
+          }
+
+          this.options = o;
+          this.$original = $(original);
+          this.setupHtml();
+          this.getVisibleFonts();
+          this.bindEvents();
+          this.query = "";
+          this.keyActive = false;
+          this.searchBoxHeight = 0;
+
+          var font = this.$original.val();
+          if (font) {
+            this.updateSelected();
+            this.addFontLink(font);
+          }
+        }
+
+        Fontselect.prototype = {
+          keyDown: function (e) {
+            function stop(e) {
+              e.preventDefault();
+              e.stopPropagation();
+            }
+
+            this.keyActive = true;
+            if (e.keyCode == 27) {
+              // Escape
+              stop(e);
+              this.toggleDropdown("hide");
+              return;
+            }
+            if (e.keyCode == 38) {
+              // Cursor up
+              stop(e);
+              var $li = $("li.active", this.$results),
+              $pli = $li.prev("li");
+              if ($pli.length > 0) {
+                $li.removeClass("active");
+                this.$results.scrollTop(
+                  $pli.addClass("active")[0].offsetTop -
+                  this.searchBoxHeight
+                );
+              }
+              return;
+            }
+            if (e.keyCode == 40) {
+              // Cursor down
+              stop(e);
+              var $li = $("li.active", this.$results),
+              $nli = $li.next("li");
+              if ($nli.length > 0) {
+                $li.removeClass("active");
+                this.$results.scrollTop(
+                  $nli.addClass("active")[0].offsetTop -
+                  this.searchBoxHeight
+                );
+              }
+              return;
+            }
+            if (e.keyCode == 13) {
+              // Enter
+              stop(e);
+              $("li.active", this.$results).trigger("click");
+              return;
+            }
+
+            this.query += String.fromCharCode(e.keyCode).toLowerCase();
+            var $found = $(
+              "li[data-query^='" + this.query + "']"
+            ).first();
+            if ($found.length > 0) {
+              $("li.active", this.$results).removeClass("active");
+              this.$results.scrollTop(
+                $found.addClass("active")[0].offsetTop
+              );
+            }
+          },
+          keyUp: function (e) {
+            this.keyActive = false;
+          },
+
+          bindEvents: function () {
+            var self = this;
+            $("li", this.$results)
+            .click(__bind(this.selectFont, this))
+            .mouseover(__bind(this.activateFont, this));
+            this.$select.click(
+              __bind(function () {
+                self.toggleDropdown("show");
+              }, this)
+            );
+
+            // Call like so: $("input[name='ffSelect']").trigger('setFont', [fontFamily, fontWeight]);
+            this.$original.on(
+              "setFont",
+              function (evt, fontFamily, fontWeight) {
+                fontWeight = fontWeight || 400;
+
+                var fontSpec =
+                fontFamily.replace(/ /g, "+") +
+                (fontWeight == 400 ? "" : ":" + fontWeight);
+
+                var $li = $(
+                  "li[data-value='" + fontSpec + "']",
+                  self.$results
+                );
+                if ($li.length == 0) {
+                  fontSpec = fontFamily.replace(/ /g, "+");
+                }
+                $li = $(
+                  "li[data-value='" + fontSpec + "']",
+                  self.$results
+                );
+                $("li.active", self.$results).removeClass("active");
+                $li.addClass("active");
+
+                self.$original.val(fontSpec);
+                self.updateSelected();
+                self.addFontLink($li.data("value"));
+                //$li.trigger('click'); // Removed 2019-10-16
               }
             );
-            data = json;
-            loadSkins();
-            Dashboard.hideLoadingMsg();
-            checkEasterEggs();
-          }
-        );
-
-        function loadSkins() {
-          var cssOptions = document.getElementById("cssOptions");
-
-          data.forEach((element) => {
-            var opt = document.createElement("option");
-            opt.appendChild(document.createTextNode(element.name));
-            opt.value = element.defaultCss;
-            cssOptions.appendChild(opt);
-          });
-          updateSelectors();
-          loadConfig();
-          preloadPreviews();
-        }
-
-        function loadOptions(skin) {
-          var html = "";
-          html += '<div data-role="controlgroup">';
-          skin.categories.forEach((categorie) => {
-            if (categorie.options.length != 0) {
-              html += getSection(categorie.name);
-            }
-
-            categorie.options.forEach((element) => {
-              if (element.type == "checkBox") {
-                html += getCheckBox(element);
-              } else if (element.type == "colorPicker") {
-                html += getColorPicker(element);
-              } else if (element.type == "number") {
-                html += getNumber(element);
-              } else if (element.type == "selector") {
-                html += getSelector(element);
-              } else if (element.type == "slider") {
-                html += getSlider(element);
-              } else if (element.type == "googleFonts") {
-                html += getFonts();
-              }
-            });
-          });
-          html += "</fieldset>";
-          html +=
-            '<button is="emby-button" type="button" class="raised block" id="refresh-library" onclick=setSkin()><span>Set Skin</span></button>';
-          html += loadPreviews(skin);
-          html += "</div>";
-          $("#options").html(html).trigger("create");
-          generateFontPicker();
-        }
-
-        function preloadPreviews() {
-          data.forEach((skin) => {
-            if (skin.previews != undefined) {
-              skin.previews.forEach((img) => {
-                var image = new Image();
-                image.src = img.url;
-              });
-            }
-          });
-        }
-
-        function loadPreviews(skin) {
-          if (skin.previews == undefined) {
-            return "";
-          }
-          var html = "";
-
-          html += '<h2 class="sectionTitle" >Previews</h2>';
-          skin.previews.forEach((element) => {
-            html += getImage(element.url);
-            html += getImgnames(element.name);
-          });
-          return html;
-        }
-
-        function getCheckBox(option, saved) {
-          var html = "";
-          var checked = saved == "true" ? 'checked="checked"' : "";
-          var id = "chkFolder";
-          var name = option.name;
-          var css = option.css;
-          var description = option.description;
-
-          //html += '<label><input is="emby-checkbox" class="chkLibrary" type="checkbox" data-mini="true" id="' + id + '" name="' + id + '" data-value="' + value + '" '+' /><span>' + name  + '</span></label>';
-          html +=
-            '<div class="checkboxContainer checkboxContainer-withDescription"><label><input class = "checkbox" type="checkbox" is="emby-checkbox" id="' +
-            id +
-            '"name="' +
-            id +
-            '" data-css="' +
-            css +
-            '" ' +
-            checked +
-            " /><span>" +
-            name +
-            "</span>" +
-            getToolTip(option) +
-            '</label><div class="fieldDescription checkboxFieldDescription">' +
-            description +
-            "</div></div>";
-          return html;
-        }
-        function getColorPicker(option, saved) {
-          var html = "";
-          var id = "favcolor";
-          var name = option.name;
-          var defaultValue =
-            option.default == undefined ? "#000000" : option.default;
-          defaultValue = saved == undefined ? defaultValue : saved;
-          var css = option.css;
-          var description = option.description;
-          var mode = option.mode;
-          html +=
-            '<div class="inputContainer"><label><input style="height: 1em; padding: 0px; border: none;" type=color  class = "color" value="' +
-            defaultValue +
-            '"data-css = "' +
-            css +
-            '" data-mode="' +
-            mode +
-            '" id="' +
-            id +
-            '" name="' +
-            id +
-            '" label="' +
-            name +
-            '"  /><span>' +
-            name +
-            "</span>" +
-            getToolTip(option) +
-            '</label><div class="fieldDescription">' +
-            description +
-            "</div></div>";
-          return html;
-        }
-        function getNumber(option, saved) {
-          var html = "";
-          var id = "number";
-          var name = option.name;
-          var css = option.css;
-          var step = option.step == undefined ? 1 : option.step;
-          var defaultValue = option.default;
-          defaultValue = saved == undefined ? defaultValue : saved;
-          var description = option.description;
-          //html += '<label for=number><input is="emby-input" type=number value=' + defaultValue + ' class = "number" data-css = "'+ css+ '" +  data-mini="true" id="' + id + '" name="' + id + '" data-name="' + name + '" ' + ' /><span>' + name  + '</span></label><br>';
-          html +=
-            '<div class="inputContainer"><input is="emby-input" type="number" class = "number" value=' +
-            defaultValue +
-            " step=" +
-            step +
-            ' data-css = "' +
-            css +
-            '"  id="' +
-            id +
-            '" name="' +
-            id +
-            '"  min="0" max="300" label="' +
-            name +
-            '" /><div class="fieldDescription">' +
-            description +
-            "</div></div>";
-          return html;
-        }
-        function getSelector(option, saved) {
-          var html = "";
-          var id = "selector";
-          var name = option.name;
-          var css = option.css;
-          var defaultValue = option.default;
-          var description = option.description;
-          //html += '<label for=number><input is="emby-input" type=number value=' + defaultValue + ' class = "number" data-css = "'+ css+ '" +  data-mini="true" id="' + id + '" name="' + id + '" data-name="' + name + '" ' + ' /><span>' + name  + '</span></label><br>';
-          html +=
-            '<div class="selectContainer"><select is="emby-select"  data-css= "' +
-            css +
-            '"class="selector" label="' +
-            name +
-            '">' +
-            getOptions(option, saved) +
-            "</select></div>";
-          return html;
-        }
-        var savedGoogleFont;
-
-        function getFonts(saved) {
-          var html = "";
-         
-          var name = "Change Font";
-          var css =
-            "html {font-family:  '$',sans-serif ;  } body,h1,h2,h3 { font-family: '$' ,sans-serif;}";
-          var description = "Change the default fonts";
-          //html += '<label for=number><input is="emby-input" type=number value=' + defaultValue + ' class = "number" data-css = "'+ css+ '" +  data-mini="true" id="' + id + '" name="' + id + '" data-name="' + name + '" ' + ' /><span>' + name  + '</span></label><br>';
-          //html += '<div class="selectContainer" ><select is="emby-select" id = "googleFonts" data-css= "'+css + '"class="selector" label="'+name+' " onchange="updateFontPreview()">' + getFontOptions(fonts)+'</select></div>'
-          //html += '<div class = "fontPreview"> This is a preview </div>';
-          //html += '<div id="font-picker"></div><div class = "apply-font"> This is a preview </div>'
-          html += '	<div class="selectContainer"><label>Change Font </label><br> <input id="font-picker" type="text"> </div>';
-          if(saved != undefined){
-            savedGoogleFont = saved;
-          }         
-          hasGoogleFont = true;
-          return html;
-        }
-
-        function getFontPreview(categories, option, selections, name) {
-          var html = "";
-          if (name == "Fonts") {
-            html +=
-              '<div class="fontCont><p style="font-family: ' +
-              categories.option.selections.value +
-              ';">Hello, This is your selected font-family.</p></div>"';
-            return html;
-          } else {
-            return "";
-          }
-        }
-
-        function getOptions(option, saved) {
-          var html = "";
-          var selections = option.selections;
-          var css = option.css;
-          selections.forEach((element) => {
-            var name = element.name;
-            var value = element.value;
-            var selected = saved == name ? 'selected="selected"' : "";
-            html +=
-              '<option data-css= "' +
-              css +
-              '"value=' +
-              value +
-              selected +
-              ">" +
-              name +
-              "</option>";
-          });
-          return html;
-        }
-        function getSlider(option, saved) {
-          var html = "";
-          var id = "slider";
-          var name = option.name;
-          var css = option.css;
-          var step = option.step == undefined ? 1 : option.step;
-          var defaultValue = option.default;
-          defaultValue = saved == undefined ? defaultValue : saved;
-          var description = option.description;
-          html +=
-            '<div class="inputContainer"><input is="emby-slider" type="range" class = "slider" value=' +
-            defaultValue +
-            " step=" +
-            step +
-            ' data-css = "' +
-            css +
-            '"  id="' +
-            id +
-            '" name="' +
-            id +
-            '"  min="0" max="300" label="' +
-            name +
-            '" /><div class="fieldDescription">' +
-            description +
-            "</div></div>";
-          return html;
-        }
-        function getImage(url) {
-          var html = "";
-          html +=
-            '<fieldset class="verticalSection verticalSection-extrabottompadding"><img src="' +
-            url +
-            '">';
-          return html;
-        }
-
-        function getImgnames(name) {
-          var html = "";
-          html += "<legend>" + name + "</legend></fieldset>";
-          return html;
-        }
-
-        function getSection(name) {
-          var html = "";
-          html += "</fieldset>";
-          html +=
-            '<fieldset class="verticalSection verticalSection-extrabottompadding">';
-          html += "<legend>" + name + "</legend>";
-          return html;
-        }
-
-        function getToolTip(option) {
-          if (option.preview == undefined) {
-            return "";
-          }
-          html = "";
-          html +=
-            '<div class="tooltip"><span class="material-icons">info</span><span class="tooltiptext">';
-          html += '<img src="' + option.preview + '">';
-          html += "</span></div>";
-          return html;
-        }
-
-         async function  createCss() {
-          var savedHtml = "";
-          //process checkbox
-          var css = $("#cssOptions").val();
-          savedHtml += document.getElementById("cssOptions").innerHTML;
-          var checkboxes = document.getElementsByClassName("checkbox");
-          for (let element of checkboxes) {
-            savedHtml += element.innerHTML;
-          }
-          var selectedOptions = $(".checkbox:checked")
-            .map(function () {
-              return this.getAttribute("data-css");
-            })
-            .get();
-
-          selectedOptions.forEach((element) => {
-            css += element + "\n";
-          });
-
-          //proccess selector
-          var selectors = document.getElementsByClassName("selector");
-          for (let element of selectors) {
-            css +=
-              element.getAttribute("data-css").replaceAll("$", element.value) +
-              "\n";
-            savedHtml += element.outerHTML;
-          }
-
-          //process colorPicker
-          selectedOptions.forEach((element) => {
-            css += element + "\n";
-          });
-          var colorPickers = document.getElementsByClassName("color");
-          for (let element of colorPickers) {
-            savedHtml += element.outerHTML;
-            if (element.getAttribute("data-mode") == "rgba") {
-              var rgbColor = hexToRgb(element.value);
-              color = rgbColor.r + "," + rgbColor.g + "," + rgbColor.b;
-            } else {
-              color = element.value;
-            }
-            css +=
-              element.getAttribute("data-css").replaceAll("$", color) + "\n";
-          }
-
-          //procces number selector
-          var numberSelectors = document.getElementsByClassName("number");
-          for (let element of numberSelectors) {
-            savedHtml += element.outerHTML;
-            css +=
-              element.getAttribute("data-css").replaceAll("$", element.value) +
-              "\n";
-          }
-
-          //procces slider
-          var sliders = document.getElementsByClassName("slider");
-          for (let element of sliders) {
-            css +=
-              element.getAttribute("data-css").replaceAll("$", element.value) +
-              "\n";
-          }
-         
-
-          //procces google Fonts
-         
-          if(document.getElementById("font-picker") != undefined){
-            var font = document.getElementById("font-picker").value
-            var url = "https://fonts.googleapis.com/css?family=" + font;
-            var promise  = await fetch(url);
-             css += await promise.text();
-             css += "html {font-family:  '$',sans-serif ;  } body,h1,h2,h3 { font-family: '$' ,sans-serif;}".replaceAll("$",font.replaceAll("+"," "));
-
-            return css;
-          //  fetch(url).then(function (response) {
-          //   response.text().then(function (text) {
-          //     css += text;
-          //     return css;
-          //   });
-          // });
-          
-        }else{
-          return css;
-        }
-          
-
-        }
-
-        
-
-        function generateFontPicker() {
-          if (hasGoogleFont) {
-            $(function () {
-              $("#font-picker").fontselect({
-              style: "font-select",
-              placeholder: "Select a font",
-              placeholderSearch: "Search...",
-              searchable: true,
-              lookahead: 2,
-              systemFonts: "Arial|Helvetica+Neue|Courier+New|Times+New+Roman|Comic+Sans+MS|Impact".split(
-                "|"
-              ),
-              localFontsUrl: "/fonts/",
-              googleFonts: "Aclonica|Allan|Annie+Use+Your+Telescope|Anonymous+Pro|Allerta+Stencil|Allerta|Amaranth|Anton|Architects+Daughter|Arimo|Artifika|Arvo|Asset|Astloch|Bangers|Bentham|Bevan|Bigshot+One|Bowlby+One|Bowlby+One+SC|Brawler|Buda:300|Cabin|Calligraffitti|Candal|Cantarell|Cardo|Carter+One|Caudex|Cedarville+Cursive|Cherry+Cream+Soda|Chewy|Coda|Coming+Soon|Copse|Corben|Cousine|Covered+By+Your+Grace|Crafty+Girls|Crimson+Text|Crushed|Cuprum|Damion|Dancing+Script|Dawning+of+a+New+Day|Didact+Gothic|Droid+Sans|Droid+Serif|EB+Garamond|Expletus+Sans|Fontdiner+Swanky|Forum|Francois+One|Geo|Give+You+Glory|Goblin+One|Goudy+Bookletter+1911|Gravitas+One|Gruppo|Hammersmith+One|Holtwood+One+SC|Homemade+Apple|Inconsolata|Indie+Flower|Irish+Grover|Istok+Web|Josefin+Sans|Josefin+Slab|Judson|Jura|Just+Another+Hand|Just+Me+Again+Down+Here|Kameron|Kenia|Kranky|Kreon|Kristi|La+Belle+Aurore|Lato|League+Script|Lekton|Limelight|Lobster|Lobster+Two|Lora|Love+Ya+Like+A+Sister|Loved+by+the+King|Luckiest+Guy|Maiden+Orange|Mako|Maven+Pro|Maven+Pro:900|Meddon|MedievalSharp|Megrim|Merriweather|Metrophobic|Michroma|Miltonian+Tattoo|Miltonian|Modern+Antiqua|Monofett|Molengo|Mountains+of+Christmas|Muli:300|Muli|Neucha|Neuton|News+Cycle|Nixie+One|Nobile|Nova+Cut|Nova+Flat|Nova+Mono|Nova+Oval|Nova+Round|Nova+Script|Nova+Slim|Nova+Square|Nunito|Old+Standard+TT|Open+Sans:300|Open+Sans|Open+Sans:600|Open+Sans:800|Open+Sans+Condensed:300|Orbitron|Orbitron:500|Orbitron:700|Orbitron:900|Oswald|Over+the+Rainbow|Reenie+Beanie|Pacifico|Patrick+Hand|Paytone+One|Permanent+Marker|Philosopher|Play|Playfair+Display|Podkova|Press+Start+2P|Puritan|Quattrocento|Quattrocento+Sans|Radley|Raleway:100|Redressed|Rock+Salt|Rokkitt|Ruslan+Display|Schoolbell|Shadows+Into+Light|Shanti|Sigmar+One|Six+Caps|Slackey|Smythe|Sniglet|Sniglet:800|Special+Elite|Stardos+Stencil|Sue+Elen+Francisco|Sunshiney|Swanky+and+Moo+Moo|Syncopate|Tangerine|Tenor+Sans|Terminal+Dosis+Light|The+Girl+Next+Door|Tinos|Ubuntu|Ultra|Unkempt|UnifrakturCook:bold|UnifrakturMaguntia|Varela|Varela+Round|Vibur|Vollkorn|VT323|Waiting+for+the+Sunrise|Wallpoet|Walter+Turncoat|Wire+One|Yanone+Kaffeesatz|Yeseva+One|Zeyada".split(
-                "|"
-              ),
-            });
-
-            if(savedGoogleFont != undefined){
-              $('#font-picker').trigger('setFont',[savedGoogleFont,900])
-            } 
-            });
-            
-
-                    
-          }
-        }
-
-        function applyFont(font) {
-          console.log("You selected font: " + font);
-
-          // Replace + signs with spaces for css
-          font = font.replace(/\+/g, " ");
-
-          // Split font into family and weight
-          font = font.split(":");
-
-          var fontFamily = font[0];
-          var fontWeight = font[1] || 400;
-
-          // Set selected font on paragraphs
-          $("fontPreview").css({
-            fontFamily: "'" + fontFamily + "'",
-            fontWeight: fontWeight,
-          });
-        }
-
-        $("#font-picker")
-          .fontselect()
-          .on("change", function () {
-            applyFont(this.value);
-          });
-
-        function getFontOptions(fonts) {
-          var html = "";
-          var selections = fonts.items;
-          selections.forEach((element) => {
-            var name = element.family;
-            var value = element.family;
-            //var selected = saved==name?'selected="selected"' : "";
-            var selected = "";
-            html +=
-              "<option value=" + value + selected + ">" + name + "</option>";
-          });
-          return html;
-        }
-
-        function updateFontPreview() {
-          var preview = document.getElementsByClassName("fontPreview")[0];
-          var selectedOption = document.getElementById("googleFonts")
-            .selectedOptions[0].innerText;
-          var url =
-            "https://fonts.googleapis.com/css?family=" +
-            selectedOption.replaceAll(" ", "+");
-
-          fetch(url).then(function (response) {
-            response.text().then(function (text) {
-              var sheet = document.createElement("style");
-              sheet.innerHTML =
-                text + ".fontPreview{font-family:'" + selectedOption + "'}";
-              preview.appendChild(sheet);
-            });
-          });
-        }
-
-        function updateSelectors() {
-          var selected = document.getElementById("cssOptions");
-          var description = document.getElementById("description");
-          data.forEach((element) => {
-            if (element.name == selected.selectedOptions[0].innerText) {
-              loadOptions(element);
-              description.innerHTML = element.description;
-            }
-          });
-        }
-
-        var config = undefined;
-
-        function loadConfig() {
-          var pluginId = "e9ca8b8e-ca6d-40e7-85dc-58e536df8eb3";
-
-          ApiClient.getPluginConfiguration(pluginId).then(function (
-            savedConfig
-          ) {
-            config = savedConfig;
-
-            if (!config) {
-              config.selectedSkin = "";
-              config.options = [];
-            }
-            loadSavedOptions();
-          });
-        }
-
-        function loadSavedOptions() {
-          var skin = undefined;
-          data.forEach((element) => {
-            if (element.defaultCss == config.selectedSkin) {
-              skin = element;
-            }
-          });
-          if (skin == undefined) {
-            return;
-          }
-          var count = 0;
-          for (let option of document.getElementById("cssOptions").options) {
-            if (option.value == config.selectedSkin) {
-              document.getElementById("cssOptions").selectedIndex = count;
-            }
-            count++;
-          }
-
-          var savedOptions = config.options;
-          var html = "";
-          html += '<div data-role="controlgroup">';
-          skin.categories.forEach((categorie) => {
-            if (categorie.options.length != 0) {
-              html += getSection(categorie.name);
-            }
-            var options = categorie.options;
-
-            options.forEach((element) => {
-              var savedValue = undefined;
-              var count = 0;
-              savedOptions.forEach((savedOption) => {
-                if (element.css == savedOption) {
-                  savedValue = savedOptions[count + 1];
-                }
-                count++;
-              });
-              if (element.type == "checkBox") {
-                html += getCheckBox(element, savedValue);
-              } else if (element.type == "colorPicker") {
-                html += getColorPicker(element, savedValue);
-              } else if (element.type == "number") {
-                html += getNumber(element, savedValue);
-              } else if (element.type == "selector") {
-                html += getSelector(element, savedValue);
-              } else if (element.type == "slider") {
-                html += getSlider(element, savedValue);
-              } else if (element.type == "googleFonts") {
-                html += getFonts(savedValue);
-              }
-            });
-          });
-          html += "</fieldset>";
-          html +=
-            '<button is="emby-button" type="button" class="raised block" id="refresh-library" onclick=setSkin()><span>Set Skin</span></button>';
-          html += loadPreviews(skin);
-          html += "</div>";
-          $("#options").html(html).trigger("create");
-          generateFontPicker();
-
-        }
-
-        function saveConfig() {
-          var pluginId = "e9ca8b8e-ca6d-40e7-85dc-58e536df8eb3";
-          config.selectedSkin = $("#cssOptions").val();
-
-          var options = [];
-          var count = 0;
-          data[
-            document.getElementById("cssOptions").selectedIndex
-          ].categories.forEach((categorie) => {
-            categorie.options.forEach((option) => {
-              options[count] = option.css;
-              options[count + 1] = getValue(option);
-              count += 2;
-            });
-          });
-          config.options = options;
-
-          ApiClient.getPluginConfiguration(pluginId).then(function (oldConfig) {
-            oldConfig = config;
-            ApiClient.updatePluginConfiguration(pluginId, oldConfig).then(
-              function (res) {
-                Dashboard.processPluginConfigurationUpdateResult(res);
-              }
-            );
-          });
-        }
-        function getValue(option) {
-          var result = "";
-          switch (option.type) {
-            case "checkBox":
-              Array.from(
-                document.getElementsByClassName("checkbox emby-checkbox")
-              ).forEach((element) => {
-                if (option.css == element.getAttribute("data-css")) {
-                  result = element.checked ? "true" : "false";
-                }
-                
-              });
-              break;
-            case "number":
-              Array.from(
-                document.getElementsByClassName("number emby-input")
-              ).forEach((element) => {
-                if (option.css == element.getAttribute("data-css")) {
-                  result = element.value;
-                }
-                
-              });
-              break;
-            case "colorPicker":
-              Array.from(document.getElementsByClassName("color")).forEach(
-                (element) => {
-                  if (option.css == element.getAttribute("data-css")) {
-                    result = element.value;
-                  }
-                }
+            this.$original.on("change", function () {
+              self.updateSelected();
+              self.addFontLink(
+                $("li.active", self.$results).data("value")
               );
-              break;
-            case "slider":
-              Array.from(document.getElementsByClassName("slider")).forEach(
-                (element) => {
-                  if (option.css == element.getAttribute("data-css")) {
-                    result = element.value;
+            });
+
+            if (this.options.searchable) {
+              this.$input.on("keyup", function () {
+                var q = this.value.toLowerCase();
+                // Hide options that don't match query:
+                $("li", self.$results).each(function () {
+                  if ($(this).text().toLowerCase().indexOf(q) == -1) {
+                    $(this).hide();
+                  } else {
+                    $(this).show();
                   }
-                }
-              );
-              break;
-            case "selector":
-              Array.from(
-                document.getElementsByClassName(
-                  "selector emby-select-withcolor emby-select"
-                )
-              ).forEach((element) => {
-                if (option.css == element.getAttribute("data-css")) {
-                  result = element.selectedOptions[0].innerText;
-                }
-              
-            
-              });
-              break;
-            case "googleFonts":
-                result += document.getElementById("font-picker").value.replaceAll("+"," ");
-                break;
-          }
-          return result;
-        }
-        function checkEasterEggs() {
-          var d = new Date();
-
-          if (
-            (d.getDate() >= 18 && d.getMonth() == 11) ||
-            (d.getDate() <= 10 && d.getMonth() == 0)
-          ) {
-            startChristmas();
-          }
-        }
-
-        function startChristmas() {
-          $.getScript(
-            "https://unpkg.com/magic-snowflakes/dist/snowflakes.min.js",
-            function () {
-              var sf = new Snowflakes({
-                count: 200,
-                maxSize: 25,
-              });
-            }
-          );
-        }
-        async function setSkin() {
-          saveConfig();
-          ApiClient.getServerConfiguration().then(function (config) {
-            ApiClient.updateServerConfiguration(config).then(function () {
-              ApiClient.getNamedConfiguration("branding").then(async function (
-                brandingConfig
-              ) {
-                brandingConfig.CustomCss = await createCss();
-                ApiClient.updateNamedConfiguration(
-                  "branding",
-                  brandingConfig
-                ).then(function () {
-                  Dashboard.processServerConfigurationUpdateResult();
-                  window.location.reload(true);
                 });
               });
+            }
+
+            $(document).on("click", function (e) {
+              if (
+                $(e.target).closest("." + self.options.style).length === 0
+              ) {
+                self.toggleDropdown("hide");
+              }
             });
-          });
-        }
-        function hexToRgb(hex) {
-          // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
-          var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
-          hex = hex.replace(shorthandRegex, function (m, r, g, b) {
-            return r + r + g + g + b + b;
-          });
-          var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-          return result
-            ? {
-                r: parseInt(result[1], 16),
-                g: parseInt(result[2], 16),
-                b: parseInt(result[3], 16),
-              }
-            : null;
-        }
-      </script>
-      <script type="text/javascript">
-        var plugin = {
-          guid: "e9ca8b8e-ca6d-40e7-85dc-58e536df8eb3",
-        };
-        $("#configPage").on("pageshow", function () {
-          Dashboard.showLoadingMsg();
-          ApiClient.getPluginConfiguration(plugin.guid).then(function (config) {
-            $("#cssOptions").val(config.selectedCss).change();
-            Dashboard.hideLoadingMsg();
-          });
-        });
-        $("#configForm").on("submit", function () {
-          Dashboard.showLoadingMsg();
-          ApiClient.getPluginConfiguration(plugin.guid).then(function (config) {
-            config.selectedCss = $("#cssOptions").val();
-            ApiClient.updatePluginConfiguration(plugin.guid, config).then(
-              function (result) {
-                Dashboard.processPluginConfigurationUpdateResult(result);
-              }
-            );
-          });
-          return false;
-        });
-      </script>
-      <style>
-        img {
-          width: 100%;
-        }
-        fieldset.verticalSection.verticalSection-extrabottompadding {
-          border: 1px solid #333333;
-          border-radius: 10px;
-        }
-        legend {
-          font-size: 135%;
-        }
+          },
 
-        
-      </style>
-      <style>
-        .tooltip {
-          position: relative;
-          display: inline-block;
-          border-bottom: 1px dotted black;
-        }
+          toggleDropdown: function (hideShow) {
+            if (hideShow === "hide") {
+              // Make inactive
+              this.$element.off("keydown keyup");
+              this.query = "";
+              this.keyActive = false;
+              this.$element.removeClass("font-select-active");
+              this.$drop.hide();
+              clearInterval(this.visibleInterval);
+            } else {
+              // Make active
+              this.$element.on("keydown", __bind(this.keyDown, this));
+              this.$element.on("keyup", __bind(this.keyUp, this));
+              this.$element.addClass("font-select-active");
+              this.$drop.show();
 
-        .tooltip .tooltiptext {
-          visibility: hidden;
-          width: 400px;
-          background-color: transparent;
-          color: #fff;
-          text-align: center;
-          border-radius: 6px;
-          padding: 5px 0;
+              this.visibleInterval = setInterval(
+                __bind(this.getVisibleFonts, this),
+                500
+              );
+              this.searchBoxHeight = this.$search.outerHeight();
+              this.moveToSelected();
 
-          /* Position the tooltip */
-          position: absolute;
-          z-index: 1;
-          top: -5px;
-          left: 105%;
-        }
-
-        .tooltip:hover .tooltiptext {
-          visibility: visible;
-        }
-        input#favcolor {
-          width: 100%;
-          height: 3em !important;
-          background: none;
-          border: none;
-        }
-      </style>
-      <style>
-        
-        .font-select * {
-          -webkit-box-sizing: border-box;
-          box-sizing: border-box;
-        }
-
-        .font-select {
-          font-size: 16px;
-          width: 240px;
-          position: relative;
-          display: inline-block;
-          border-color: red;
-        }
-
-        .font-select .fs-drop {
-          position: absolute;
-          top: 38px;
-          left: 0;
-          z-index: 999;
-          background: #292929;
-          color: #fff;
-          width: 100%;
-          border: 1px solid #aaa;
-          border-top: 0;
-          box-shadow: 0 4px 5px rgba(0, 0, 0, 0.15);
-          border-radius: 0 0 4px 4px;
-       
-        }
-
-        .font-select > span {
-          outline: 0;
-          border-radius: 0.25rem;
-          border: 1px solid #ced4da;
-          display: block;
-          overflow: hidden;
-          white-space: nowrap;
-          text-overflow: ellipsis;
-          height: 38px;
-          line-height: 32px;
-          padding: 3px 8px 3px 8px;
-          color: #fff;
-          background: #292929
-            url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3e%3cpath fill='%23303030' d='M2 0L0 2h4zm0 5L0 3h4z'/%3e%3c/svg%3e")
-            no-repeat right 0.75rem center/8px 10px;
-          -webkit-user-select: none;
-          -moz-user-select: none;
-          -ms-user-select: none;
-          user-select: none;
-        }
-
-        .font-select-active > span {
-          background-color: #292929;
-          border-bottom-left-radius: 0;
-          border-bottom-right-radius: 0;
-        }
-
-        .font-select .fs-results {
-          max-height: 190px;
-          overflow-x: hidden;
-          overflow-y: auto;
-          margin: 0;
-          padding: 0;
-        }
-
-        .font-select .fs-results li {
-          line-height: 80%;
-          padding: 8px;
-          margin: 0;
-          list-style: none;
-          font-size: 18px;
-          white-space: nowrap;
-        }
-
-        .font-select .fs-results li.active {
-          background-color: #3875d7;
-          color: #fff;
-          cursor: pointer;
-        }
-
-        .font-select .fs-search {
-          border-bottom: 1px solid #aaa;
-          padding: 4px;
-          background: #292929;
-        }
-
-        .font-select .fs-search input {
-          padding: 7px;
-          width: 100%;
-          border: 1px solid #aaa;
-          font: 16px Helvetica, Sans-serif;
-          box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.06);
-          border-radius: 0.1875rem;
-          background: #292929;
-          color: #fff
-        }
-      </style>
-
-      <script>
-        /*
-         * jQuery.fontselect - A font selector for system fonts, local fonts and Google Web Fonts
-         *
-         * Made by Arjan Haverkamp, https://www.webgear.nl
-         * Based on original by Tom Moor, http://tommoor.com
-         * Copyright (c) 2011 Tom Moor, 2019-2020 Arjan Haverkamp
-         * MIT Licensed
-         * @version 0.9 - 2020-02-12
-         * @url https://github.com/av01d/fontselect-jquery-plugin
-         */
-
-        (function ($) {
-          var fontsLoaded = {};
-
-          $.fn.fontselect = function (options) {
-            var __bind = function (fn, me) {
-              return function () {
-                return fn.apply(me, arguments);
-              };
-            };
-
-            var settings = {
-              style: "font-select",
-              placeholder: "Select a font",
-              placeholderSearch: "Search...",
-              searchable: true,
-              lookahead: 2,
-              googleApi: "https://fonts.googleapis.com/css?family=",
-              localFontsUrl: "/fonts/",
-              systemFonts: "Arial|Helvetica+Neue|Courier+New|Times+New+Roman|Comic+Sans+MS|Verdana|Impact".split(
-                "|"
-              ),
-              googleFonts: "ABeeZee|Abel|Abhaya+Libre|Abril+Fatface|Aclonica|Acme|Actor|Adamina|Advent+Pro|Aguafina+Script|Akronim|Aladin|Alata|Alatsi|Aldrich|Alef|Alegreya|Alegreya+Sans|Alegreya+Sans+SC|Alegreya+SC|Aleo|Alex+Brush|Alfa+Slab+One|Alice|Alike|Alike+Angular|Allan|Allerta|Allerta+Stencil|Allura|Almarai|Almendra|Almendra+Display|Almendra+SC|Amarante|Amaranth|Amatic+SC|Amethysta|Amiko|Amiri|Amita|Anaheim|Andada|Andika|Angkor|Annie+Use+Your+Telescope|Anonymous+Pro|Antic|Antic+Didone|Antic+Slab|Anton|Arapey|Arbutus|Arbutus+Slab|Architects+Daughter|Archivo|Archivo+Black|Archivo+Narrow|Aref+Ruqaa|Arima+Madurai|Arimo|Arizonia|Armata|Arsenal|Artifika|Arvo|Arya|Asap|Asap+Condensed|Asar|Asset|Assistant|Astloch|Asul|Athiti|Atma|Atomic+Age|Aubrey|Audiowide|Autour+One|Average|Average+Sans|Averia+Gruesa+Libre|Averia+Libre|Averia+Sans+Libre|Averia+Serif+Libre|B612|B612+Mono|Bad+Script|Bahiana|Bahianita|Bai+Jamjuree|Baloo|Baloo+Bhai|Baloo+Bhaijaan|Baloo+Bhaina|Baloo+Chettan|Baloo+Da|Baloo+Paaji|Baloo+Tamma|Baloo+Tammudu|Baloo+Thambi|Balthazar|Bangers|Barlow|Barlow+Condensed|Barlow+Semi+Condensed|Barriecito|Barrio|Basic|Baskervville|Battambang|Baumans|Bayon|Be+Vietnam|Bebas+Neue|Belgrano|Bellefair|Belleza|BenchNine|Bentham|Berkshire+Swash|Beth+Ellen|Bevan|Big+Shoulders+Display|Big+Shoulders+Text|Bigelow+Rules|Bigshot+One|Bilbo|Bilbo+Swash+Caps|BioRhyme|BioRhyme+Expanded|Biryani|Bitter|Black+And+White+Picture|Black+Han+Sans|Black+Ops+One|Blinker|Bokor|Bonbon|Boogaloo|Bowlby+One|Bowlby+One+SC|Brawler|Bree+Serif|Bubblegum+Sans|Bubbler+One|Buda|Buenard|Bungee|Bungee+Hairline|Bungee+Inline|Bungee+Outline|Bungee+Shade|Butcherman|Butterfly+Kids|Cabin|Cabin+Condensed|Cabin+Sketch|Caesar+Dressing|Cagliostro|Cairo|Calistoga|Calligraffitti|Cambay|Cambo|Candal|Cantarell|Cantata+One|Cantora+One|Capriola|Cardo|Carme|Carrois+Gothic|Carrois+Gothic+SC|Carter+One|Catamaran|Caudex|Caveat|Caveat+Brush|Cedarville+Cursive|Ceviche+One|Chakra+Petch|Changa|Changa+One|Chango|Charm|Charmonman|Chathura|Chau+Philomene+One|Chela+One|Chelsea+Market|Chenla|Cherry+Cream+Soda|Cherry+Swash|Chewy|Chicle|Chilanka|Chivo|Chonburi|Cinzel|Cinzel+Decorative|Clicker+Script|Coda|Coda+Caption|Codystar|Coiny|Combo|Comfortaa|Coming+Soon|Concert+One|Condiment|Content|Contrail+One|Convergence|Cookie|Copse|Corben|Cormorant|Cormorant+Garamond|Cormorant+Infant|Cormorant+SC|Cormorant+Unicase|Cormorant+Upright|Courgette|Courier+Prime|Cousine|Coustard|Covered+By+Your+Grace|Crafty+Girls|Creepster|Crete+Round|Crimson+Pro|Crimson+Text|Croissant+One|Crushed|Cuprum|Cute+Font|Cutive|Cutive+Mono|Damion|Dancing+Script|Dangrek|Darker+Grotesque|David+Libre|Dawning+of+a+New+Day|Days+One|Dekko|Delius|Delius+Swash+Caps|Delius+Unicase|Della+Respira|Denk+One|Devonshire|Dhurjati|Didact+Gothic|Diplomata|Diplomata+SC|DM+Sans|DM+Serif+Display|DM+Serif+Text|Do+Hyeon|Dokdo|Domine|Donegal+One|Doppio+One|Dorsa|Dosis|Dr+Sugiyama|Duru+Sans|Dynalight|Eagle+Lake|East+Sea+Dokdo|Eater|EB+Garamond|Economica|Eczar|El+Messiri|Electrolize|Elsie|Elsie+Swash+Caps|Emblema+One|Emilys+Candy|Encode+Sans|Encode+Sans+Condensed|Encode+Sans+Expanded|Encode+Sans+Semi+Condensed|Encode+Sans+Semi+Expanded|Engagement|Englebert|Enriqueta|Erica+One|Esteban|Euphoria+Script|Ewert|Exo|Exo+2|Expletus+Sans|Fahkwang|Fanwood+Text|Farro|Farsan|Fascinate|Fascinate+Inline|Faster+One|Fasthand|Fauna+One|Faustina|Federant|Federo|Felipa|Fenix|Finger+Paint|Fira+Code|Fira+Mono|Fira+Sans|Fira+Sans+Condensed|Fira+Sans+Extra+Condensed|Fjalla+One|Fjord+One|Flamenco|Flavors|Fondamento|Fontdiner+Swanky|Forum|Francois+One|Frank+Ruhl+Libre|Freckle+Face|Fredericka+the+Great|Fredoka+One|Freehand|Fresca|Frijole|Fruktur|Fugaz+One|Gabriela|Gaegu|Gafata|Galada|Galdeano|Galindo|Gamja+Flower|Gayathri|Gelasio|Gentium+Basic|Gentium+Book+Basic|Geo|Geostar|Geostar+Fill|Germania+One|GFS+Didot|GFS+Neohellenic|Gidugu|Gilda+Display|Girassol|Give+You+Glory|Glass+Antiqua|Glegoo|Gloria+Hallelujah|Goblin+One|Gochi+Hand|Gorditas|Gothic+A1|Goudy+Bookletter+1911|Graduate|Grand+Hotel|Gravitas+One|Great+Vibes|Grenze|Griffy|Gruppo|Gudea|Gugi|Gupter|Gurajada|Habibi|Halant|Hammersmith+One|Hanalei|Hanalei+Fill|Handlee|Hanuman|Happy+Monkey|Harmattan|Headland+One|Heebo|Henny+Penny|Hepta+Slab|Herr+Von+Muellerhoff|Hi+Melody|Hind|Hind+Guntur|Hind+Madurai|Hind+Siliguri|Hind+Vadodara|Holtwood+One+SC|Homemade+Apple|Homenaje|Ibarra+Real+Nova|IBM+Plex+Mono|IBM+Plex+Sans|IBM+Plex+Sans+Condensed|IBM+Plex+Serif|Iceberg|Iceland|IM+Fell+Double+Pica|IM+Fell+Double+Pica+SC|IM+Fell+DW+Pica|IM+Fell+DW+Pica+SC|IM+Fell+English|IM+Fell+English+SC|IM+Fell+French+Canon|IM+Fell+French+Canon+SC|IM+Fell+Great+Primer|IM+Fell+Great+Primer+SC|Imprima|Inconsolata|Inder|Indie+Flower|Inika|Inknut+Antiqua|Inria+Serif|Irish+Grover|Istok+Web|Italiana|Italianno|Itim|Jacques+Francois|Jacques+Francois+Shadow|Jaldi|Jim+Nightshade|Jockey+One|Jolly+Lodger|Jomhuria|Jomolhari|Josefin+Sans|Josefin+Slab|Joti+One|Jua|Judson|Julee|Julius+Sans+One|Junge|Jura|Just+Another+Hand|Just+Me+Again+Down+Here|K2D|Kadwa|Kalam|Kameron|Kanit|Kantumruy|Karla|Karma|Katibeh|Kaushan+Script|Kavivanar|Kavoon|Kdam+Thmor|Keania+One|Kelly+Slab|Kenia|Khand|Khmer|Khula|Kirang+Haerang|Kite+One|Knewave|Kodchasan|KoHo|Kosugi|Kosugi+Maru|Kotta+One|Koulen|Kranky|Kreon|Kristi|Krona+One|Krub|Kulim+Park|Kumar+One|Kumar+One+Outline|Kurale|La+Belle+Aurore|Lacquer|Laila|Lakki+Reddy|Lalezar|Lancelot|Lateef|Lato|League+Script|Leckerli+One|Ledger|Lekton|Lemon|Lemonada|Lexend+Deca|Lexend+Exa|Lexend+Giga|Lexend+Mega|Lexend+Peta|Lexend+Tera|Lexend+Zetta|Libre+Barcode+128|Libre+Barcode+128+Text|Libre+Barcode+39|Libre+Barcode+39+Extended|Libre+Barcode+39+Extended+Text|Libre+Barcode+39+Text|Libre+Baskerville|Libre+Caslon+Display|Libre+Caslon+Text|Libre+Franklin|Life+Savers|Lilita+One|Lily+Script+One|Limelight|Linden+Hill|Literata|Liu+Jian+Mao+Cao|Livvic|Lobster|Lobster+Two|Londrina+Outline|Londrina+Shadow|Londrina+Sketch|Londrina+Solid|Long+Cang|Lora|Love+Ya+Like+A+Sister|Loved+by+the+King|Lovers+Quarrel|Luckiest+Guy|Lusitana|Lustria|M+PLUS+1p|M+PLUS+Rounded+1c|Ma+Shan+Zheng|Macondo|Macondo+Swash+Caps|Mada|Magra|Maiden+Orange|Maitree|Major+Mono+Display|Mako|Mali|Mallanna|Mandali|Manjari|Mansalva|Manuale|Marcellus|Marcellus+SC|Marck+Script|Margarine|Markazi+Text|Marko+One|Marmelad|Martel|Martel+Sans|Marvel|Mate|Mate+SC|Maven+Pro|McLaren|Meddon|MedievalSharp|Medula+One|Meera+Inimai|Megrim|Meie+Script|Merienda|Merienda+One|Merriweather|Merriweather+Sans|Metal|Metal+Mania|Metamorphous|Metrophobic|Michroma|Milonga|Miltonian|Miltonian+Tattoo|Mina|Miniver|Miriam+Libre|Mirza|Miss+Fajardose|Mitr|Modak|Modern+Antiqua|Mogra|Molengo|Molle|Monda|Monofett|Monoton|Monsieur+La+Doulaise|Montaga|Montez|Montserrat|Montserrat+Alternates|Montserrat+Subrayada|Moul|Moulpali|Mountains+of+Christmas|Mouse+Memoirs|Mr+Bedfort|Mr+Dafoe|Mr+De+Haviland|Mrs+Saint+Delafield|Mrs+Sheppards|Mukta|Mukta+Mahee|Mukta+Malar|Mukta+Vaani|Muli|Mystery+Quest|Nanum+Brush+Script|Nanum+Gothic|Nanum+Gothic+Coding|Nanum+Myeongjo|Nanum+Pen+Script|Neucha|Neuton|New+Rocker|News+Cycle|Niconne|Niramit|Nixie+One|Nobile|Nokora|Norican|Nosifer|Notable|Nothing+You+Could+Do|Noticia+Text|Noto+Sans|Noto+Sans+HK|Noto+Sans+JP|Noto+Sans+KR|Noto+Sans+SC|Noto+Sans+TC|Noto+Serif|Noto+Serif+JP|Noto+Serif+KR|Noto+Serif+SC|Noto+Serif+TC|Nova+Cut|Nova+Flat|Nova+Mono|Nova+Oval|Nova+Round|Nova+Script|Nova+Slim|Nova+Square|NTR|Numans|Nunito|Nunito+Sans|Odibee+Sans|Odor+Mean+Chey|Offside|Old+Standard+TT|Oldenburg|Oleo+Script|Oleo+Script+Swash+Caps|Open+Sans:300|Open+Sans|Open+Sans:600|Open+Sans:800|Open+Sans+Condensed:300|Oranienbaum|Orbitron|Oregano|Orienta|Original+Surfer|Oswald|Over+the+Rainbow|Overlock|Overlock+SC|Overpass|Overpass+Mono|Ovo|Oxygen|Oxygen+Mono|Pacifico|Padauk|Palanquin|Palanquin+Dark|Pangolin|Paprika|Parisienne|Passero+One|Passion+One|Pathway+Gothic+One|Patrick+Hand|Patrick+Hand+SC|Pattaya|Patua+One|Pavanam|Paytone+One|Peddana|Peralta|Permanent+Marker|Petit+Formal+Script|Petrona|Philosopher|Piedra|Pinyon+Script|Pirata+One|Plaster|Play|Playball|Playfair+Display|Playfair+Display+SC|Podkova|Poiret+One|Poller+One|Poly|Pompiere|Pontano+Sans|Poor+Story|Poppins|Port+Lligat+Sans|Port+Lligat+Slab|Pragati+Narrow|Prata|Preahvihear|Press+Start+2P|Pridi|Princess+Sofia|Prociono|Prompt|Prosto+One|Proza+Libre|PT+Mono|PT+Sans|PT+Sans+Caption|PT+Sans+Narrow|PT+Serif|PT+Serif+Caption|Public+Sans|Puritan|Purple+Purse|Quando|Quantico|Quattrocento|Quattrocento+Sans|Questrial|Quicksand|Quintessential|Qwigley|Racing+Sans+One|Radley|Rajdhani|Rakkas|Raleway|Raleway+Dots|Ramabhadra|Ramaraja|Rambla|Rammetto+One|Ranchers|Rancho|Ranga|Rasa|Rationale|Ravi+Prakash|Red+Hat+Display|Red+Hat+Text|Redressed|Reem+Kufi|Reenie+Beanie|Revalia|Rhodium+Libre|Ribeye|Ribeye+Marrow|Righteous|Risque|Roboto|Roboto+Condensed|Roboto+Mono|Roboto+Slab|Rochester|Rock+Salt|Rokkitt|Romanesco|Ropa+Sans|Rosario|Rosarivo|Rouge+Script|Rozha+One|Rubik|Rubik+Mono+One|Ruda|Rufina|Ruge+Boogie|Ruluko|Rum+Raisin|Ruslan+Display|Russo+One|Ruthie|Rye|Sacramento|Sahitya|Sail|Saira|Saira+Condensed|Saira+Extra+Condensed|Saira+Semi+Condensed|Saira+Stencil+One|Salsa|Sanchez|Sancreek|Sansita|Sarabun|Sarala|Sarina|Sarpanch|Satisfy|Sawarabi+Gothic|Sawarabi+Mincho|Scada|Scheherazade|Schoolbell|Scope+One|Seaweed+Script|Secular+One|Sedgwick+Ave|Sedgwick+Ave+Display|Sevillana|Seymour+One|Shadows+Into+Light|Shadows+Into+Light+Two|Shanti|Share|Share+Tech|Share+Tech+Mono|Shojumaru|Short+Stack|Shrikhand|Siemreap|Sigmar+One|Signika|Signika+Negative|Simonetta|Single+Day|Sintony|Sirin+Stencil|Six+Caps|Skranji|Slabo+13px|Slabo+27px|Slackey|Smokum|Smythe|Sniglet|Snippet|Snowburst+One|Sofadi+One|Sofia|Solway|Song+Myung|Sonsie+One|Sorts+Mill+Goudy|Source+Code+Pro|Source+Sans+Pro|Source+Serif+Pro|Space+Mono|Special+Elite|Spectral|Spectral+SC|Spicy+Rice|Spinnaker|Spirax|Squada+One|Sree+Krushnadevaraya|Sriracha|Srisakdi|Staatliches|Stalemate|Stalinist+One|Stardos+Stencil|Stint+Ultra+Condensed|Stint+Ultra+Expanded|Stoke|Strait|Stylish|Sue+Ellen+Francisco|Suez+One|Sulphur+Point|Sumana|Sunflower|Sunshiney|Supermercado+One|Sura|Suranna|Suravaram|Suwannaphum|Swanky+and+Moo+Moo|Syncopate|Tajawal|Tangerine|Taprom|Tauri|Taviraj|Teko|Telex|Tenali+Ramakrishna|Tenor+Sans|Text+Me+One|Thasadith|The+Girl+Next+Door|Tienne|Tillana|Timmana|Tinos|Titan+One|Titillium+Web|Tomorrow|Trade+Winds|Trirong|Trocchi|Trochut|Trykker|Tulpen+One|Turret+Road|Ubuntu|Ubuntu+Condensed|Ubuntu+Mono|Ultra|Uncial+Antiqua|Underdog|Unica+One|UnifrakturCook|UnifrakturMaguntia|Unkempt|Unlock|Unna|Vampiro+One|Varela|Varela+Round|Vast+Shadow|Vesper+Libre|Vibes|Vibur|Vidaloka|Viga|Voces|Volkhov|Vollkorn|Vollkorn+SC|Voltaire|VT323|Waiting+for+the+Sunrise|Wallpoet|Walter+Turncoat|Warnes|Wellfleet|Wendy+One|Wire+One|Work+Sans|Yanone+Kaffeesatz|Yantramanav|Yatra+One|Yellowtail|Yeon+Sung|Yeseva+One|Yesteryear|Yrsa|ZCOOL+KuaiLe|ZCOOL+QingKe+HuangYou|ZCOOL+XiaoWei|Zeyada|Zhi+Mang+Xing|Zilla+Slab|Zilla+Slab+Highlight".split(
-                "|"
-              ),
-            };
-
-            var Fontselect = (function () {
-              function Fontselect(original, o) {
-                if (!o.systemFonts) {
-                  o.systemFonts = [];
-                }
-                if (!o.localFonts) {
-                  o.localFonts = [];
-                }
-                if (!o.googleFonts) {
-                  o.googleFonts = [];
-                }
-                this.options = o;
-                this.$original = $(original);
-                this.setupHtml();
-                this.getVisibleFonts();
-                this.bindEvents();
-                this.query = "";
-                this.keyActive = false;
-                this.searchBoxHeight = 0;
-
-                var font = this.$original.val();
-                if (font) {
-                  this.updateSelected();
-                  this.addFontLink(font);
-                }
-              }
-
-              Fontselect.prototype = {
-                keyDown: function (e) {
-                  function stop(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                  }
-
-                  this.keyActive = true;
-                  if (e.keyCode == 27) {
-                    // Escape
-                    stop(e);
-                    this.toggleDropdown("hide");
-                    return;
-                  }
-                  if (e.keyCode == 38) {
-                    // Cursor up
-                    stop(e);
-                    var $li = $("li.active", this.$results),
-                      $pli = $li.prev("li");
-                    if ($pli.length > 0) {
-                      $li.removeClass("active");
-                      this.$results.scrollTop(
-                        $pli.addClass("active")[0].offsetTop -
-                          this.searchBoxHeight
-                      );
-                    }
-                    return;
-                  }
-                  if (e.keyCode == 40) {
-                    // Cursor down
-                    stop(e);
-                    var $li = $("li.active", this.$results),
-                      $nli = $li.next("li");
-                    if ($nli.length > 0) {
-                      $li.removeClass("active");
-                      this.$results.scrollTop(
-                        $nli.addClass("active")[0].offsetTop -
-                          this.searchBoxHeight
-                      );
-                    }
-                    return;
-                  }
-                  if (e.keyCode == 13) {
-                    // Enter
-                    stop(e);
-                    $("li.active", this.$results).trigger("click");
-                    return;
-                  }
-                  this.query += String.fromCharCode(e.keyCode).toLowerCase();
-                  var $found = $(
-                    "li[data-query^='" + this.query + "']"
-                  ).first();
-                  if ($found.length > 0) {
-                    $("li.active", this.$results).removeClass("active");
-                    this.$results.scrollTop(
-                      $found.addClass("active")[0].offsetTop
-                    );
-                  }
-                },
-
-                keyUp: function (e) {
-                  this.keyActive = false;
-                },
-
-                bindEvents: function () {
-                  var self = this;
-
-                  $("li", this.$results)
-                    .click(__bind(this.selectFont, this))
-                    .mouseover(__bind(this.activateFont, this));
-
-                  this.$select.click(
-                    __bind(function () {
-                      self.toggleDropdown("show");
-                    }, this)
-                  );
-
-                  // Call like so: $("input[name='ffSelect']").trigger('setFont', [fontFamily, fontWeight]);
-                  this.$original.on(
-                    "setFont",
-                    function (evt, fontFamily, fontWeight) {
-                      fontWeight = fontWeight || 400;
-
-                      var fontSpec =
-                        fontFamily.replace(/ /g, "+") +
-                        (fontWeight == 400 ? "" : ":" + fontWeight);
-
-                      var $li = $(
-                        "li[data-value='" + fontSpec + "']",
-                        self.$results
-                      );
-                      if ($li.length == 0) {
-                        fontSpec = fontFamily.replace(/ /g, "+");
-                      }
-                      $li = $(
-                        "li[data-value='" + fontSpec + "']",
-                        self.$results
-                      );
-                      $("li.active", self.$results).removeClass("active");
-                      $li.addClass("active");
-
-                      self.$original.val(fontSpec);
-                      self.updateSelected();
-                      self.addFontLink($li.data("value"));
-                      //$li.trigger('click'); // Removed 2019-10-16
-                    }
-                  );
-                  this.$original.on("change", function () {
-                    self.updateSelected();
-                    self.addFontLink(
-                      $("li.active", self.$results).data("value")
-                    );
-                  });
-
-                  if (this.options.searchable) {
-                    this.$input.on("keyup", function () {
-                      var q = this.value.toLowerCase();
-                      // Hide options that don't match query:
-                      $("li", self.$results).each(function () {
-                        if ($(this).text().toLowerCase().indexOf(q) == -1) {
-                          $(this).hide();
-                        } else {
-                          $(this).show();
-                        }
-                      });
-                    });
-                  }
-
-                  $(document).on("click", function (e) {
-                    if (
-                      $(e.target).closest("." + self.options.style).length === 0
-                    ) {
-                      self.toggleDropdown("hide");
-                    }
-                  });
-                },
-
-                toggleDropdown: function (hideShow) {
-                  if (hideShow === "hide") {
-                    // Make inactive
-                    this.$element.off("keydown keyup");
-                    this.query = "";
-                    this.keyActive = false;
-                    this.$element.removeClass("font-select-active");
-                    this.$drop.hide();
-                    clearInterval(this.visibleInterval);
-                  } else {
-                    // Make active
-                    this.$element.on("keydown", __bind(this.keyDown, this));
-                    this.$element.on("keyup", __bind(this.keyUp, this));
-                    this.$element.addClass("font-select-active");
-                    this.$drop.show();
-
-                    this.visibleInterval = setInterval(
-                      __bind(this.getVisibleFonts, this),
-                      500
-                    );
-                    this.searchBoxHeight = this.$search.outerHeight();
-                    this.moveToSelected();
-
-                    /*
-          if (this.options.searchable) {
-            // Focus search box
-            $this.$input.focus();
+              /*
+              if (this.options.searchable) {
+              // Focus search box
+              $this.$input.focus();
+            }
+            */
           }
-          */
-                  }
-                },
+        },
 
-                selectFont: function () {
-                  var font = $("li.active", this.$results).data("value");
-                  this.$original.val(font).change();
-                  this.updateSelected();
-                  this.toggleDropdown("hide"); // Hide dropdown
-                },
+        selectFont: function () {
+          var font = $("li.active", this.$results).data("value");
+          this.$original.val(font).change();
+          this.updateSelected();
+          this.toggleDropdown("hide"); // Hide dropdown
+        },
 
-                moveToSelected: function () {
-                  var font = this.$original.val().replace(/ /g, "+");
-                  var $li = font
-                    ? $("li[data-value='" + font + "']", this.$results)
-                    : ($li = $("li", this.$results).first());
-                  this.$results.scrollTop(
-                    $li.addClass("active")[0].offsetTop - this.searchBoxHeight
-                  );
-                },
+        moveToSelected: function () {
+          var font = this.$original.val().replace(/ /g, "+");
+          var $li = font
+          ? $("li[data-value='" + font + "']", this.$results)
+          : ($li = $("li", this.$results).first());
+          this.$results.scrollTop(
+            $li.addClass("active")[0].offsetTop - this.searchBoxHeight
+          );
+        },
 
-                activateFont: function (e) {
-                  if (this.keyActive) {
-                    return;
-                  }
-                  $("li.active", this.$results).removeClass("active");
-                  $(e.target).addClass("active");
-                },
+        activateFont: function (e) {
+          if (this.keyActive) {
+            return;
+          }
+          $("li.active", this.$results).removeClass("active");
+          $(e.target).addClass("active");
+        },
 
-                updateSelected: function () {
-                  var font = this.$original.val();
-                  $("span", this.$element)
-                    .text(this.toReadable(font))
-                    .css(this.toStyle(font));
-                },
+        updateSelected: function () {
+          var font = this.$original.val();
+          $("span", this.$element)
+          .text(this.toReadable(font))
+          .css(this.toStyle(font));
+        },
 
-                setupHtml: function () {
-                  this.$original.hide();
-                  this.$element = $("<div>", { class: this.options.style });
-                  this.$select = $(
-                    '<span tabindex="0">' + this.options.placeholder + "</span>"
-                  );
-                  this.$search = $("<div>", { class: "fs-search" });
-                  this.$input = $("<input>", { type: "text" });
-                  if (this.options.placeholderSearch) {
-                    this.$input.attr(
-                      "placeholder",
-                      this.options.placeholderSearch
-                    );
-                  }
-                  this.$search.append(this.$input);
-                  this.$drop = $("<div>", { class: "fs-drop" });
-                  this.$results = $("<ul>", { class: "fs-results" });
-                  this.$original.after(
-                    this.$element.append(this.$select, this.$drop)
-                  );
-                  this.options.searchable && this.$drop.append(this.$search);
-                  this.$drop
-                    .append(this.$results.append(this.fontsAsHtml()))
-                    .hide();
-                },
+        setupHtml: function () {
+          this.$original.hide();
+          this.$element = $("<div>", { class: this.options.style });
+          this.$select = $(
+            '<span tabindex="0">' + this.options.placeholder + "</span>"
+          );
+          this.$search = $("<div>", { class: "fs-search" });
+          this.$input = $("<input>", { type: "text" });
+          if (this.options.placeholderSearch) {
+            this.$input.attr(
+              "placeholder",
+              this.options.placeholderSearch
+            );
+          }
+          this.$search.append(this.$input);
+          this.$drop = $("<div>", { class: "fs-drop" });
+          this.$results = $("<ul>", { class: "fs-results" });
+          this.$original.after(
+            this.$element.append(this.$select, this.$drop)
+          );
+          this.options.searchable && this.$drop.append(this.$search);
+          this.$drop
+          .append(this.$results.append(this.fontsAsHtml()))
+          .hide();
+        },
 
-                fontsAsHtml: function () {
-                  var i,
-                    r,
-                    s,
-                    style,
-                    h = "";
-                  var systemFonts = this.options.systemFonts;
-                  var localFonts = this.options.localFonts;
-                  var googleFonts = this.options.googleFonts;
+        fontsAsHtml: function () {
+          var i,
+          r,
+          s,
+          style,
+          h = "";
+          var systemFonts = this.options.systemFonts;
+          var localFonts = this.options.localFonts;
+          var googleFonts = this.options.googleFonts;
 
-                  for (i = 0; i < systemFonts.length; i++) {
-                    r = this.toReadable(systemFonts[i]);
-                    s = this.toStyle(systemFonts[i]);
-                    style = "font-family:" + s["font-family"];
-                    if (
-                      (localFonts.length > 0 || googleFonts.length > 0) &&
-                      i == systemFonts.length - 1
-                    ) {
-                      style += ";border-bottom:1px solid #444"; // Separator after last system font
-                    }
-                    h +=
-                      '<li data-value="' +
-                      systemFonts[i] +
-                      '" data-query="' +
-                      systemFonts[i].toLowerCase() +
-                      '" style="' +
-                      style +
-                      '">' +
-                      r +
-                      "</li>";
-                  }
+          for (i = 0; i < systemFonts.length; i++) {
+            r = this.toReadable(systemFonts[i]);
+            s = this.toStyle(systemFonts[i]);
+            style = "font-family:" + s["font-family"];
+            if (
+              (localFonts.length > 0 || googleFonts.length > 0) &&
+              i == systemFonts.length - 1
+            ) {
+              style += ";border-bottom:1px solid #444"; // Separator after last system font
+            }
+            h +=
+            '<li data-value="' +
+            systemFonts[i] +
+            '" data-query="' +
+            systemFonts[i].toLowerCase() +
+            '" style="' +
+            style +
+            '">' +
+            r +
+            "</li>";
+          }
 
-                  for (i = 0; i < localFonts.length; i++) {
-                    r = this.toReadable(localFonts[i]);
-                    s = this.toStyle(localFonts[i]);
-                    style = "font-family:" + s["font-family"];
-                    if (googleFonts.length > 0 && i == localFonts.length - 1) {
-                      style += ";border-bottom:1px solid #444"; // Separator after last local font
-                    }
-                    h +=
-                      '<li data-value="' +
-                      localFonts[i] +
-                      '" data-query="' +
-                      localFonts[i].toLowerCase() +
-                      '" style="' +
-                      style +
-                      '">' +
-                      r +
-                      "</li>";
-                  }
+          for (i = 0; i < localFonts.length; i++) {
+            r = this.toReadable(localFonts[i]);
+            s = this.toStyle(localFonts[i]);
+            style = "font-family:" + s["font-family"];
+            if (googleFonts.length > 0 && i == localFonts.length - 1) {
+              style += ";border-bottom:1px solid #444"; // Separator after last local font
+            }
+            h +=
+            '<li data-value="' +
+            localFonts[i] +
+            '" data-query="' +
+            localFonts[i].toLowerCase() +
+            '" style="' +
+            style +
+            '">' +
+            r +
+            "</li>";
+          }
 
-                  for (i = 0; i < googleFonts.length; i++) {
-                    r = this.toReadable(googleFonts[i]);
-                    s = this.toStyle(googleFonts[i]);
-                    style =
-                      "font-family:" +
-                      s["font-family"] +
-                      ";font-weight:" +
-                      s["font-weight"];
-                    h +=
-                      '<li data-value="' +
-                      googleFonts[i] +
-                      '" data-query="' +
-                      googleFonts[i].toLowerCase() +
-                      '" style="' +
-                      style +
-                      '">' +
-                      r +
-                      "</li>";
-                  }
+          for (i = 0; i < googleFonts.length; i++) {
+            r = this.toReadable(googleFonts[i]);
+            s = this.toStyle(googleFonts[i]);
+            style =
+            "font-family:" +
+            s["font-family"] +
+            ";font-weight:" +
+            s["font-weight"];
+            h +=
+            '<li data-value="' +
+            googleFonts[i] +
+            '" data-query="' +
+            googleFonts[i].toLowerCase() +
+            '" style="' +
+            style +
+            '">' +
+            r +
+            "</li>";
+          }
 
-                  return h;
-                },
+          return h;
+        },
 
-                toReadable: function (font) {
-                  return font.replace(/[\+|:]/g, " ");
-                },
+        toReadable: function (font) {
+          return font.replace(/[\+|:]/g, " ");
+        },
 
-                toStyle: function (font) {
-                  var t = font.split(":");
-                  return {
-                    "font-family": "'" + this.toReadable(t[0]) + "'",
-                    "font-weight": t[1] || 400,
-                  };
-                },
-
-                getVisibleFonts: function () {
-                  if (this.$results.is(":hidden")) {
-                    return;
-                  }
-
-                  var fs = this;
-                  var top = this.$results.scrollTop();
-                  var bottom = top + this.$results.height();
-
-                  if (this.options.lookahead) {
-                    var li = $("li", this.$results).first().height();
-                    bottom += li * this.options.lookahead;
-                  }
-
-                  $("li:visible", this.$results).each(function () {
-                    var ft = $(this).position().top + top;
-                    var fb = ft + $(this).height();
-
-                    if (fb >= top && ft <= bottom) {
-                      fs.addFontLink($(this).data("value"));
-                    }
-                  });
-                },
-
-                addFontLink: function (font) {
-                  if (fontsLoaded[font]) {
-                    return;
-                  }
-                  fontsLoaded[font] = true;
-
-                  if (this.options.googleFonts.indexOf(font) > -1) {
-                    $("link:last").after(
-                      '<link href="' +
-                        this.options.googleApi +
-                        font +
-                        '" rel="stylesheet" type="text/css">'
-                    );
-                  } else if (this.options.localFonts.indexOf(font) > -1) {
-                    font = this.toReadable(font);
-                    $("head").append(
-                      "<style> @font-face { font-family:'" +
-                        font +
-                        "'; font-style:normal; font-weight:400; src:local('" +
-                        font +
-                        "'), url('" +
-                        this.options.localFontsUrl +
-                        font +
-                        ".woff') format('woff'); } </style>"
-                    );
-                  }
-                  // System fonts need not be loaded!
-                },
-              }; // End prototype
-
-              return Fontselect;
-            })();
-
-            return this.each(function () {
-              // If options exist, merge them
-              if (options) {
-                $.extend(settings, options);
-              }
-
-              return new Fontselect(this, settings);
-            });
+        toStyle: function (font) {
+          var t = font.split(":");
+          return {
+            "font-family": "'" + this.toReadable(t[0]) + "'",
+            "font-weight": t[1] || 400,
           };
-        })(jQuery);
-      </script>
-    </div>
-  </body>
+        },
+
+        getVisibleFonts: function () {
+          if (this.$results.is(":hidden")) {
+            return;
+          }
+
+          var fs = this;
+          var top = this.$results.scrollTop();
+          var bottom = top + this.$results.height();
+
+          if (this.options.lookahead) {
+            var li = $("li", this.$results).first().height();
+            bottom += li * this.options.lookahead;
+          }
+
+          $("li:visible", this.$results).each(function () {
+            var ft = $(this).position().top + top;
+            var fb = ft + $(this).height();
+
+            if (fb >= top && ft <= bottom) {
+              fs.addFontLink($(this).data("value"));
+            }
+          });
+        },
+
+        addFontLink: function (font) {
+          if (fontsLoaded[font]) {
+            return;
+          }
+          fontsLoaded[font] = true;
+
+          if (this.options.googleFonts.indexOf(font) > -1) {
+            $("link:last").after(
+              '<link href="' +
+              this.options.googleApi +
+              font +
+              '" rel="stylesheet" type="text/css">'
+            );
+          } else if (this.options.localFonts.indexOf(font) > -1) {
+            font = this.toReadable(font);
+            $("head").append(
+              "<style> @font-face { font-family:'" +
+              font +
+              "'; font-style:normal; font-weight:400; src:local('" +
+              font +
+              "'), url('" +
+              this.options.localFontsUrl +
+              font +
+              ".woff') format('woff'); } </style>"
+            );
+          }
+          // System fonts need not be loaded!
+        },
+      }; // End prototype
+
+      return Fontselect;
+    })();
+
+    return this.each(function () {
+      // If options exist, merge them
+      if (options) {
+        $.extend(settings, options);
+      }
+
+      return new Fontselect(this, settings);
+    });
+  };
+})(jQuery);
+</script>
+</div>
+</body>
 </html>
