@@ -986,6 +986,7 @@
           if (!o.googleFonts) {
             o.googleFonts = [];
           }
+
           this.options = o;
           this.$original = $(original);
           this.setupHtml();
@@ -1050,6 +1051,7 @@
               $("li.active", this.$results).trigger("click");
               return;
             }
+
             this.query += String.fromCharCode(e.keyCode).toLowerCase();
             var $found = $(
               "li[data-query^='" + this.query + "']"
@@ -1061,18 +1063,15 @@
               );
             }
           },
-
           keyUp: function (e) {
             this.keyActive = false;
           },
 
           bindEvents: function () {
             var self = this;
-
             $("li", this.$results)
             .click(__bind(this.selectFont, this))
             .mouseover(__bind(this.activateFont, this));
-
             this.$select.click(
               __bind(function () {
                 self.toggleDropdown("show");
