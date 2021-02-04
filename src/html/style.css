@@ -60,20 +60,21 @@ a {
   display: flex;
 }
 .contibutorsNames {
-    padding: 1em;
-    border-radius: 15px;
-    width: fit-content;
-    max-width: 10em;
-    min-width: 10em;
-    flex-wrap: wrap;
-    height: fit-content;
-    transition: box-shadow .2s;
-    max-height: 20em;
-    min-height: 15em;
-    background-size: cover !important;
+  padding: 1em;
+  border-radius: 15px;
+  width: fit-content;
+  max-width: 10em;
+  min-width: 10em;
+  flex-wrap: wrap;
+  height: fit-content;
+  transition: all .2s;
+  max-height: 20em;
+  min-height: 15em;
+  background-size: cover !important;
 }
 .contibutorsNames:hover {
-  box-shadow: 0 0 17px -3px black;
+  box-shadow: 0 3px 5px 0px #6e6e6e;
+  transform: translateY(-2px);
 }
 .contributorsLink {
   color: #3a3a3a !important;

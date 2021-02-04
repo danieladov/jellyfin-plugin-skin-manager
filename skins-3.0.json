@@ -257,22 +257,6 @@
             "step": "0.1",
             "css": "h1 {font-size: $em;}",
             "default": "1.8"
-          },
-          {
-            "type": "colorPicker",
-            "mode": "rgba",
-            "name": "Accent color",
-            "description": "Choose a custom accent color to use with the theme.",
-            "css": ".countIndicator {background: rgba($,0.8);}.playedIndicator, .innerCardFooter /*Accenting*/.button-flat:hover {background: rgba($,0.25);}.paper-icon-button-light:hover {  background-color: rgba($,0.25) !important;}.subtitleappearance-preview {  background: linear-gradient(140deg,rgba($),#111) !important;}.navMenuOption-selected, .selectionCommandsPanel {    background: rgba($, 0.8) !important;}.raised,.fab,a[data-role='button'] {  background: rgba($, 0.8) !important;transition: all 0.2s !important;} /*Glow accent*/ .raised.homeLibraryButton {box-shadow: 0px 0px 5px rgba($, 0) !important; border: solid 1px rgba($,0) !important;}.cardOverlayContainer:hover,.dialog,..raised.homeLibraryButton:hover {  box-shadow: 0px 0px 5px rgb($) !important;  border: solid 1px rgba($,0.6) !important;}.cardOverlayContainer {  border: solid 1px rgba($,0.0) !important;}",
-            "default": "#303030"
-          },
-          {
-            "type": "colorPicker",
-            "mode": "hex",
-            "name": "SideBar Text Color",
-            "description": "Modifies the color of the left menu panel.",
-            "css": ".mainDrawer-scrollContainer { color: $; }",
-            "default": "#ffffff"
           }
         ]
       },
@@ -287,17 +271,9 @@
           },
           {
             "type": "checkBox",
-            "name": "Stylized Episode Previews",
-            "description": "The episode previews in season view are sized based on horizontal resolution. This leads to a lot of wasted space on the episode summary and a high vertical page, which requires a lot of scrolling. This code reduces the height of episode entries, which solves both problems.",
+            "name": "Compact Episode View",
+            "description": "This reduces the height of episodes of a show.",
             "css": "/* Size episode preview images in a more compact way */.listItemImage.listItemImage-large.itemAction.lazy {height: 110px;}.listItem-content {height: 115px;}.secondary.listItem-overview.listItemBodyText {height: 61px; margin: 0;}"
-          },
-          {
-            "type": "colorPicker",
-            "mode": "hex",
-            "name": "Custom Background Color",
-            "description": "Change background color.",
-            "css": ".backgroundContainer, .dialog, html { background-color: $;}",
-            "default": "rgba(0,0,0,.86)"
           }
         ]
       },
@@ -332,21 +308,58 @@
             ]
           },
           {
+            "type": "checkBox",
+            "name": "Blur episode thumbnail",
+            "description": "Blur episode thumbnail to prevent spoiler. Note: Doesn't in browser's that dont support backdrop-filter, i.e firefox(can be enabled though), opera and more(unknown).",
+            "css": " .nextUpSection.verticalSection.detailVerticalSection>div>div>div>div.cardScalable>button {filter: blur(10px);}div.listItem>div>div>button:nth-child(1) {transition: none !important;border-radius: 0px;height: 100%;width: 100%;backdrop-filter: blur(10px);}div.listItem>div>div>button:nth-child(1):hover {transition: none !important;border-radius: 0px;height: 100%;width: 100%;backdrop-filter: blur(10px);}#childrenContent>div>div>div>div.listItemImage.listItemImage-large.itemAction.lazy.non-blurhashable.lazy-image-fadein-fast>button {transition: none !important;border-radius: 0px;height: 100%;width: 100%;backdrop-filter: blur(10px);}#childrenContent>div>div>div>div.listItemImage.listItemImage-large.itemAction.lazy.non-blurhashable.lazy-image-fadein-fast>button:hover {border-radius: 0px;height: 85%;width: 85%;backdrop-filter: blur(20px);}@supports not ( (backdrop-filter: blur(10px)) or (--webkit-backdrop-filter: blur(10px))) {#childrenContent>div>div>div>div.listItemImage.listItemImage-large.itemAction.lazy.non-blurhashable.lazy-image-fadein-fast {filter: blur(10px);}}@supports not ( (backdrop-filter: blur(10px)) or (--webkit-backdrop-filter: blur(10px))) {#itemDetailPage>div.detailPageWrapperContainer>div.detailPageSecondaryContainer>div.detailPageContent>div.verticalSection.detailVerticalSection.moreFromSeasonSection.emby-scroller-container>div.padded-top-focusscale.padded-bottom-focusscale.emby-scroller>.itemsContainer>.card.overflowBackdropCard.card-hoverable.card-withuserdata>div>.cardScalable {background: rgba(0, 0, 0, .5);filter: blur(10px);transition: none !important;filter: blur(10px);}}#itemDetailPage>div.detailPageWrapperContainer>div.detailPageSecondaryContainer>div.detailPageContent>div.verticalSection.detailVerticalSection.moreFromSeasonSection.emby-scroller-container>div.padded-top-focusscale.padded-bottom-focusscale.emby-scroller>.itemsContainer>.card.overflowBackdropCard.card-hoverable.card-withuserdata>div>.cardScalable>button {border-radius: 0px;height: 0%;width: 0%;background: rgba(0, 0, 0, .5);filter: blur(10px);transition: none !important;backdrop-filter: blur(10px);}.cardScalable{overflow: hidden;}"
+          },
+          {
             "type": "colorPicker",
             "mode": "hex",
-            "name": "Right Header Color",
-            "description": "This modifies the colors of the cast, search and user buttons in the top right.",
-            "css": ".headerRight { color: $; }",
+            "name": "Button text color",
+            "description": "change button's text color.",
+            "css": ".raised{color: $;}",
+            "default": "#ffffff"
+          },
+          {
+            "type": "colorPicker",
+            "mode":"hex",
+            "name": "Button background color",
+            "description": "change background color of button.",
+            "css": ".raised{background-color: $;}",
+            "default": "#303030"
+          },
+          {
+            "type": "colorPicker",
+            "mode": "hex",
+            "name": "Idle button color-foreground",
+            "description": "This modifies the color of buttons like cast and search.",
+            "css": ".paper-icon-button-light{color: $; transititon: all .2s;}",
             "default": "#ffffff"
           },
           {
             "type": "colorPicker",
             "mode": "hex",
-            "name": "Interact Buttons Color",
-            "description": "This modifies the color of interact buttons.",
-            "css": ".paper-icon-button-light { color: $ !important; } .paper-icon-button-light:hover:not(:disabled) { color:$ !important; background-color: $ !important; } .paper-icon-button-light:focus:not(:disabled) { color:$ !important; background-color: $ !important; }",
-            "default": "#ffffff",
-            "preview": "https://github.com/LambadaCorez/custom_css_jellyfin/blob/master/ui/buttons/colored_interact_buttons/colored_buttons_example3.png?raw=true"
+            "name": "Idle button color-background",
+            "description": "This modifies the background color of buttons like cast and search.",
+            "css": ".paper-icon-button-light{background-color: $ !important; transition: all .2s;}",
+            "default": "#00FFFFFF"
+          },
+          {
+            "type": "colorPicker",
+            "mode": "hex",
+            "name": "Hover button color-foreground",
+            "description": "This modifies the color of buttons like cast and search when your cursor is on it.",
+            "css": ".paper-icon-button-light:hover{color: $ !important;}",
+            "default": "#00a4dc"
+          },
+          {
+            "type": "colorPicker",
+            "mode": "hex",
+            "name": "Hover button color-background",
+            "description": "This modifies the background color of buttons like cast and search when your cursor is on it.",
+            "css": ".paper-icon-button-light:hover{background-color: $ !important;}",
+            "default": "#00a4dc"
           },
           {
             "type": "number",
