@@ -356,7 +356,7 @@
             "default": "0"
           },
           {
-            "type": "number",
+            "type": "blurSlider",
             "name": "Backdrop Blur",
             "description": "adds blur to the backdrop images default is zero",
             "css": ":root{--bgblur: blur($px)}.backdropImage {filter: var(--bgblur);}.backgroundContainer.withBackdrop {background-color: rgba(0,0,0,0);}",
