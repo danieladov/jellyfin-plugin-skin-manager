@@ -257,7 +257,7 @@
             "step": "0.1",
             "css": "h1 {font-size: $em;}",
             "default": "1.8"
-          },
+          }
         ]
       },
       {
@@ -274,7 +274,7 @@
             "name": "Compact Episode View",
             "description": "This reduces the height of episodes of a show.",
             "css": "/* Size episode preview images in a more compact way */.listItemImage.listItemImage-large.itemAction.lazy {height: 110px;}.listItem-content {height: 115px;}.secondary.listItem-overview.listItemBodyText {height: 61px; margin: 0;}"
-          },
+          }
         ]
       },
       {
