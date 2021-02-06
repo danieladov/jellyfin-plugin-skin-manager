@@ -79,7 +79,7 @@
     updateSelectors();
     loadConfig();
     preloadPreviews();
-    
+
   }
 
   function loadOptions(skin) {
@@ -311,27 +311,18 @@
     defaultValue = saved == undefined ? defaultValue : saved;
     var description = option.description;
     html +=
-    '<div class="inputContainer"><input is="emby-slider" type="range" class = "slider" value=' +
-    defaultValue +
-    " step=" +
-    step +
-    ' data-css = "' +
-    css +
-    '"  id="' +
-    id +
-    '" name="' +
-    id +
-    '"  min="0" max="300" label="' +
-    name +
-    '" /><div class="fieldDescription">' +
-    description +
-    "</div></div>";
+    +'<div class="inputContainer">'
+    +'<input type="range" class="slider" value="'+defaultValue+'" step="'+step+'" data-css="'+css+'" id="'+id+'" name="'+id+'"  min="0" max="300" label="'+name+'">'
+    +'<div class="fieldDescription">'
+    +description+
+    +'</div>'
+    +'</div>';
     return html;
   }
 
   var blurSliderCount = 0;
   function getBlurSlider(option, saved) {
-    
+
     var html = "";
     var id = "blurSlider" + blurSliderCount;
     blurSliderCount++;
@@ -342,25 +333,10 @@
     defaultValue = saved == undefined ? defaultValue : saved;
     var description = option.description;
     html +=
-    '<div class="inputContainer"><label><span>' + name +
-    '</span></label><input is="emby-slider" type="range"  class = "slider" value=' +
-    defaultValue +
-    ' oninput = "updateBlur(' + "'" + id + "'" + ')" ' + 
-    " step=" + 
-    step +
-    ' data-css = "' +
-    css +
-    '"  id="' +
-    id +
-    '" name="' +
-    id +
-    '"label="' +
-    name +
-    '"  min="0" max="40" label="' +
-    name +
-    '" /><div class="fieldDescription">' +
-    description +
-    "</div></div>" + '<img id ="' + id+'image"' +  'src = "https://upload.wikimedia.org/wikipedia/en/5/5f/Original_Doge_meme.jpg">';
+    '<div class="inputContainer"><label><span>'+name+'</span></label><input type="range" class="slider" value="'+defaultValue+'" oninput ="updateBlur('+ "'" + id + "'" + ')"'+'step="'+step+' data-css="'+css+'" id="'+id+'" name="'+id+'" min="0" max="40" label="'+name+'">'
+    +'<div class="fieldDescription">'+description +'</div>'
+    +'</div>'
+    +'<div class="img"><img id="'+id+'image"'+'src="https://i.gifer.com/4KL.gif"></div>';
     return html;
   }
   function updateBlur(id){
@@ -370,7 +346,7 @@
   }
   function updateBlurSliders(){
     var sliders = document.getElementsByClassName("slider");
-    sliders.forEach(slider =>{
+    Array.from(sliders).forEach(slider =>{
       if(slider.id.substring(0, 10)=="blurSlider"){
         updateBlur(slider.id);
       }
@@ -470,8 +446,8 @@
     var sliders = document.getElementsByClassName("slider");
     for (let element of sliders) {
       css +=
-      element.getAttribute("data-css").replaceAll("$", element.value) +
-      "\n";
+      element.getAttribute("data-css").replaceAll("$", element.value)
+      +"\n";
     }
 
 
@@ -675,8 +651,8 @@
     html += loadPreviews(skin);
     html += "</div>";
     $("#options").html(html).trigger("create").then(updateBlurSliders());
-    
-    
+
+
 
   }
 
@@ -748,7 +724,7 @@
         }
       );
       break;
-      
+
       case "selector":
       Array.from(
         document.getElementsByClassName(
@@ -861,9 +837,10 @@
     font-size: 135%;
   }
 
+  .img{
+    overflow: hidden;
+  }
 
-  </style>
-  <style>
   .tooltip {
     position: relative;
     display: inline-block;
