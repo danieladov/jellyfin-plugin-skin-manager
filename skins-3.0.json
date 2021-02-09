@@ -225,7 +225,7 @@
             "name": "Accent color",
             "description": "Choose a custom accent color to use with the theme.",
             "css": ":root {--accent: $;}",
-            "default": "#6279cd"
+            "default": "#ffffff"
           }
         ]
       }
