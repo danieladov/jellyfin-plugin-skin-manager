@@ -124,7 +124,7 @@
   },
   {
     "name": "Kaleidochromic",
-    "author": "EdgeMentality",
+    "author": "Casper Talvio",
     "description": "This theme aims to be more colorful and minimalistic. Add-ons and custom accent colors are possible, but not entirely supported by this plug-in. Visit the github of the theme for more information.",
     "defaultCss": "@import url('https://ctalvio.github.io/Kaleidochromic/default_style.css');",
     "previews": [
@@ -176,6 +176,36 @@
             "default": "#6279cd"
           }
         ]
+      }
+    ]
+  },
+  {
+    "name": "Novachromic",
+    "author": "Casper Talvio",
+    "description": "Casper's theme for Jellyfin media server, part of the 'chromic' family",'
+    "defaultCss": "@import url('https://ctalvio.github.io/Novachromic/default_style.css');",
+    "previews":[
+    {
+      "name": "Login Page",
+      "url": ""
+    },
+    {
+      "name": "Home/Index Page",
+      "url": "https://github.com/CTalvio/Novachromic/blob/main/screenshots/one.png?raw=true"
+    },
+    {
+      "name": "Library Page",
+      "url": "https://github.com/CTalvio/Novachromic/blob/main/screenshots/six.png?raw=true"
+    },
+    {
+      "name": "Title page",
+      "url": "https://github.com/CTalvio/Novachromic/blob/main/screenshots/three.png?raw=true"
+    }
+    ],
+    "categories": [
+      {
+        "name": "Default",
+        "options": []
       }
     ]
   },
