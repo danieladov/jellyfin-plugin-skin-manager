@@ -159,6 +159,53 @@
 		}
 	]
   },
+	{
+    "name": "Novachromic",
+    "author": "EdgeMentality",
+    "description": "Novachromic is essentially Monochromic, but with another layer of overrides on top.",
+    "defaultCss": "@import url('https://ctalvio.github.io/Novachromic/default_style.css');",
+    "previews": [
+  
+      {
+        "name": "Home/Index Page",
+        "url": "https://github.com/CTalvio/Novachromic/raw/main/screenshots/one.png"
+      },
+      {
+        "name": "Library Page",
+        "url": "https://github.com/CTalvio/Novachromic/raw/main/screenshots/six.png"
+      },
+      {
+        "name": "Title page",
+        "url": "https://github.com/CTalvio/Novachromic/raw/main/screenshots/four.png"
+      },
+	  {
+        "name": "Dashboard page",
+        "url": "https://github.com/CTalvio/Novachromic/raw/main/screenshots/two.png"
+      }
+    ],
+        "options": [
+          {
+            "type": "checkBox",
+            "name": "Restore bottom bar style episode progress",
+            "description": "Don't like my transparent view progress overlay? Use this to go back to the old style.",
+            "css": "@import url('https://ctalvio.github.io/Monochromic/bottom-progress_style.css');"
+          },
+          {
+            "type": "number",
+            "name": "Modify rounding",
+            "description": "Amount of rounding. Zero is none.",
+            "css": ":root {--rounding: $px;}",
+            "default": "12"
+          },
+          {
+            "type": "colorPicker",
+            "name": "Accent color",
+            "description": "Choose a custom accent color to use with the theme.",
+            "css": ":root {--accent: $;}",
+            "default": "#ffffff"
+          }
+        ]  
+  },
   {
     "name": "JellySkin",
     "author": "prayagprajapati17",
