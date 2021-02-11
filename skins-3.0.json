@@ -181,31 +181,53 @@
   },
   {
     "name": "Novachromic",
-    "author": "Casper Talvio",
-    "description": "Casper's theme for Jellyfin media server, part of the 'chromic' family",'
+    "author": "EdgeMentality",
+    "description": "Novachromic is essentially Monochromic, but with another layer of overrides on top.",
     "defaultCss": "@import url('https://ctalvio.github.io/Novachromic/default_style.css');",
-    "previews":[
-    {
-      "name": "Login Page",
-      "url": ""
-    },
-    {
-      "name": "Home/Index Page",
-      "url": "https://github.com/CTalvio/Novachromic/blob/main/screenshots/one.png?raw=true"
-    },
-    {
-      "name": "Library Page",
-      "url": "https://github.com/CTalvio/Novachromic/blob/main/screenshots/six.png?raw=true"
-    },
-    {
-      "name": "Title page",
-      "url": "https://github.com/CTalvio/Novachromic/blob/main/screenshots/three.png?raw=true"
-    }
+    "previews": [
+  
+      {
+        "name": "Home/Index Page",
+        "url": "https://github.com/CTalvio/Novachromic/raw/main/screenshots/one.png"
+      },
+      {
+        "name": "Library Page",
+        "url": "https://github.com/CTalvio/Novachromic/raw/main/screenshots/six.png"
+      },
+      {
+        "name": "Title page",
+        "url": "https://github.com/CTalvio/Novachromic/raw/main/screenshots/four.png"
+      },
+	  {
+        "name": "Dashboard page",
+        "url": "https://github.com/CTalvio/Novachromic/raw/main/screenshots/two.png"
+      }
     ],
     "categories": [
       {
         "name": "Default",
-        "options": []
+        "options": [
+          {
+            "type": "checkBox",
+            "name": "Restore bottom bar style episode progress",
+            "description": "Don't like my transparent view progress overlay? Use this to go back to the old style.",
+            "css": "@import url('https://ctalvio.github.io/Monochromic/bottom-progress_style.css');"
+          },
+          {
+            "type": "number",
+            "name": "Modify rounding",
+            "description": "Amount of rounding. Zero is none.",
+            "css": ":root {--rounding: $px;}",
+            "default": "12"
+          },
+          {
+            "type": "colorPicker",
+            "name": "Accent color",
+            "description": "Choose a custom accent color to use with the theme.",
+            "css": ":root {--accent: $;}",
+            "default": "#ffffff"
+          }
+        ]
       }
     ]
   },

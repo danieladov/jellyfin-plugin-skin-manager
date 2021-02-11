@@ -84,6 +84,17 @@
     ]
   },
   {
+    "name": "Novachromic",
+    "author": "EdgeMentality",
+    "versions":[
+          {
+            "name": "Default",
+            "description": "Novachromic is essentially Monochromic, but with another layer of overrides on top.",
+			"css" : "@import url('https://ctalvio.github.io/Novachromic/default_style.css');"          
+          }
+		]
+	},
+  {
     "name": "JellySkin",
     "author": "prayagprajapati17",
     "versions": [

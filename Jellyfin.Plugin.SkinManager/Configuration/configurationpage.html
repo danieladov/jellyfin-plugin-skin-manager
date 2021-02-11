@@ -453,21 +453,14 @@
 
     //procces google Fonts
 
-    if(document.getElementById("font-picker") != undefined){
+    if(document.getElementById("font-picker") != undefined &&  document.getElementById("font-picker").value != "" ){
       var font = document.getElementById("font-picker").value
       var url = "https://fonts.googleapis.com/css?family=" + font;
-      var promise  = await fetch(url);
+      var promise  = await fetch(url,{mode: 'no-cors'});
       css += await promise.text();
       css += "html {font-family:  '$',sans-serif ;  } body,h1,h2,h3 { font-family: '$' ,sans-serif;}".replaceAll("$",font.replaceAll("+"," "));
 
       return css;
-      //  fetch(url).then(function (response) {
-      //   response.text().then(function (text) {
-      //     css += text;
-      //     return css;
-      //   });
-      // });
-
     }else{
       return css;
     }
@@ -650,9 +643,9 @@
     '<button is="emby-button" type="button" class="raised block" id="refresh-library" onclick=setSkin()><span>Set Skin</span></button>';
     html += loadPreviews(skin);
     html += "</div>";
-    $("#options").html(html).trigger("create").then(updateBlurSliders());
 
-
+    $("#options").html(html).trigger("create");
+    
 
   }
 
