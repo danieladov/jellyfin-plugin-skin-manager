@@ -124,7 +124,7 @@
   },
   {
     "name": "Kaleidochromic",
-    "author": "EdgeMentality",
+    "author": "Casper Talvio",
     "description": "This theme aims to be more colorful and minimalistic. Add-ons and custom accent colors are possible, but not entirely supported by this plug-in. Visit the github of the theme for more information.",
     "defaultCss": "@import url('https://ctalvio.github.io/Kaleidochromic/default_style.css');",
     "previews": [
