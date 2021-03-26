@@ -4,23 +4,13 @@
   <title>Skin Manager</title>
 </head>
 <body>
-  <div
-  data-role="page"
-  class="page type-interior pluginConfigurationPage tbsConfigurationPage"
-  data-require="emby-input,emby-button"
-  >
+  <div data-role="page" class="page type-interior pluginConfigurationPage tbsConfigurationPage" data-require="emby-input,emby-button">
   <div data-role="content">
     <div class="content-primary">
       <form class="tbsConfigurationPage">
         <div class="sectionTitleContainer flex align-items-center">
           <h2 class="sectionTitle">Skin Manager</h2>
-          <a
-          is="emby-linkbutton"
-          class="raised button-alt headerHelpButton emby-button"
-          target="_blank"
-          href="https://prayag17.github.io/jellyfin-plugin-skin-manager/src/html/help.html"
-          >Help</a
-          >
+          <a is="emby-linkbutton" class="raised button-alt headerHelpButton emby-button" target="_blank" href="https://prayag17.github.io/jellyfin-plugin-skin-manager/src/html/help.html">Help</a>
         </div>
         <div class="verticalSection">
           <p>Select the skin you want to install and click Set Skin</p>
@@ -29,18 +19,11 @@
         <div class="allOptions">
           <div class="selectContainer">
             <label for="css">Skin</label>
-            <select
-            is="emby-select"
-            id="cssOptions"
-            onchange="updateSelectors()"
-            ></select>
+            <select is="emby-select" id="cssOptions" onchange="updateSelectors()"></select>
             <br />
             <div class="fieldDescription" id="description"></div>
           </div>
-          <div
-          class="checkboxList checkboxList-verticalwrap"
-          id="options"
-          ></div>
+          <div class="checkboxList checkboxList-verticalwrap" id="options"></div>
           <br />
         </div>
       </form>
@@ -645,7 +628,7 @@
     html += "</div>";
 
     $("#options").html(html).trigger("create");
-    
+
 
   }
 
