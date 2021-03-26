@@ -185,7 +185,7 @@
     "description": "Novachromic is essentially Monochromic, but with another layer of overrides on top.",
     "defaultCss": "@import url('https://ctalvio.github.io/Novachromic/default_style.css');",
     "previews": [
-  
+
       {
         "name": "Home/Index Page",
         "url": "https://github.com/CTalvio/Novachromic/raw/main/screenshots/one.png"
@@ -198,7 +198,7 @@
         "name": "Title page",
         "url": "https://github.com/CTalvio/Novachromic/raw/main/screenshots/four.png"
       },
-	  {
+      {
         "name": "Dashboard page",
         "url": "https://github.com/CTalvio/Novachromic/raw/main/screenshots/two.png"
       }
@@ -285,7 +285,13 @@
                 "value": "morningGradient"
               }
             ]
-          }
+          },
+          {
+            "type":"checkBox",
+            "name":"Theme Logo",
+            "description":"Styles title page in such a way in which logos are used instead of Names.",
+            "css":"@import url('https://prayag17.github.io/JellySkin/Logo.css');"
+          }   
         ]
       }
     ]
