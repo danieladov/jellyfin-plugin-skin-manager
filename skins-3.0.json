@@ -239,19 +239,19 @@
     "previews": [
       {
         "name": "Login Page",
-        "url": "https://github.com/prayag17/JellySkin/raw/master/Version%204/Login.png?raw=true"
+        "url": "https://prayag17.github.io/JellySkin/img/login.jpg"
       },
       {
         "name": "Home/Index Page",
-        "url": "https://github.com/prayag17/JellySkin/raw/master/Version%204/Home.png?raw=true"
+        "url": "https://prayag17.github.io/JellySkin/img/Home.jpg"
       },
       {
         "name": "Library Page",
-        "url": "https://github.com/prayag17/JellySkin/raw/master/Version%204/lib%202.png?raw=true"
+        "url": "https://prayag17.github.io/JellySkin/img/Movies.jpg"
       },
       {
         "name": "Title page",
-        "url": "https://github.com/prayag17/JellySkin/raw/master/Version%204/title%201.png?raw=true"
+        "url": "https://prayag17.github.io/JellySkin/img/Title%20Page-Movie.jpg"
       }
     ],
     "categories": [
@@ -291,7 +291,7 @@
             "name":"Theme Logo",
             "description":"Styles title page in such a way in which logos are used instead of Names.",
             "css":"@import url('https://prayag17.github.io/JellySkin/Logo.css');"
-          }   
+          }
         ]
       }
     ]
