@@ -423,7 +423,7 @@
             "type": "number",
             "name": "Border Radius",
             "description": "Change the rounding",
-            "css": "::root{--rounding: $;} *,*::before,*::after{border-radius: var(--rounding) !important;}",
+            "css": "*,*::before,*::after{border-radius: $ !important;}",
             "default": "0"
           },
           {
