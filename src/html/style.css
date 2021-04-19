@@ -96,3 +96,12 @@ img.userImg {
   width: 50%;
   border-radius: 15px;
 }
+code {
+  display: block !important;
+  width: fit-content;
+  background: #585858;
+  color: white;
+  padding: .5rem;
+  border-radius: 5.5px;
+  border: .5px solid #999999;
+}
