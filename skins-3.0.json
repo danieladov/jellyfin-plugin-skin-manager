@@ -37,19 +37,19 @@
     "previews": [
       {
         "name": "Login Page",
-        "url": "https://github.com/prayag17/JellyFlix/raw/main/Public%20Ver%201/LoginMan.png?raw=true"
+        "url": "https://prayag17.github.io/JellyFlix/img/Login.jpg"
       },
       {
         "name": "Home/Index Page",
-        "url": "https://github.com/prayag17/JellyFlix/raw/main/Public%20Ver%201/Home.png?raw=true"
+        "url": "https://prayag17.github.io/JellyFlix/img/Home.jpg"
       },
       {
         "name": "Library Page",
-        "url": "https://github.com/prayag17/JellyFlix/raw/main/Public%20Ver%201/LibPage.png?raw=true"
+        "url": "https://prayag17.github.io/JellyFlix/img/Movies.jpg"
       },
       {
         "name": "Title page",
-        "url": "https://github.com/prayag17/JellyFlix/raw/main/Public%20Ver%201/TV-TitlePage.png?raw=true"
+        "url": "https://prayag17.github.io/JellyFlix/img/Title%20Page-TV.jpg"
       }
     ],
     "categories": [
