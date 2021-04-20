@@ -306,7 +306,8 @@
         "name": "Fonts",
         "options": [
           {
-            "type": "googleFonts"
+            "type": "googleFonts",
+			"css": "/*googleFonts*/"
           },
           {
             "type": "number",
