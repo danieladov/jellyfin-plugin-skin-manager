@@ -1,0 +1,30 @@
+<html>
+
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.js" integrity="sha512-n/4gHW3atM3QqRcbCn6ewmpxcLAHGaDjpEBu4xZd47N0W2oQ+6q7oc3PXstrJYXcbNU1OHdQ1T7pAP+gi5Yu8g==" crossorigin="anonymous"></script>
+    <script src="../js/json__compile.js"></script>
+</head>
+
+<body>
+    <div>
+        <form>
+            <input type="text" id="name" name="name">
+            <input type="text" id="author" name="author">
+            <input type=" text " id="desc" name="desc">
+            <input type=" text " id="css" name="css">
+            <h2>Images</h2>
+            <input type=" text " id="login" name="login">
+            <input type=" text " id="home" name="home">
+            <input type=" text " id="lib" name="lib">
+            <input type=" text " id="title" name="title">
+            <h2>Categories</h2>
+            <input type="button" id="add" value="Add a foryour options categorie" onclick="add__option()">
+            <input type="button" id="no_op" value="Don't have any options/addons?" onclick="no__option()">
+            <div id="cat"></div>
+            <input type="hidden" value="1" id="total_chq">
+            <input type="button" onclick="createJSON()" value="save" />
+        </form>
+    </div>
+</body>
+
+</html>
