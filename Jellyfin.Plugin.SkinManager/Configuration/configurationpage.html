@@ -39,25 +39,28 @@
       </div>
     </div>
     <script type="text/javascript">
-    var data;
-    var fonts;
-    var hasGoogleFont = false;
-    Dashboard.showLoadingMsg();
-    $.getJSON(
-      "https://raw.githubusercontent.com/prayag17/jellyfin-plugin-skin-manager/master/skins-3.0.json",
-      function (json) {
-        $.getJSON(
-          "https://www.googleapis.com/webfonts/v1/webfonts?sort=popularity&key=AIzaSyB_bPGsf0vxnpO9GmkBjeoEIQ7rE9rbNck",
-          function (jsonFonts) {
-            fonts = jsonFonts;
-          }
-        );
-        data = json;
-        loadSkins();
-        Dashboard.hideLoadingMsg();
-        checkEasterEggs();
-      }
-    );
+      var data;
+      var fonts;
+      var hasGoogleFont = false;
+    function start(){
+
+      Dashboard.showLoadingMsg();
+      $.getJSON(
+        "https://raw.githubusercontent.com/danieladov/jellyfin-plugin-skin-manager/master/skins-3.0.json",
+        function (json) {
+          $.getJSON(
+            "https://www.googleapis.com/webfonts/v1/webfonts?sort=popularity&key=AIzaSyB_bPGsf0vxnpO9GmkBjeoEIQ7rE9rbNck",
+            function (jsonFonts) {
+              fonts = jsonFonts;
+            }
+          );
+          data = json;
+          loadSkins();
+          Dashboard.hideLoadingMsg();
+          checkEasterEggs();
+        }
+      );
+    }
 
     function loadSkins() {
       var cssOptions = document.getElementById("cssOptions");
@@ -94,7 +97,7 @@
           } else if (element.type == "slider") {
             html += getSlider(element);
           } else if (element.type == "googleFonts") {
-            html += getFonts();
+            html += getFonts(element);
           } else if (element.type == "blurSlider") {
             html += getBlurSlider(element);
           }
@@ -241,7 +244,7 @@
     }
     var savedGoogleFont;
 
-    function getFonts(saved) {
+    function getFonts(option,saved) {
       var html = "";
 
       var name = "Change Font";
@@ -253,7 +256,7 @@
       //html += '<div class = "fontPreview"> This is a preview </div>';
       //html += '<div id="font-picker"></div><div class = "apply-font"> This is a preview </div>'
       //html += '	<div class="selectContainer"><label>Change Font </label><br> <input id="font-picker" type="text"> </div>';
-      html += '<div class="selectContainer"><label>Change Font </label><br> <input class="fonts">'
+      html += '<div class="selectContainer"><label>Change Font </label><br> <input class="fonts" data-css= "' + option.css + '">'
       if(saved != undefined){
         savedGoogleFont = saved;
       }
@@ -382,91 +385,91 @@
     }
 
     async function  createCss() {
-      var savedHtml = "";
-      //process checkbox
-      var css = $("#cssOptions").val();
-      savedHtml += document.getElementById("cssOptions").innerHTML;
-      var checkboxes = document.getElementsByClassName("checkbox");
-      for (let element of checkboxes) {
-        savedHtml += element.innerHTML;
-      }
-      var selectedOptions = $(".checkbox:checked")
-      .map(function () {
-        return this.getAttribute("data-css");
-      })
-      .get();
 
-      selectedOptions.forEach((element) => {
-        css += element + "\n";
-      });
-
-      //proccess selector
-      var selectors = document.getElementsByClassName("selector");
-      for (let element of selectors) {
-        css +=
-        element.getAttribute("data-css").replaceAll("$", element.value) +
-        "\n";
-        savedHtml += element.outerHTML;
-      }
-
-      //process colorPicker
-      selectedOptions.forEach((element) => {
-        css += element + "\n";
-      });
-      var colorPickers = document.getElementsByClassName("color");
-      for (let element of colorPickers) {
-        savedHtml += element.outerHTML;
-        if (element.getAttribute("data-mode") == "rgba") {
-          var rgbColor = hexToRgb(element.value);
-          color = rgbColor.r + "," + rgbColor.g + "," + rgbColor.b;
-        } else {
-          color = element.value;
+        var savedHtml = "";
+        //process checkbox
+        var css = $("#cssOptions").val();
+        savedHtml += document.getElementById("cssOptions").innerHTML;
+        var checkboxes = document.getElementsByClassName("checkbox");
+        for (let element of checkboxes) {
+          savedHtml += element.innerHTML;
         }
-        css +=
-        element.getAttribute("data-css").replaceAll("$", color) + "\n";
-      }
-
-      //procces number selector
-      var numberSelectors = document.getElementsByClassName("number");
-      for (let element of numberSelectors) {
-        savedHtml += element.outerHTML;
-        css +=
-        element.getAttribute("data-css").replaceAll("$", element.value) +
-        "\n";
-      }
-
-      //procces slider
-      var sliders = document.getElementsByClassName("slider");
-      for (let element of sliders) {
-        css +=
-        element.getAttribute("data-css").replaceAll("$", element.value)
-        +"\n";
-      }
-
-
-      //procces google Fonts
-      if(document.getElementsByTagName("fonts").count > 0 ){
-      Array.from(
-          document.getElementsByClassName(
-            "fonts"
-          )
-        ).forEach((element) => {
-          if(element.value != ""){
-            var font = element.value
-            var url = "https://fonts.googleapis.com/css?family=" + font;
-            var promise  = await fetch(url,{mode: 'no-cors'});
-            css += await promise.text();
-            css += element.getAttribute("data-css").replaceAll("$",font.replaceAll("+"," "));
-          }
+        var selectedOptions = $(".checkbox:checked")
+        .map(function () {
+          return this.getAttribute("data-css");
+        })
+        .get();
+  
+        selectedOptions.forEach((element) => {
+          css += element + "\n";
         });
+  
+        //proccess selector
+        var selectors = document.getElementsByClassName("selector");
+        for (let element of selectors) {
+          css +=
+          element.getAttribute("data-css").replaceAll("$", element.value) +
+          "\n";
+          savedHtml += element.outerHTML;
+        }
+  
+        //process colorPicker
+        selectedOptions.forEach((element) => {
+          css += element + "\n";
+        });
+        var colorPickers = document.getElementsByClassName("color");
+        for (let element of colorPickers) {
+          savedHtml += element.outerHTML;
+          if (element.getAttribute("data-mode") == "rgba") {
+            var rgbColor = hexToRgb(element.value);
+            color = rgbColor.r + "," + rgbColor.g + "," + rgbColor.b;
+          } else {
+            color = element.value;
+          }
+          css +=
+          element.getAttribute("data-css").replaceAll("$", color) + "\n";
+        }
+  
+        //procces number selector
+        var numberSelectors = document.getElementsByClassName("number");
+        for (let element of numberSelectors) {
+          savedHtml += element.outerHTML;
+          css +=
+          element.getAttribute("data-css").replaceAll("$", element.value) +
+          "\n";
+        }
+  
+        //procces slider
+        var sliders = document.getElementsByClassName("slider");
+        for (let element of sliders) {
+          css +=
+          element.getAttribute("data-css").replaceAll("$", element.value)
+          +"\n";
+        }
+  
+  
+        //procces google Fonts
+        if(document.getElementsByClassName("fonts").length > 0 ){
+        var fontPickers = Array.from(
+            document.getElementsByClassName(
+              "fonts"
+            )
+          )
+          for (var i=0 ;i<fontPickers.length;i++){ 
+            var element = fontPickers[i]
+            if(element.value != ""){
+              var url = "https://fonts.googleapis.com/css?family=" + element.value;
+              var promise =  await fetch(url)
+              var text = await promise.text()
+              css += text
+              css += element.getAttribute("data-css").replaceAll("$",element.value.replaceAll("+"," "));
+            }
+          }
+          console.log("fuera del loop")
+        }
 
-       
-
-        return css;
-      }else{
-        return css;
-      }
-
+        return css
+      
 
     }
 
@@ -474,7 +477,7 @@
 
     function generateFontPicker() {
       if (hasGoogleFont) {
-        setTimeout(100,createFontPicker())
+        createFontPicker()
       }
     }
 
@@ -483,7 +486,7 @@
             variants: false});
 
           if(savedGoogleFont != undefined){
-            $('#font').val([savedGoogleFont]).trigger('change');
+            $('input.fonts').val(savedGoogleFont).trigger('change')
           }
     }
 
@@ -621,7 +624,7 @@
           } else if (element.type == "slider") {
             html += getSlider(element, savedValue);
           } else if (element.type == "googleFonts") {
-            html += getFonts(savedValue);
+            html += getFonts(element,savedValue);
           } else if (element.type == "blurSlider") {
             html += getBlurSlider(element, savedValue);
           }
@@ -634,8 +637,7 @@
       html += "</div>";
 
       $("#options").html(html).trigger("create");
-      generateFontPicker();
-
+      generateFontPicker()
 
     }
 
@@ -764,14 +766,18 @@
           ApiClient.getNamedConfiguration("branding").then(async function (
             brandingConfig
           ) {
-            brandingConfig.CustomCss = await createCss();
-            ApiClient.updateNamedConfiguration(
-              "branding",
-              brandingConfig
-            ).then(function () {
-              Dashboard.processServerConfigurationUpdateResult();
-              window.location.reload(true);
-            });
+            createCss().then(r=>{
+              console.log("despues de then")
+              brandingConfig.CustomCss = r;
+              ApiClient.updateNamedConfiguration(
+                "branding",
+                brandingConfig
+              ).then(function () {
+                Dashboard.processServerConfigurationUpdateResult();
+                window.location.reload(true);
+              });
+
+            })
           });
         });
       });
@@ -963,451 +969,6 @@
     .font-picker{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";color:#000;pointer-events:auto}.font-picker *{-webkit-box-sizing:border-box;box-sizing:border-box}.font-picker.fp-select{display:inline-block;outline:0;border-radius:.25rem;border:1px solid #ced4da;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;line-height:28px;padding:3px 26px 3px 8px;color:#444;background:#fff url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3e%3cpath fill='%23303030' d='M2 0L0 2h4zm0 5L0 3h4z'/%3e%3c/svg%3e") no-repeat right .75rem center/8px 10px;-webkit-user-select:none;-ms-user-select:none;user-select:none;font-size:16px}.fp-row,.fp-btns{display:flex}.fp-row>input,.fp-row>select{flex:1}.fp-favorite{display:inline-block;width:24px;height:24px;margin-right:2px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1024 1024'%3E%3Cpath d='M923 283.6a260.04 260.04 0 0 0-56.9-82.8a264.4 264.4 0 0 0-84-55.5A265.34 265.34 0 0 0 679.7 125c-49.3 0-97.4 13.5-139.2 39c-10 6.1-19.5 12.8-28.5 20.1c-9-7.3-18.5-14-28.5-20.1c-41.8-25.5-89.9-39-139.2-39c-35.5 0-69.9 6.8-102.4 20.3c-31.4 13-59.7 31.7-84 55.5a258.44 258.44 0 0 0-56.9 82.8c-13.9 32.3-21 66.6-21 101.9c0 33.3 6.8 68 20.3 103.3c11.3 29.5 27.5 60.1 48.2 91c32.8 48.9 77.9 99.9 133.9 151.6c92.8 85.7 184.7 144.9 188.6 147.3l23.7 15.2c10.5 6.7 24 6.7 34.5 0l23.7-15.2c3.9-2.5 95.7-61.6 188.6-147.3c56-51.7 101.1-102.7 133.9-151.6c20.7-30.9 37-61.5 48.2-91c13.5-35.3 20.3-70 20.3-103.3c.1-35.3-7-69.6-20.9-101.9zM512 814.8S156 586.7 156 385.5C156 283.6 240.3 201 344.3 201c73.1 0 136.5 40.8 167.7 100.4C543.2 241.8 606.6 201 679.7 201c104 0 188.3 82.6 188.3 184.5c0 201.2-356 429.3-356 429.3z' fill='%23fff'/%3E%3C/svg%3E");background-repeat:no-repeat}.fp-favorite.checked{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1024 1024'%3E%3Cpath d='M923 283.6a260.04 260.04 0 0 0-56.9-82.8a264.4 264.4 0 0 0-84-55.5A265.34 265.34 0 0 0 679.7 125c-49.3 0-97.4 13.5-139.2 39c-10 6.1-19.5 12.8-28.5 20.1c-9-7.3-18.5-14-28.5-20.1c-41.8-25.5-89.9-39-139.2-39c-3.5 0-69.9 6.8-102.4 20.3c-31.4 13-59.7 31.7-84 55.5a258.44 258.44 0 0 0-56.9 82.8c-13.9 32.3-21 66.6-21 101.9c0 33.3 6.8 68 20.3 103.3c11.3 29.5 27.5 60.1 48.2 91c32.8 48.9 77.9 99.9 133.9 151.6c92.8 85.7 184.7 144.9 188.6 147.3l23.7 15.2c10.5 6.7 24 6.7 34.5 0l23.7-15.2c3.9-2.5 95.7-61.6 188.6-147.3c56-51.7 101.1-102.7 133.9-151.6c20.7-30.9 37-61.5 48.2-91c13.5-35.3 20.3-70 20.3-103.3c.1-35.3-7-69.6-20.9-101.9z' fill='%23d00'/%3E%3C/svg%3E")}.font-picker .fp-btn{display:inline-block;background-color:#24272b;color:#fff;padding:3px 8px;font-size:14px;border-radius:5px;border:none;cursor:pointer}.font-picker .fp-btn:hover{background-color:#333;-webkit-box-shadow:0 0 4px #ddd;box-shadow:0 0 4px #ddd}.font-picker .fp-btn:active{background-color:#fff;color:#000}.font-picker .fp-btns{position:absolute;top:6px;right:12px}.font-picker .fp-btn.apply{font-family:"Helvetica Neue",Helvetica,Arial,sans-serif!important}.font-picker .fp-header{flex:none;border-bottom:1px solid #dee2e6;padding:4px 8px;font-size:20px}.font-picker .fp-header h5{margin:0;line-height:1.5;font-weight:500}.font-picker .fp-header .fp-icons{float:right;margin-top:-2px}.font-picker .fp-header .fp-icons>span{cursor:pointer}.fp-modal-open{overflow:hidden}.font-picker .fp-modal-backdrop{position:fixed;top:0;left:0;z-index:1040;width:100%;height:100%;background-color:#000;opacity:.5}.font-picker .fp-modal{display:none;flex-flow:column;position:fixed;height:800px;max-height:95%;width:400px;max-width:95%;background:#fff;z-index:1050;box-shadow:0 4px 5px rgba(0,0,0,.15);border-radius:4px;left:50%;transform:translateX(-50%);top:15px;bottom:15px}.font-picker .fp-filter{font-size:12px;border-bottom:1px solid #aaa;padding:6px;flex:none}.font-picker .fp-lang,.font-picker .fp-search{width:100%;font-size:13px;border:1px solid #ced4da;color:#495057;box-shadow:inset 0 1px 3px rgba(0,0,0,.06);border-radius:.1875rem}.font-picker .fp-search:focus{box-shadow:0 0 0 2px #bfdeff}.font-picker .fp-search-wrap{position:relative}.font-picker .fp-clear{margin-left:8px;vertical-align:-2px;width:16px;height:16px;display:inline-block;cursor:pointer;background:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 1000'%3e%3cpath fill='%23aaa' d='M500,10C229.4,10,10,229.4,10,500c0,270.6,219.4,490,490,490c270.6,0,490-219.4,490-490C990,229.4,770.6,10,500,10z M718.5,631.1c24.1,24.1,24.1,63.3,0,87.4s-63.3,24.1-87.4,0L500,587.4L368.9,718.5c-24.1,24.1-63.3,24.1-87.4,0c-24.1-24.1-24.1-63.3,0-87.4L412.6,500L281.5,368.9c-24.1-24.1-24.1-63.3,0-87.4c24.1-24.1,63.3-24.1,87.4,0L500,412.6l131.1-131.1c24.1-24.1,63.3-24.1,87.4,0s24.1,63.3,0,87.4L587.4,500L718.5,631.1z'/%3e%3c/svg%3e") no-repeat right center/16px 16px}.font-picker .fp-search-wrap .fp-clear{position:absolute;top:6px;right:4px}.font-picker .fp-lang{padding:4px 2px;background:#fff url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3e%3cpath fill='%23303030' d='M2 0L0 2h4zm0 5L0 3h4z'/%3e%3c/svg%3e") no-repeat right .75rem center/8px 10px;-moz-appearance:none;-webkit-appearance:none;appearance:none;outline:0}.font-picker .fp-search{padding:5px 6px}.font-picker .fp-sample{flex:none;border-bottom:1px solid #ced4da;font-size:18px;height:50px;padding:0 6px;line-height:50px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.font-picker .hr{border-bottom:1px solid #ced4da;margin:6px -6px}.font-picker .fp-divider{background-color:#eee;color:#666;font-size:14px!important;padding:6px 8px;border-bottom:1px solid #ced4da;border-top:1px solid #ced4da;text-align:center;cursor:default!important}.font-picker [contenteditable]{outline:none}.font-picker .fp-results{list-style:none;overflow-x:hidden;overflow-y:auto;margin:0;padding:0;-webkit-user-select:none;-ms-user-select:none;user-select:none;margin-top:-1px;outline:none}.font-picker .fp-results li{padding:6px 8px;list-style:none;font-size:16px;white-space:nowrap;cursor:pointer}.font-picker .fp-results li>small{font-size:10px;color:#999;font-family:"Helvetica Neue",Helvetica,Arial,sans-serif!important}.font-picker .fp-results li.fp-hover{background-color:#d5e2f6}.font-picker .fp-results li.fp-active{background-color:#3875d7;color:#fff;font-size:18px;padding:8px;position:relative}.font-picker .fp-results li.fp-active small{color:#fff}.font-picker .fp-variants{margin-top:3px;font-size:12px;font-family:"Helvetica Neue",Helvetica,Arial,sans-serif!important}.font-picker .fp-pill{-webkit-user-select:none;-ms-user-select:none;user-select:none;display:inline-block;padding:2px 6px;margin-bottom:2px;white-space:nowrap;border-radius:5rem;background-color:#eee;color:#555;cursor:pointer}.font-picker .fp-variants .fp-pill{padding:1px 4px;border-radius:5rem;background-color:#eee;color:#555}.font-picker .fp-pill.checked{background-color:#000;color:#fff}.font-picker .fp-variants .fp-pill.italic{font-style:italic}.font-picker .fp-variants .fp-pill.italic.checked{background-color:#804;font-style:italic}
     </style>
 
-    <script>
-    /*
-    * jQuery.fontselect - A font selector for system fonts, local fonts and Google Web Fonts
-    *
-    * Made by Arjan Haverkamp, https://www.webgear.nl
-    * Based on original by Tom Moor, http://tommoor.com
-    * Copyright (c) 2011 Tom Moor, 2019-2020 Arjan Haverkamp
-    * MIT Licensed
-    * @version 0.9 - 2020-02-12
-    * @url https://github.com/av01d/fontselect-jquery-plugin
-    */
-
-    (function ($) {
-      var fontsLoaded = {};
-
-      $.fn.fontselect = function (options) {
-        var __bind = function (fn, me) {
-          return function () {
-            return fn.apply(me, arguments);
-          };
-        };
-
-        var settings = {
-          style: "font-select",
-          placeholder: "Select a font",
-          placeholderSearch: "Search...",
-          searchable: true,
-          lookahead: 2,
-          googleApi: "https://fonts.googleapis.com/css?family=",
-          localFontsUrl: "/fonts/",
-          systemFonts: "Arial|Helvetica+Neue|Courier+New|Times+New+Roman|Comic+Sans+MS|Verdana|Impact".split(
-            "|"
-          ),
-          googleFonts: "ABeeZee|Abel|Abhaya+Libre|Abril+Fatface|Aclonica|Acme|Actor|Adamina|Advent+Pro|Aguafina+Script|Akronim|Aladin|Alata|Alatsi|Aldrich|Alef|Alegreya|Alegreya+Sans|Alegreya+Sans+SC|Alegreya+SC|Aleo|Alex+Brush|Alfa+Slab+One|Alice|Alike|Alike+Angular|Allan|Allerta|Allerta+Stencil|Allura|Almarai|Almendra|Almendra+Display|Almendra+SC|Amarante|Amaranth|Amatic+SC|Amethysta|Amiko|Amiri|Amita|Anaheim|Andada|Andika|Angkor|Annie+Use+Your+Telescope|Anonymous+Pro|Antic|Antic+Didone|Antic+Slab|Anton|Arapey|Arbutus|Arbutus+Slab|Architects+Daughter|Archivo|Archivo+Black|Archivo+Narrow|Aref+Ruqaa|Arima+Madurai|Arimo|Arizonia|Armata|Arsenal|Artifika|Arvo|Arya|Asap|Asap+Condensed|Asar|Asset|Assistant|Astloch|Asul|Athiti|Atma|Atomic+Age|Aubrey|Audiowide|Autour+One|Average|Average+Sans|Averia+Gruesa+Libre|Averia+Libre|Averia+Sans+Libre|Averia+Serif+Libre|B612|B612+Mono|Bad+Script|Bahiana|Bahianita|Bai+Jamjuree|Baloo|Baloo+Bhai|Baloo+Bhaijaan|Baloo+Bhaina|Baloo+Chettan|Baloo+Da|Baloo+Paaji|Baloo+Tamma|Baloo+Tammudu|Baloo+Thambi|Balthazar|Bangers|Barlow|Barlow+Condensed|Barlow+Semi+Condensed|Barriecito|Barrio|Basic|Baskervville|Battambang|Baumans|Bayon|Be+Vietnam|Bebas+Neue|Belgrano|Bellefair|Belleza|BenchNine|Bentham|Berkshire+Swash|Beth+Ellen|Bevan|Big+Shoulders+Display|Big+Shoulders+Text|Bigelow+Rules|Bigshot+One|Bilbo|Bilbo+Swash+Caps|BioRhyme|BioRhyme+Expanded|Biryani|Bitter|Black+And+White+Picture|Black+Han+Sans|Black+Ops+One|Blinker|Bokor|Bonbon|Boogaloo|Bowlby+One|Bowlby+One+SC|Brawler|Bree+Serif|Bubblegum+Sans|Bubbler+One|Buda|Buenard|Bungee|Bungee+Hairline|Bungee+Inline|Bungee+Outline|Bungee+Shade|Butcherman|Butterfly+Kids|Cabin|Cabin+Condensed|Cabin+Sketch|Caesar+Dressing|Cagliostro|Cairo|Calistoga|Calligraffitti|Cambay|Cambo|Candal|Cantarell|Cantata+One|Cantora+One|Capriola|Cardo|Carme|Carrois+Gothic|Carrois+Gothic+SC|Carter+One|Catamaran|Caudex|Caveat|Caveat+Brush|Cedarville+Cursive|Ceviche+One|Chakra+Petch|Changa|Changa+One|Chango|Charm|Charmonman|Chathura|Chau+Philomene+One|Chela+One|Chelsea+Market|Chenla|Cherry+Cream+Soda|Cherry+Swash|Chewy|Chicle|Chilanka|Chivo|Chonburi|Cinzel|Cinzel+Decorative|Clicker+Script|Coda|Coda+Caption|Codystar|Coiny|Combo|Comfortaa|Coming+Soon|Concert+One|Condiment|Content|Contrail+One|Convergence|Cookie|Copse|Corben|Cormorant|Cormorant+Garamond|Cormorant+Infant|Cormorant+SC|Cormorant+Unicase|Cormorant+Upright|Courgette|Courier+Prime|Cousine|Coustard|Covered+By+Your+Grace|Crafty+Girls|Creepster|Crete+Round|Crimson+Pro|Crimson+Text|Croissant+One|Crushed|Cuprum|Cute+Font|Cutive|Cutive+Mono|Damion|Dancing+Script|Dangrek|Darker+Grotesque|David+Libre|Dawning+of+a+New+Day|Days+One|Dekko|Delius|Delius+Swash+Caps|Delius+Unicase|Della+Respira|Denk+One|Devonshire|Dhurjati|Didact+Gothic|Diplomata|Diplomata+SC|DM+Sans|DM+Serif+Display|DM+Serif+Text|Do+Hyeon|Dokdo|Domine|Donegal+One|Doppio+One|Dorsa|Dosis|Dr+Sugiyama|Duru+Sans|Dynalight|Eagle+Lake|East+Sea+Dokdo|Eater|EB+Garamond|Economica|Eczar|El+Messiri|Electrolize|Elsie|Elsie+Swash+Caps|Emblema+One|Emilys+Candy|Encode+Sans|Encode+Sans+Condensed|Encode+Sans+Expanded|Encode+Sans+Semi+Condensed|Encode+Sans+Semi+Expanded|Engagement|Englebert|Enriqueta|Erica+One|Esteban|Euphoria+Script|Ewert|Exo|Exo+2|Expletus+Sans|Fahkwang|Fanwood+Text|Farro|Farsan|Fascinate|Fascinate+Inline|Faster+One|Fasthand|Fauna+One|Faustina|Federant|Federo|Felipa|Fenix|Finger+Paint|Fira+Code|Fira+Mono|Fira+Sans|Fira+Sans+Condensed|Fira+Sans+Extra+Condensed|Fjalla+One|Fjord+One|Flamenco|Flavors|Fondamento|Fontdiner+Swanky|Forum|Francois+One|Frank+Ruhl+Libre|Freckle+Face|Fredericka+the+Great|Fredoka+One|Freehand|Fresca|Frijole|Fruktur|Fugaz+One|Gabriela|Gaegu|Gafata|Galada|Galdeano|Galindo|Gamja+Flower|Gayathri|Gelasio|Gentium+Basic|Gentium+Book+Basic|Geo|Geostar|Geostar+Fill|Germania+One|GFS+Didot|GFS+Neohellenic|Gidugu|Gilda+Display|Girassol|Give+You+Glory|Glass+Antiqua|Glegoo|Gloria+Hallelujah|Goblin+One|Gochi+Hand|Gorditas|Gothic+A1|Goudy+Bookletter+1911|Graduate|Grand+Hotel|Gravitas+One|Great+Vibes|Grenze|Griffy|Gruppo|Gudea|Gugi|Gupter|Gurajada|Habibi|Halant|Hammersmith+One|Hanalei|Hanalei+Fill|Handlee|Hanuman|Happy+Monkey|Harmattan|Headland+One|Heebo|Henny+Penny|Hepta+Slab|Herr+Von+Muellerhoff|Hi+Melody|Hind|Hind+Guntur|Hind+Madurai|Hind+Siliguri|Hind+Vadodara|Holtwood+One+SC|Homemade+Apple|Homenaje|Ibarra+Real+Nova|IBM+Plex+Mono|IBM+Plex+Sans|IBM+Plex+Sans+Condensed|IBM+Plex+Serif|Iceberg|Iceland|IM+Fell+Double+Pica|IM+Fell+Double+Pica+SC|IM+Fell+DW+Pica|IM+Fell+DW+Pica+SC|IM+Fell+English|IM+Fell+English+SC|IM+Fell+French+Canon|IM+Fell+French+Canon+SC|IM+Fell+Great+Primer|IM+Fell+Great+Primer+SC|Imprima|Inconsolata|Inder|Indie+Flower|Inika|Inknut+Antiqua|Inria+Serif|Irish+Grover|Istok+Web|Italiana|Italianno|Itim|Jacques+Francois|Jacques+Francois+Shadow|Jaldi|Jim+Nightshade|Jockey+One|Jolly+Lodger|Jomhuria|Jomolhari|Josefin+Sans|Josefin+Slab|Joti+One|Jua|Judson|Julee|Julius+Sans+One|Junge|Jura|Just+Another+Hand|Just+Me+Again+Down+Here|K2D|Kadwa|Kalam|Kameron|Kanit|Kantumruy|Karla|Karma|Katibeh|Kaushan+Script|Kavivanar|Kavoon|Kdam+Thmor|Keania+One|Kelly+Slab|Kenia|Khand|Khmer|Khula|Kirang+Haerang|Kite+One|Knewave|Kodchasan|KoHo|Kosugi|Kosugi+Maru|Kotta+One|Koulen|Kranky|Kreon|Kristi|Krona+One|Krub|Kulim+Park|Kumar+One|Kumar+One+Outline|Kurale|La+Belle+Aurore|Lacquer|Laila|Lakki+Reddy|Lalezar|Lancelot|Lateef|Lato|League+Script|Leckerli+One|Ledger|Lekton|Lemon|Lemonada|Lexend+Deca|Lexend+Exa|Lexend+Giga|Lexend+Mega|Lexend+Peta|Lexend+Tera|Lexend+Zetta|Libre+Barcode+128|Libre+Barcode+128+Text|Libre+Barcode+39|Libre+Barcode+39+Extended|Libre+Barcode+39+Extended+Text|Libre+Barcode+39+Text|Libre+Baskerville|Libre+Caslon+Display|Libre+Caslon+Text|Libre+Franklin|Life+Savers|Lilita+One|Lily+Script+One|Limelight|Linden+Hill|Literata|Liu+Jian+Mao+Cao|Livvic|Lobster|Lobster+Two|Londrina+Outline|Londrina+Shadow|Londrina+Sketch|Londrina+Solid|Long+Cang|Lora|Love+Ya+Like+A+Sister|Loved+by+the+King|Lovers+Quarrel|Luckiest+Guy|Lusitana|Lustria|M+PLUS+1p|M+PLUS+Rounded+1c|Ma+Shan+Zheng|Macondo|Macondo+Swash+Caps|Mada|Magra|Maiden+Orange|Maitree|Major+Mono+Display|Mako|Mali|Mallanna|Mandali|Manjari|Mansalva|Manuale|Marcellus|Marcellus+SC|Marck+Script|Margarine|Markazi+Text|Marko+One|Marmelad|Martel|Martel+Sans|Marvel|Mate|Mate+SC|Maven+Pro|McLaren|Meddon|MedievalSharp|Medula+One|Meera+Inimai|Megrim|Meie+Script|Merienda|Merienda+One|Merriweather|Merriweather+Sans|Metal|Metal+Mania|Metamorphous|Metrophobic|Michroma|Milonga|Miltonian|Miltonian+Tattoo|Mina|Miniver|Miriam+Libre|Mirza|Miss+Fajardose|Mitr|Modak|Modern+Antiqua|Mogra|Molengo|Molle|Monda|Monofett|Monoton|Monsieur+La+Doulaise|Montaga|Montez|Montserrat|Montserrat+Alternates|Montserrat+Subrayada|Moul|Moulpali|Mountains+of+Christmas|Mouse+Memoirs|Mr+Bedfort|Mr+Dafoe|Mr+De+Haviland|Mrs+Saint+Delafield|Mrs+Sheppards|Mukta|Mukta+Mahee|Mukta+Malar|Mukta+Vaani|Muli|Mystery+Quest|Nanum+Brush+Script|Nanum+Gothic|Nanum+Gothic+Coding|Nanum+Myeongjo|Nanum+Pen+Script|Neucha|Neuton|New+Rocker|News+Cycle|Niconne|Niramit|Nixie+One|Nobile|Nokora|Norican|Nosifer|Notable|Nothing+You+Could+Do|Noticia+Text|Noto+Sans|Noto+Sans+HK|Noto+Sans+JP|Noto+Sans+KR|Noto+Sans+SC|Noto+Sans+TC|Noto+Serif|Noto+Serif+JP|Noto+Serif+KR|Noto+Serif+SC|Noto+Serif+TC|Nova+Cut|Nova+Flat|Nova+Mono|Nova+Oval|Nova+Round|Nova+Script|Nova+Slim|Nova+Square|NTR|Numans|Nunito|Nunito+Sans|Odibee+Sans|Odor+Mean+Chey|Offside|Old+Standard+TT|Oldenburg|Oleo+Script|Oleo+Script+Swash+Caps|Open+Sans:300|Open+Sans|Open+Sans:600|Open+Sans:800|Open+Sans+Condensed:300|Oranienbaum|Orbitron|Oregano|Orienta|Original+Surfer|Oswald|Over+the+Rainbow|Overlock|Overlock+SC|Overpass|Overpass+Mono|Ovo|Oxygen|Oxygen+Mono|Pacifico|Padauk|Palanquin|Palanquin+Dark|Pangolin|Paprika|Parisienne|Passero+One|Passion+One|Pathway+Gothic+One|Patrick+Hand|Patrick+Hand+SC|Pattaya|Patua+One|Pavanam|Paytone+One|Peddana|Peralta|Permanent+Marker|Petit+Formal+Script|Petrona|Philosopher|Piedra|Pinyon+Script|Pirata+One|Plaster|Play|Playball|Playfair+Display|Playfair+Display+SC|Podkova|Poiret+One|Poller+One|Poly|Pompiere|Pontano+Sans|Poor+Story|Poppins|Port+Lligat+Sans|Port+Lligat+Slab|Pragati+Narrow|Prata|Preahvihear|Press+Start+2P|Pridi|Princess+Sofia|Prociono|Prompt|Prosto+One|Proza+Libre|PT+Mono|PT+Sans|PT+Sans+Caption|PT+Sans+Narrow|PT+Serif|PT+Serif+Caption|Public+Sans|Puritan|Purple+Purse|Quando|Quantico|Quattrocento|Quattrocento+Sans|Questrial|Quicksand|Quintessential|Qwigley|Racing+Sans+One|Radley|Rajdhani|Rakkas|Raleway|Raleway+Dots|Ramabhadra|Ramaraja|Rambla|Rammetto+One|Ranchers|Rancho|Ranga|Rasa|Rationale|Ravi+Prakash|Red+Hat+Display|Red+Hat+Text|Redressed|Reem+Kufi|Reenie+Beanie|Revalia|Rhodium+Libre|Ribeye|Ribeye+Marrow|Righteous|Risque|Roboto|Roboto+Condensed|Roboto+Mono|Roboto+Slab|Rochester|Rock+Salt|Rokkitt|Romanesco|Ropa+Sans|Rosario|Rosarivo|Rouge+Script|Rozha+One|Rubik|Rubik+Mono+One|Ruda|Rufina|Ruge+Boogie|Ruluko|Rum+Raisin|Ruslan+Display|Russo+One|Ruthie|Rye|Sacramento|Sahitya|Sail|Saira|Saira+Condensed|Saira+Extra+Condensed|Saira+Semi+Condensed|Saira+Stencil+One|Salsa|Sanchez|Sancreek|Sansita|Sarabun|Sarala|Sarina|Sarpanch|Satisfy|Sawarabi+Gothic|Sawarabi+Mincho|Scada|Scheherazade|Schoolbell|Scope+One|Seaweed+Script|Secular+One|Sedgwick+Ave|Sedgwick+Ave+Display|Sevillana|Seymour+One|Shadows+Into+Light|Shadows+Into+Light+Two|Shanti|Share|Share+Tech|Share+Tech+Mono|Shojumaru|Short+Stack|Shrikhand|Siemreap|Sigmar+One|Signika|Signika+Negative|Simonetta|Single+Day|Sintony|Sirin+Stencil|Six+Caps|Skranji|Slabo+13px|Slabo+27px|Slackey|Smokum|Smythe|Sniglet|Snippet|Snowburst+One|Sofadi+One|Sofia|Solway|Song+Myung|Sonsie+One|Sorts+Mill+Goudy|Source+Code+Pro|Source+Sans+Pro|Source+Serif+Pro|Space+Mono|Special+Elite|Spectral|Spectral+SC|Spicy+Rice|Spinnaker|Spirax|Squada+One|Sree+Krushnadevaraya|Sriracha|Srisakdi|Staatliches|Stalemate|Stalinist+One|Stardos+Stencil|Stint+Ultra+Condensed|Stint+Ultra+Expanded|Stoke|Strait|Stylish|Sue+Ellen+Francisco|Suez+One|Sulphur+Point|Sumana|Sunflower|Sunshiney|Supermercado+One|Sura|Suranna|Suravaram|Suwannaphum|Swanky+and+Moo+Moo|Syncopate|Tajawal|Tangerine|Taprom|Tauri|Taviraj|Teko|Telex|Tenali+Ramakrishna|Tenor+Sans|Text+Me+One|Thasadith|The+Girl+Next+Door|Tienne|Tillana|Timmana|Tinos|Titan+One|Titillium+Web|Tomorrow|Trade+Winds|Trirong|Trocchi|Trochut|Trykker|Tulpen+One|Turret+Road|Ubuntu|Ubuntu+Condensed|Ubuntu+Mono|Ultra|Uncial+Antiqua|Underdog|Unica+One|UnifrakturCook|UnifrakturMaguntia|Unkempt|Unlock|Unna|Vampiro+One|Varela|Varela+Round|Vast+Shadow|Vesper+Libre|Vibes|Vibur|Vidaloka|Viga|Voces|Volkhov|Vollkorn|Vollkorn+SC|Voltaire|VT323|Waiting+for+the+Sunrise|Wallpoet|Walter+Turncoat|Warnes|Wellfleet|Wendy+One|Wire+One|Work+Sans|Yanone+Kaffeesatz|Yantramanav|Yatra+One|Yellowtail|Yeon+Sung|Yeseva+One|Yesteryear|Yrsa|ZCOOL+KuaiLe|ZCOOL+QingKe+HuangYou|ZCOOL+XiaoWei|Zeyada|Zhi+Mang+Xing|Zilla+Slab|Zilla+Slab+Highlight".split(
-            "|"
-          ),
-        };
-
-        var Fontselect = (function () {
-          function Fontselect(original, o) {
-            if (!o.systemFonts) {
-              o.systemFonts = [];
-            }
-            if (!o.localFonts) {
-              o.localFonts = [];
-            }
-            if (!o.googleFonts) {
-              o.googleFonts = [];
-            }
-
-            this.options = o;
-            this.$original = $(original);
-            this.setupHtml();
-            this.getVisibleFonts();
-            this.bindEvents();
-            this.query = "";
-            this.keyActive = false;
-            this.searchBoxHeight = 0;
-
-            var font = this.$original.val();
-            if (font) {
-              this.updateSelected();
-              this.addFontLink(font);
-            }
-          }
-
-          Fontselect.prototype = {
-            keyDown: function (e) {
-              function stop(e) {
-                e.preventDefault();
-                e.stopPropagation();
-              }
-
-              this.keyActive = true;
-              if (e.keyCode == 27) {
-                // Escape
-                stop(e);
-                this.toggleDropdown("hide");
-                return;
-              }
-              if (e.keyCode == 38) {
-                // Cursor up
-                stop(e);
-                var $li = $("li.active", this.$results),
-                $pli = $li.prev("li");
-                if ($pli.length > 0) {
-                  $li.removeClass("active");
-                  this.$results.scrollTop(
-                    $pli.addClass("active")[0].offsetTop -
-                    this.searchBoxHeight
-                  );
-                }
-                return;
-              }
-              if (e.keyCode == 40) {
-                // Cursor down
-                stop(e);
-                var $li = $("li.active", this.$results),
-                $nli = $li.next("li");
-                if ($nli.length > 0) {
-                  $li.removeClass("active");
-                  this.$results.scrollTop(
-                    $nli.addClass("active")[0].offsetTop -
-                    this.searchBoxHeight
-                  );
-                }
-                return;
-              }
-              if (e.keyCode == 13) {
-                // Enter
-                stop(e);
-                $("li.active", this.$results).trigger("click");
-                return;
-              }
-
-              this.query += String.fromCharCode(e.keyCode).toLowerCase();
-              var $found = $(
-                "li[data-query^='" + this.query + "']"
-              ).first();
-              if ($found.length > 0) {
-                $("li.active", this.$results).removeClass("active");
-                this.$results.scrollTop(
-                  $found.addClass("active")[0].offsetTop
-                );
-              }
-            },
-            keyUp: function (e) {
-              this.keyActive = false;
-            },
-
-            bindEvents: function () {
-              var self = this;
-              $("li", this.$results)
-              .click(__bind(this.selectFont, this))
-              .mouseover(__bind(this.activateFont, this));
-              this.$select.click(
-                __bind(function () {
-                  self.toggleDropdown("show");
-                }, this)
-              );
-
-              // Call like so: $("input[name='ffSelect']").trigger('setFont', [fontFamily, fontWeight]);
-              this.$original.on(
-                "setFont",
-                function (evt, fontFamily, fontWeight) {
-                  fontWeight = fontWeight || 400;
-
-                  var fontSpec =
-                  fontFamily.replace(/ /g, "+") +
-                  (fontWeight == 400 ? "" : ":" + fontWeight);
-
-                  var $li = $(
-                    "li[data-value='" + fontSpec + "']",
-                    self.$results
-                  );
-                  if ($li.length == 0) {
-                    fontSpec = fontFamily.replace(/ /g, "+");
-                  }
-                  $li = $(
-                    "li[data-value='" + fontSpec + "']",
-                    self.$results
-                  );
-                  $("li.active", self.$results).removeClass("active");
-                  $li.addClass("active");
-
-                  self.$original.val(fontSpec);
-                  self.updateSelected();
-                  self.addFontLink($li.data("value"));
-                  //$li.trigger('click'); // Removed 2019-10-16
-                }
-              );
-              this.$original.on("change", function () {
-                self.updateSelected();
-                self.addFontLink(
-                  $("li.active", self.$results).data("value")
-                );
-              });
-
-              if (this.options.searchable) {
-                this.$input.on("keyup", function () {
-                  var q = this.value.toLowerCase();
-                  // Hide options that don't match query:
-                  $("li", self.$results).each(function () {
-                    if ($(this).text().toLowerCase().indexOf(q) == -1) {
-                      $(this).hide();
-                    } else {
-                      $(this).show();
-                    }
-                  });
-                });
-              }
-
-              $(document).on("click", function (e) {
-                if (
-                  $(e.target).closest("." + self.options.style).length === 0
-                ) {
-                  self.toggleDropdown("hide");
-                }
-              });
-            },
-
-            toggleDropdown: function (hideShow) {
-              if (hideShow === "hide") {
-                // Make inactive
-                this.$element.off("keydown keyup");
-                this.query = "";
-                this.keyActive = false;
-                this.$element.removeClass("font-select-active");
-                this.$drop.hide();
-                clearInterval(this.visibleInterval);
-              } else {
-                // Make active
-                this.$element.on("keydown", __bind(this.keyDown, this));
-                this.$element.on("keyup", __bind(this.keyUp, this));
-                this.$element.addClass("font-select-active");
-                this.$drop.show();
-
-                this.visibleInterval = setInterval(
-                  __bind(this.getVisibleFonts, this),
-                  500
-                );
-                this.searchBoxHeight = this.$search.outerHeight();
-                this.moveToSelected();
-
-                /*
-                if (this.options.searchable) {
-                // Focus search box
-                $this.$input.focus();
-              }
-              */
-            }
-          },
-
-          selectFont: function () {
-            var font = $("li.active", this.$results).data("value");
-            this.$original.val(font).change();
-            this.updateSelected();
-            this.toggleDropdown("hide"); // Hide dropdown
-          },
-
-          moveToSelected: function () {
-            var font = this.$original.val().replace(/ /g, "+");
-            var $li = font
-            ? $("li[data-value='" + font + "']", this.$results)
-            : ($li = $("li", this.$results).first());
-            this.$results.scrollTop(
-              $li.addClass("active")[0].offsetTop - this.searchBoxHeight
-            );
-          },
-
-          activateFont: function (e) {
-            if (this.keyActive) {
-              return;
-            }
-            $("li.active", this.$results).removeClass("active");
-            $(e.target).addClass("active");
-          },
-
-          updateSelected: function () {
-            var font = this.$original.val();
-            $("span", this.$element)
-            .text(this.toReadable(font))
-            .css(this.toStyle(font));
-          },
-
-          setupHtml: function () {
-            this.$original.hide();
-            this.$element = $("<div>", { class: this.options.style });
-            this.$select = $(
-              '<span tabindex="0">' + this.options.placeholder + "</span>"
-            );
-            this.$search = $("<div>", { class: "fs-search" });
-            this.$input = $("<input>", { type: "text" });
-            if (this.options.placeholderSearch) {
-              this.$input.attr(
-                "placeholder",
-                this.options.placeholderSearch
-              );
-            }
-            this.$search.append(this.$input);
-            this.$drop = $("<div>", { class: "fs-drop" });
-            this.$results = $("<ul>", { class: "fs-results" });
-            this.$original.after(
-              this.$element.append(this.$select, this.$drop)
-            );
-            this.options.searchable && this.$drop.append(this.$search);
-            this.$drop
-            .append(this.$results.append(this.fontsAsHtml()))
-            .hide();
-          },
-
-          fontsAsHtml: function () {
-            var i,
-            r,
-            s,
-            style,
-            h = "";
-            var systemFonts = this.options.systemFonts;
-            var localFonts = this.options.localFonts;
-            var googleFonts = this.options.googleFonts;
-
-            for (i = 0; i < systemFonts.length; i++) {
-              r = this.toReadable(systemFonts[i]);
-              s = this.toStyle(systemFonts[i]);
-              style = "font-family:" + s["font-family"];
-              if (
-                (localFonts.length > 0 || googleFonts.length > 0) &&
-                i == systemFonts.length - 1
-              ) {
-                style += ";border-bottom:1px solid #444"; // Separator after last system font
-              }
-              h +=
-              '<li data-value="' +
-              systemFonts[i] +
-              '" data-query="' +
-              systemFonts[i].toLowerCase() +
-              '" style="' +
-              style +
-              '">' +
-              r +
-              "</li>";
-            }
-
-            for (i = 0; i < localFonts.length; i++) {
-              r = this.toReadable(localFonts[i]);
-              s = this.toStyle(localFonts[i]);
-              style = "font-family:" + s["font-family"];
-              if (googleFonts.length > 0 && i == localFonts.length - 1) {
-                style += ";border-bottom:1px solid #444"; // Separator after last local font
-              }
-              h +=
-              '<li data-value="' +
-              localFonts[i] +
-              '" data-query="' +
-              localFonts[i].toLowerCase() +
-              '" style="' +
-              style +
-              '">' +
-              r +
-              "</li>";
-            }
-
-            for (i = 0; i < googleFonts.length; i++) {
-              r = this.toReadable(googleFonts[i]);
-              s = this.toStyle(googleFonts[i]);
-              style =
-              "font-family:" +
-              s["font-family"] +
-              ";font-weight:" +
-              s["font-weight"];
-              h +=
-              '<li data-value="' +
-              googleFonts[i] +
-              '" data-query="' +
-              googleFonts[i].toLowerCase() +
-              '" style="' +
-              style +
-              '">' +
-              r +
-              "</li>";
-            }
-
-            return h;
-          },
-
-          toReadable: function (font) {
-            return font.replace(/[\+|:]/g, " ");
-          },
-
-          toStyle: function (font) {
-            var t = font.split(":");
-            return {
-              "font-family": "'" + this.toReadable(t[0]) + "'",
-              "font-weight": t[1] || 400,
-            };
-          },
-
-          getVisibleFonts: function () {
-            if (this.$results.is(":hidden")) {
-              return;
-            }
-
-            var fs = this;
-            var top = this.$results.scrollTop();
-            var bottom = top + this.$results.height();
-
-            if (this.options.lookahead) {
-              var li = $("li", this.$results).first().height();
-              bottom += li * this.options.lookahead;
-            }
-
-            $("li:visible", this.$results).each(function () {
-              var ft = $(this).position().top + top;
-              var fb = ft + $(this).height();
-
-              if (fb >= top && ft <= bottom) {
-                fs.addFontLink($(this).data("value"));
-              }
-            });
-          },
-
-          addFontLink: function (font) {
-            if (fontsLoaded[font]) {
-              return;
-            }
-            fontsLoaded[font] = true;
-
-            if (this.options.googleFonts.indexOf(font) > -1) {
-              $("link:last").after(
-                '<link href="' +
-                this.options.googleApi +
-                font +
-                '" rel="stylesheet" type="text/css">'
-              );
-            } else if (this.options.localFonts.indexOf(font) > -1) {
-              font = this.toReadable(font);
-              $("head").append(
-                "<style> @font-face { font-family:'" +
-                font +
-                "'; font-style:normal; font-weight:400; src:local('" +
-                font +
-                "'), url('" +
-                this.options.localFontsUrl +
-                font +
-                ".woff') format('woff'); } </style>"
-              );
-            }
-            // System fonts need not be loaded!
-          },
-        }; // End prototype
-
-        return Fontselect;
-      })();
-
-      return this.each(function () {
-        // If options exist, merge them
-        if (options) {
-          $.extend(settings, options);
-        }
-
-        return new Fontselect(this, settings);
-      });
-    };
-  })(jQuery);
-</script>
 </div>
 </body>
 </html>

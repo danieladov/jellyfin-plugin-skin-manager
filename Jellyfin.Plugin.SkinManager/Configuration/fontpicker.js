@@ -8,6 +8,7 @@
  * @url https://github.com/av01d/fontpicker-jquery-plugin
  */
 
+
 (function($){
 
 	var pluginName = 'fontpicker';
@@ -6161,3 +6162,5 @@
 		});
 	};
 })(jQuery);
+
+start()
