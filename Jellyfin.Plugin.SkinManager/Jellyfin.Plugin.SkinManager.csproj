@@ -16,6 +16,9 @@
   <ItemGroup>
     <None Remove="Configuration\configurationpage.html" />
     <EmbeddedResource Include="Configuration\configurationpage.html" />
+
+    <None Remove="Configuration\fontpicker.js" />
+    <EmbeddedResource Include="Configuration\fontpicker.js" />
   </ItemGroup>
 
   <ItemGroup>

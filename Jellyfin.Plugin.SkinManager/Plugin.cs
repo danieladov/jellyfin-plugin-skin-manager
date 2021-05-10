@@ -34,6 +34,16 @@ namespace Jellyfin.Plugin.SkinManager
                 {
                     Name = "SkinManager",
                     EmbeddedResourcePath = GetType().Namespace + ".Configuration.configurationpage.html"
+                },
+                 new PluginPageInfo
+                {
+                    Name = "fontpicker.js",
+                    EmbeddedResourcePath = GetType().Namespace + ".Configuration.fontpicker.js"
+                }, 
+                new PluginPageInfo
+                {
+                    Name = "fontpicker.css",
+                    EmbeddedResourcePath = GetType().Namespace + ".Configuration.jquery.fontpicker.min.css"
                 }
             };
         }
