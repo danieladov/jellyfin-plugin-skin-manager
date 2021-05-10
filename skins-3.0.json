@@ -210,6 +210,7 @@
                     "css": ":root {--accent: $;}",
                     "default": "#ffffff"
                 }
+			]
         }]
     },
     {
