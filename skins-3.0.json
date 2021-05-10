@@ -109,7 +109,6 @@
                     "default": ""
                 }
             ]
-<<<<<<< Updated upstream
         }]
     },
     {
@@ -211,79 +210,6 @@
                     "css": ":root {--accent: $;}",
                     "default": "#ffffff"
                 }
-=======
-          },
-          {
-            "type":"checkBox",
-            "name":"Theme Logo",
-            "description":"Styles title page in such a way in which logos are used instead of Names.",
-            "css":"@import url('https://prayag17.github.io/JellySkin/Logo.css');"
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "name": "Custom",
-    "author": "you",
-    "description": "customize the look of jellyfin by your needs",
-    "defaultCss": "/*Custom*/",
-    "categories": [
-      {
-        "name": "Fonts",
-        "options": [
-          {
-            "type": "googleFonts",
-			"css": "html {font-family:  '$',sans-serif ;  } body,h1,h2,h3 { font-family: '$' ,sans-serif;}"
-          },
-          {
-            "type": "number",
-            "name": "Title Font Size",
-            "description": "Change the size of the font used at titles.",
-            "step": "0.1",
-            "css": "h1 {font-size: $em;}",
-            "default": "1.8"
-          }
-        ]
-      },
-      {
-        "name": "Home/Dashboard Page",
-        "options": [
-          {
-            "type": "checkBox",
-            "name": "Enlarge Tab Buttons",
-            "description": "Enlarges the tab buttons, suggested, genres, etc. By default they are really tiny, especially on mobile.",
-            "css": ".headerTabs.sectionTabs {text-size-adjust: 110%;  font-size: 110%;}.pageTitle {margin-top: auto; margin-bottom: auto;}.emby-tab-button {padding: 1.75em 1.7em;}"
-          }
-        ]
-      },
-      {
-        "name": "Miscellaneous",
-        "options": [
-          {
-            "type": "selector",
-            "name": "Poster card hover effect",
-            "description": "Changes the hover effect on Movie/TV show/Music poster card.",
-            "css": "",
-            "selections": [
-              {
-                "name": "Scale in and out",
-                "css": "/*Dynamic Poster effect-option1*/.cardBox-bottompadded{margin-bottom; 1em !important;}.itemsContainer>.card>.cardBox {margin: 1em;background: rgba(0,0,0,0.5);transition: transform .2s;}.card:hover .cardBox{transform: scale(1.1);}"
-              },
-              {
-                "name": "Pop up and down",
-                "css": "/*Dynamic Poster effect-option2*/.itemsContainer>.card>.cardBox {margin: 1em;background: rgba(0,0,0,0.5);transition: transform .2s, box-shadow .2s;}.card:hover .cardBox{transform: translatey(-5px);box-shadow: 0px 5px 10px black;}"
-              },
-              {
-                "name": "Poster Image in and out",
-                "css": "/*Dynamic Poster effect-option3*/.card:hover .cardImageContainer{filter:background-size: 120%} .cardImageContainer{background-size: 105%;transition: all .2s;}"
-              },
-              {
-                "name": "Poster Image blur",
-                "css": "/*Dynamic Poster effect-option4*/.card:hover .cardImageContainer{filter: blur(2px);} .cardImageContainer{transition: all .2s;}"
-              }
->>>>>>> Stashed changes
-            ]
         }]
     },
     {
