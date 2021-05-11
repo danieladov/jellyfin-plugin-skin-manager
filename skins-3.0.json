@@ -210,7 +210,7 @@
                     "css": ":root {--accent: $;}",
                     "default": "#ffffff"
                 }
-			]
+            ]
         }]
     },
     {
@@ -282,8 +282,8 @@
                 "name": "Fonts",
                 "options": [{
                         "type": "googleFonts",
-						"name" : "Change Font",
-						"css" : "html {font-family:  '$',sans-serif ;  } body,h1,h2,h3 { font-family: '$' ,sans-serif;}"
+                        "name": "Change Font",
+                        "css": "html {font-family:  '$',sans-serif ;  } body,h1,h2,h3 { font-family: '$' ,sans-serif;}"
                     },
                     {
                         "type": "number",
@@ -364,7 +364,7 @@
                     {
                         "type": "colorPicker",
                         "mode": "hex",
-                        "name": "Button text color",
+                        "name": "Title Page Button text color",
                         "description": "change button's text color.",
                         "css": ".raised{color: $;}",
                         "default": "#ffffff"
@@ -372,7 +372,7 @@
                     {
                         "type": "colorPicker",
                         "mode": "hex",
-                        "name": "Button background color",
+                        "name": "Title Page Button background color",
                         "description": "change background color of button.",
                         "css": ".raised{background-color: $;}",
                         "default": "#303030"
@@ -391,7 +391,7 @@
                         "name": "Idle button color-background",
                         "description": "This modifies the background color of buttons like cast and search.",
                         "css": ".paper-icon-button-light{background-color: $ !important; transition: all .2s;}",
-                        "default": "#00FFFFFF"
+                        "default": "#00000000"
                     },
                     {
                         "type": "colorPicker",
@@ -407,21 +407,21 @@
                         "name": "Hover button color-background",
                         "description": "This modifies the background color of buttons like cast and search when your cursor is on it.",
                         "css": ".paper-icon-button-light:hover{background-color: $ !important;}",
-                        "default": "#00a4dc"
+                        "default": "#00a4db33"
                     },
                     {
                         "type": "number",
                         "name": "Border Radius",
                         "description": "Change the rounding",
-                        "css": "*,*::before,*::after{border-radius: $ !important;}",
+                        "css": ":root{--btn-rounding: $px; --rounding: $px;} .missingIndicator, .unairedIndicator {border-radius: var(--rounding);}.formDialogHeader {border-top-left-radius: var(--rounding);border-top-right-radius: var(--rounding);}.formDialogFooter {border-bottom-left-radius: var(--rounding);border-bottom-right-radius: var(--rounding);}.cardOverlayContainer {border-radius: var(--rounding) !important;}.primaryImageWrapper>img, .toast, .paperList, .cardContent, .sessionNowPlayingInnerContent, .listItem:hover, .cardImage, .fab, .raised, .multiSelectCheckboxOutline, .itemSelectionPanel, .cardContent-button, .cardContent-shadow, .itemDetailImage, .cardOverlayButton-hover, .cardImageContainer, .cardPadder, .listItemImage, .listItemImageButton, .listItemButton, .headerButton, .paper-icon-button-light, .innerCardFooter, .blurhash-canvas, .dialog, .countIndicator, .playedIndicator, .listItemIcon, .listItem-border, .button-flat, .visualCardBox, .checkboxOutline, .emby-select-withcolor, .chapterThumbTextContainer, .chapterThumbContainer, .chapterThumb, .emby-input, .emby-textarea, .emby-select-withcolor, .nowPlayingPageImage, .upNextDialog-poster-img, .upNextContainer, .cardOverlayButtonIcon {border-radius: var(--rounding) !important;}.osdPoster img {border-radius: var(--rounding);border: none;}.mdl-slider::-moz-range-thumb {border-radius: var(--rounding);}.mdl-slider::-ms-thumb {border-radius: var(--rounding);}.mdl-slider::-webkit-slider-thumb {border-radius: var(--rounding);}div[data-role='controlgroup'] a[data-role='button']:first-child {border-bottom-left-radius: var(--rounding);border-top-left-radius: var(--rounding);}div[data-role='controlgroup'] a[data-role='button']:last-child {border-bottom-right-radius: var(--rounding);border-top-right-radius: var(--rounding);}#dashboardPage .cardContent, #dashboardPage .sessionNowPlayingInnerContent {border-radius: var(--rounding) var(--rounding) 0 0 !important;}#divVirtualFolders .cardImageContainer, #divVirtualFolders .cardContent {border-radius: var(--rounding) var(--rounding) 0 0 !important;}#userProfilesPage .cardImage, #userProfilesPage .cardContent {border-radius: var(--rounding) var(--rounding) 0 0 !important;}#user_usage_report_table, .detailTable {border-radius: var(--rounding);}progress {border-radius: var(--rounding);}progress::-webkit-progress-bar {border-radius: var(--rounding);}progress::-moz-progress-bar {border-radius: var(--rounding);}progress::-webkit-progress-value {border-radius: var(--rounding);}.taskProgressOuter, .taskProgressInner {border-radius: var(--rounding) !important;}::-webkit-scrollbar-thumb {border-radius: var(--rounding);} .paper-icon-button-light{border-radius: var(--btn-rounding) !impotant;}",
                         "default": "0"
                     },
                     {
                         "type": "colorPicker",
                         "name": "Background-color",
                         "description": "change background-color of the background",
-                        "css": ".backgroundContainer.withBackdrop {background-color: rgba(0,0,0,0);}",
-                        "default": "inherit"
+                        "css": ".backgroundContainer.withBackdrop {background-color: $;}",
+                        "default": "#000000db"
                     },
                     {
                         "type": "blurSlider",
