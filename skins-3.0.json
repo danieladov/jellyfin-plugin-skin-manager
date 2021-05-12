@@ -5,24 +5,92 @@
         "defaultCss": "",
         "previews": [{
                 "name": "Login Page",
-                "url": ""
+                "url": "https://prayag17.github.io/jellyfin-plugin-skin-manager/src/img/1.png"
             },
             {
                 "name": "Home/Index Page",
-                "url": ""
+                "url": "https://prayag17.github.io/jellyfin-plugin-skin-manager/src/img/2.png"
             },
             {
                 "name": "Library Page",
-                "url": ""
+                "url": "https://prayag17.github.io/jellyfin-plugin-skin-manager/src/img/3.png"
             },
             {
                 "name": "Title page",
-                "url": ""
+                "url": "https://prayag17.github.io/jellyfin-plugin-skin-manager/src/img/4.png"
             }
         ],
         "categories": [{
             "name": "Default",
             "options": []
+        }]
+    },
+    {
+        "name": "JellySkin",
+        "author": "prayagprajapati17",
+        "description": "A very bright and colorful look using lots of drop shadows. Theme is by prayag17.",
+        "defaultCss": "@import url('https://prayag17.github.io/JellySkin/default.css');",
+        "previews": [{
+                "name": "Login Page",
+                "url": "https://prayag17.github.io/JellySkin/img/login.jpg"
+            },
+            {
+                "name": "Home/Index Page",
+                "url": "https://prayag17.github.io/JellySkin/img/Home.jpg"
+            },
+            {
+                "name": "Library Page",
+                "url": "https://prayag17.github.io/JellySkin/img/Movies.jpg"
+            },
+            {
+                "name": "Title page",
+                "url": "https://prayag17.github.io/JellySkin/img/Title%20Page-Movie.jpg"
+            }
+        ],
+        "categories": [{
+            "name": "Default",
+            "options": [{
+                    "type": "selector",
+                    "name": "Gradient",
+                    "description": "Changes the Jellyfin themed Hover gradient",
+                    "css": "@import url('https://prayag17.github.io/JellySkin/$.css');",
+                    "selections": [{
+                            "name": "Default",
+                            "value": "",
+                            "css": "@import url('https://prayag17.github.io/JellySkin/default.css');"
+                        },
+                        {
+                            "name": "Sea Gradient",
+                            "value": "seaGradient",
+                            "css": "@import url('https://prayag17.github.io/JellySkin/seaGradient.css');"
+                        },
+                        {
+                            "name": "Sunset Gradient",
+                            "value": "sunsetGradient",
+                            "css": "@import url('https://prayag17.github.io/JellySkin/sunsetGradient.css');"
+
+                        },
+                        {
+                            "name": "Night Sky Gradient",
+                            "value": "nightSkyGradient",
+                            "css": "@import url('https://prayag17.github.io/JellySkin/nightSkyGradient.css');"
+
+                        },
+                        {
+                            "name": "Morning Gradient",
+                            "value": "morningGradient",
+                            "css": "@import url('https://prayag17.github.io/JellySkin/morningGradient.css');"
+
+                        }
+                    ]
+                },
+                {
+                    "type": "checkBox",
+                    "name": "Theme Logo",
+                    "description": "Styles title page in such a way in which logos are used instead of Names.",
+                    "css": "@import url('https://prayag17.github.io/JellySkin/Logo.css');"
+                }
+            ]
         }]
     },
     {
@@ -209,74 +277,6 @@
                     "description": "Choose a custom accent color to use with the theme.",
                     "css": ":root {--accent: $;}",
                     "default": "#ffffff"
-                }
-            ]
-        }]
-    },
-    {
-        "name": "JellySkin",
-        "author": "prayagprajapati17",
-        "description": "A very bright and colorful look using lots of drop shadows. Theme is by prayag17.",
-        "defaultCss": "@import url('https://prayag17.github.io/JellySkin/default.css');",
-        "previews": [{
-                "name": "Login Page",
-                "url": "https://prayag17.github.io/JellySkin/img/login.jpg"
-            },
-            {
-                "name": "Home/Index Page",
-                "url": "https://prayag17.github.io/JellySkin/img/Home.jpg"
-            },
-            {
-                "name": "Library Page",
-                "url": "https://prayag17.github.io/JellySkin/img/Movies.jpg"
-            },
-            {
-                "name": "Title page",
-                "url": "https://prayag17.github.io/JellySkin/img/Title%20Page-Movie.jpg"
-            }
-        ],
-        "categories": [{
-            "name": "Default",
-            "options": [{
-                    "type": "selector",
-                    "name": "Gradient",
-                    "description": "Changes the Jellyfin themed Hover gradient",
-                    "css": "@import url('https://prayag17.github.io/JellySkin/$.css');",
-                    "selections": [{
-                            "name": "Default",
-                            "value": "",
-							"css" : "@import url('https://prayag17.github.io/JellySkin/default.css');"
-                        },
-                        {
-                            "name": "Sea Gradient",
-                            "value": "seaGradient",
-							"css" : "@import url('https://prayag17.github.io/JellySkin/seaGradient.css');"
-                        },
-                        {
-                            "name": "Sunset Gradient",
-                            "value": "sunsetGradient",
-							"css" : "@import url('https://prayag17.github.io/JellySkin/sunsetGradient.css');"
-
-                        },
-                        {
-                            "name": "Night Sky Gradient",
-                            "value": "nightSkyGradient",
-							"css" : "@import url('https://prayag17.github.io/JellySkin/nightSkyGradient.css');"
-
-                        },
-                        {
-                            "name": "Morning Gradient",
-                            "value": "morningGradient",
-							"css" : "@import url('https://prayag17.github.io/JellySkin/morningGradient.css');"
-
-                        }
-                    ]
-                },
-                {
-                    "type": "checkBox",
-                    "name": "Theme Logo",
-                    "description": "Styles title page in such a way in which logos are used instead of Names.",
-                    "css": "@import url('https://prayag17.github.io/JellySkin/Logo.css');"
                 }
             ]
         }]
