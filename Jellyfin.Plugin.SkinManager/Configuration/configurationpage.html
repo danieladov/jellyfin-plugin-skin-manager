@@ -289,13 +289,11 @@
                 var css = option.css;
                 selections.forEach((element) => {
                     var name = element.name;
-                    var value = element.value;
-                    var selected = saved == name ? 'selected="selected"' : "";
+                    var value = element.css;
+                    var selected = saved == name ? ' selected="selected"' : "";
                     html +=
-                        '<option data-css= "' +
-                        css +
-                        '"value=' +
-                        value +
+                        '<option value= "' +
+                        value + '"' +
                         selected +
                         ">" +
                         name +
@@ -402,9 +400,7 @@
                 var css = $("#cssOptions").val();
                 savedHtml += document.getElementById("cssOptions").innerHTML;
                 var checkboxes = document.getElementsByClassName("checkbox");
-                for (let element of checkboxes) {
-                    savedHtml += element.innerHTML;
-                }
+              
                 var selectedOptions = $(".checkbox:checked")
                     .map(function() {
                         return this.getAttribute("data-css");
@@ -417,9 +413,10 @@
 
                 //proccess selector
                 var selectors = document.getElementsByClassName("selector");
-                for (let element of selectors) {
+                for (var i = 0;i<selectors.length;i++) {
+                    var element = selectors[i]
                     css +=
-                        element.getAttribute("data-css").replaceAll("$", element.value) +
+                        element.selectedOptions[0].value +
                         "\n";
                     savedHtml += element.outerHTML;
                 }
@@ -465,7 +462,7 @@
                         var element = fontPickers[i]
                         if (element.value != "") {
                             var url = "https://fonts.googleapis.com/css?family=" + element.value;
-                            var promise = await fetch(url)
+                            var promise = await fetch(url, {mode: 'no-cors'})
                             var text = await promise.text()
                             css += text
                             css += element.getAttribute("data-css").replaceAll("$", element.value.replaceAll("+", " "));

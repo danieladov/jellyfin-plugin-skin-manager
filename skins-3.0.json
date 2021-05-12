@@ -244,23 +244,31 @@
                     "css": "@import url('https://prayag17.github.io/JellySkin/$.css');",
                     "selections": [{
                             "name": "Default",
-                            "value": ""
+                            "value": "",
+							"css" : "@import url('https://prayag17.github.io/JellySkin/default.css');"
                         },
                         {
                             "name": "Sea Gradient",
-                            "value": "seaGradient"
+                            "value": "seaGradient",
+							"css" : "@import url('https://prayag17.github.io/JellySkin/seaGradient.css');"
                         },
                         {
                             "name": "Sunset Gradient",
-                            "value": "sunsetGradient"
+                            "value": "sunsetGradient",
+							"css" : "@import url('https://prayag17.github.io/JellySkin/sunsetGradient.css');"
+
                         },
                         {
                             "name": "Night Sky Gradient",
-                            "value": "nightSkyGradient"
+                            "value": "nightSkyGradient",
+							"css" : "@import url('https://prayag17.github.io/JellySkin/nightSkyGradient.css');"
+
                         },
                         {
                             "name": "Morning Gradient",
-                            "value": "morningGradient"
+                            "value": "morningGradient",
+							"css" : "@import url('https://prayag17.github.io/JellySkin/morningGradient.css');"
+
                         }
                     ]
                 },
@@ -313,7 +321,7 @@
                         "css": "",
                         "selections": [{
                                 "name": "Scale in and out",
-                                "css": "/*Dynamic Poster effect-option1*/.cardBox-bottompadded{margin-bottom; 1em !important;}.itemsContainer>.card>.cardBox {margin: 1em;background: rgba(0,0,0,0.5);transition: transform .2s;}.card:hover .cardBox{transform: scale(1.1);}"
+                                "css": " /* Dynamic Poster effect-option1*/ .cardBox-bottompadded{margin-bottom; 1em !important;}.itemsContainer>.card>.cardBox {margin: 1em;background: rgba(0,0,0,0.5);transition: transform .2s;}.card:hover .cardBox{transform: scale(1.1);}"
                             },
                             {
                                 "name": "Pop up and down",
