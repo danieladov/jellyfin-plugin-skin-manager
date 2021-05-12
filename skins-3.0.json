@@ -5,19 +5,19 @@
         "defaultCss": "",
         "previews": [{
                 "name": "Login Page",
-                "url": "https://prayag17.github.io/jellyfin-plugin-skin-manager/src/img/1.png"
+                "url": "https://raw.githubusercontent.com/danieladov/jellyfin-plugin-skin-manager/master/src/img/Default/1.png"
             },
             {
                 "name": "Home/Index Page",
-                "url": "https://prayag17.github.io/jellyfin-plugin-skin-manager/src/img/2.png"
+                "url": "https://raw.githubusercontent.com/danieladov/jellyfin-plugin-skin-manager/master/src/img/Default/2.png"
             },
             {
                 "name": "Library Page",
-                "url": "https://prayag17.github.io/jellyfin-plugin-skin-manager/src/img/3.png"
+                "url": "https://raw.githubusercontent.com/danieladov/jellyfin-plugin-skin-manager/master/src/img/Default/3.png"
             },
             {
                 "name": "Title page",
-                "url": "https://prayag17.github.io/jellyfin-plugin-skin-manager/src/img/4.png"
+                "url": "https://raw.githubusercontent.com/danieladov/jellyfin-plugin-skin-manager/master/src/img/Default/4.png"
             }
         ],
         "categories": [{
