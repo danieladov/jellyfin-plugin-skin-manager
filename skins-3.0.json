@@ -339,6 +339,12 @@
                     },
                     {
                         "type": "checkBox",
+                        "name": "Image gradient in title page",
+                        "description": "removes the bg of detail ribbon and replace it with image gradient",
+                        "css": ".detailRibbon {background: transparent;}.itemBackdrop {-webkit-mask: linear-gradient(to bottom, black 50%,transparent);mask: linear-gradient(to bottom, black 50%,transparent);}"
+                    },
+                    {
+                        "type": "checkBox",
                         "name": "Minimal Actor's card",
                         "description": "display actor's cards in minimal and compact way",
                         "css": "/*Actors*/.card[data-type=Actor] .cardBox {background: none;position: relative;}.card[data-type=Actor] .cardScalable {height: 0;overflow: hidden;padding-top: 100%;border-radius: var(--rounding);}.card[data-type=Actor] .cardText {position: absolute;background: transparent !important;}.card[data-type=Actor] .cardImageContainer::after {content: '';background: linear-gradient(360deg, rgba(0,0,0,0.75), transparent 70%);width: 100%;bottom: 0;position: absolute;padding-top: 100%;}.card[data-type=Actor].cardText-secondary {bottom: 0%;width: -webkit-fill-available;border-radius: 0px 0px 10px 10px;height: 22px;}.card[data-type=Actor] .cardText-first {bottom: 23.5px;width: -webkit-fill-available;height: 22px;}.layout-mobile .card[data-type=Actor] .cardText-first {color: white !important;}.card[data-type=Actor] .cardScalable {overflow: hidden;border-radius: var(--rounding);height: 3rem;}.card[data-type=Actor] .cardOverlayButton-br {position: absolute;bottom: 23% !important;right: 0 !important;}.card[data-type=Actor] .cardPadder {background: none;}.card[data-type=Actor] .cardImageIcon {bottom: 41%;position: absolute;left: 50%;transform: translateX(-50%);}"
