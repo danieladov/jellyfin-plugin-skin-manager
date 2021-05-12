@@ -5,24 +5,92 @@
         "defaultCss": "",
         "previews": [{
                 "name": "Login Page",
-                "url": ""
+                "url": "https://prayag17.github.io/jellyfin-plugin-skin-manager/src/img/1.png"
             },
             {
                 "name": "Home/Index Page",
-                "url": ""
+                "url": "https://prayag17.github.io/jellyfin-plugin-skin-manager/src/img/2.png"
             },
             {
                 "name": "Library Page",
-                "url": ""
+                "url": "https://prayag17.github.io/jellyfin-plugin-skin-manager/src/img/3.png"
             },
             {
                 "name": "Title page",
-                "url": ""
+                "url": "https://prayag17.github.io/jellyfin-plugin-skin-manager/src/img/4.png"
             }
         ],
         "categories": [{
             "name": "Default",
             "options": []
+        }]
+    },
+    {
+        "name": "JellySkin",
+        "author": "prayagprajapati17",
+        "description": "A very bright and colorful look using lots of drop shadows. Theme is by prayag17.",
+        "defaultCss": "@import url('https://prayag17.github.io/JellySkin/default.css');",
+        "previews": [{
+                "name": "Login Page",
+                "url": "https://prayag17.github.io/JellySkin/img/login.jpg"
+            },
+            {
+                "name": "Home/Index Page",
+                "url": "https://prayag17.github.io/JellySkin/img/Home.jpg"
+            },
+            {
+                "name": "Library Page",
+                "url": "https://prayag17.github.io/JellySkin/img/Movies.jpg"
+            },
+            {
+                "name": "Title page",
+                "url": "https://prayag17.github.io/JellySkin/img/Title%20Page-Movie.jpg"
+            }
+        ],
+        "categories": [{
+            "name": "Default",
+            "options": [{
+                    "type": "selector",
+                    "name": "Gradient",
+                    "description": "Changes the Jellyfin themed Hover gradient",
+                    "css": "@import url('https://prayag17.github.io/JellySkin/$.css');",
+                    "selections": [{
+                            "name": "Default",
+                            "value": "",
+                            "css": "@import url('https://prayag17.github.io/JellySkin/default.css');"
+                        },
+                        {
+                            "name": "Sea Gradient",
+                            "value": "seaGradient",
+                            "css": "@import url('https://prayag17.github.io/JellySkin/seaGradient.css');"
+                        },
+                        {
+                            "name": "Sunset Gradient",
+                            "value": "sunsetGradient",
+                            "css": "@import url('https://prayag17.github.io/JellySkin/sunsetGradient.css');"
+
+                        },
+                        {
+                            "name": "Night Sky Gradient",
+                            "value": "nightSkyGradient",
+                            "css": "@import url('https://prayag17.github.io/JellySkin/nightSkyGradient.css');"
+
+                        },
+                        {
+                            "name": "Morning Gradient",
+                            "value": "morningGradient",
+                            "css": "@import url('https://prayag17.github.io/JellySkin/morningGradient.css');"
+
+                        }
+                    ]
+                },
+                {
+                    "type": "checkBox",
+                    "name": "Theme Logo",
+                    "description": "Styles title page in such a way in which logos are used instead of Names.",
+                    "css": "@import url('https://prayag17.github.io/JellySkin/Logo.css');"
+                }
+            ]
         }]
     },
     {
@@ -49,7 +117,12 @@
         ],
         "categories": [{
             "name": "Default",
-            "options": []
+            "options": [{
+                "type": "checkBox",
+                "name": "Theme Logo",
+                "description": "Styles title page in such a way in which logos are used instead of Names.",
+                "css": "@import url('https://prayag17.github.io/JellyFlix/Logo.css');"
+            }]
         }]
     },
     {
@@ -214,74 +287,6 @@
         }]
     },
     {
-        "name": "JellySkin",
-        "author": "prayagprajapati17",
-        "description": "A very bright and colorful look using lots of drop shadows. Theme is by prayag17.",
-        "defaultCss": "@import url('https://prayag17.github.io/JellySkin/default.css');",
-        "previews": [{
-                "name": "Login Page",
-                "url": "https://prayag17.github.io/JellySkin/img/login.jpg"
-            },
-            {
-                "name": "Home/Index Page",
-                "url": "https://prayag17.github.io/JellySkin/img/Home.jpg"
-            },
-            {
-                "name": "Library Page",
-                "url": "https://prayag17.github.io/JellySkin/img/Movies.jpg"
-            },
-            {
-                "name": "Title page",
-                "url": "https://prayag17.github.io/JellySkin/img/Title%20Page-Movie.jpg"
-            }
-        ],
-        "categories": [{
-            "name": "Default",
-            "options": [{
-                    "type": "selector",
-                    "name": "Gradient",
-                    "description": "Changes the Jellyfin themed Hover gradient",
-                    "css": "@import url('https://prayag17.github.io/JellySkin/$.css');",
-                    "selections": [{
-                            "name": "Default",
-                            "value": "",
-							"css" : "@import url('https://prayag17.github.io/JellySkin/default.css');"
-                        },
-                        {
-                            "name": "Sea Gradient",
-                            "value": "seaGradient",
-							"css" : "@import url('https://prayag17.github.io/JellySkin/seaGradient.css');"
-                        },
-                        {
-                            "name": "Sunset Gradient",
-                            "value": "sunsetGradient",
-							"css" : "@import url('https://prayag17.github.io/JellySkin/sunsetGradient.css');"
-
-                        },
-                        {
-                            "name": "Night Sky Gradient",
-                            "value": "nightSkyGradient",
-							"css" : "@import url('https://prayag17.github.io/JellySkin/nightSkyGradient.css');"
-
-                        },
-                        {
-                            "name": "Morning Gradient",
-                            "value": "morningGradient",
-							"css" : "@import url('https://prayag17.github.io/JellySkin/morningGradient.css');"
-
-                        }
-                    ]
-                },
-                {
-                    "type": "checkBox",
-                    "name": "Theme Logo",
-                    "description": "Styles title page in such a way in which logos are used instead of Names.",
-                    "css": "@import url('https://prayag17.github.io/JellySkin/Logo.css');"
-                }
-            ]
-        }]
-    },
-    {
         "name": "Custom",
         "author": "you",
         "description": "customize the look of jellyfin by your needs",
@@ -318,7 +323,7 @@
                         "type": "selector",
                         "name": "Poster card hover effect",
                         "description": "Changes the hover effect on Movie/TV show/Music poster card.",
-                        "css": "",
+                        "css": "/*poster-eff*/",
                         "selections": [{
                                 "name": "Scale in and out",
                                 "css": " /* Dynamic Poster effect-option1*/ .cardBox-bottompadded{margin-bottom; 1em !important;}.itemsContainer>.card>.cardBox {margin: 1em;background: rgba(0,0,0,0.5);transition: transform .2s;}.card:hover .cardBox{transform: scale(1.1);}"
@@ -336,6 +341,12 @@
                                 "css": "/*Dynamic Poster effect-option4*/.card:hover .cardImageContainer{filter: blur(2px);} .cardImageContainer{transition: all .2s;}"
                             }
                         ]
+                    },
+                    {
+                        "type": "checkBox",
+                        "name": "Image gradient in title page",
+                        "description": "removes the bg of detail ribbon and replace it with image gradient",
+                        "css": ".detailRibbon {background: transparent;}.itemBackdrop {-webkit-mask: linear-gradient(to bottom, black 50%,transparent);mask: linear-gradient(to bottom, black 50%,transparent);}"
                     },
                     {
                         "type": "checkBox",
