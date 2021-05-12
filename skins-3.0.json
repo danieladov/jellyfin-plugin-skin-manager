@@ -310,7 +310,7 @@
                         "type": "selector",
                         "name": "Poster card hover effect",
                         "description": "Changes the hover effect on Movie/TV show/Music poster card.",
-                        "css": "",
+                        "css": "/*poster-eff*/",
                         "selections": [{
                                 "name": "Scale in and out",
                                 "css": "/*Dynamic Poster effect-option1*/.cardBox-bottompadded{margin-bottom; 1em !important;}.itemsContainer>.card>.cardBox {margin: 1em;background: rgba(0,0,0,0.5);transition: transform .2s;}.card:hover .cardBox{transform: scale(1.1);}"
