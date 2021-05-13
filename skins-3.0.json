@@ -343,6 +343,40 @@
                         ]
                     },
                     {
+                        "type": "selector",
+                        "name": "Icon Pack",
+                        "description": "Changes all icons like dashboard and play. Choose non google fonts if you are blocking google fonts",
+                        "css": "/*Icons*/",
+                        "selections": [{
+                                "name": "Default",
+                                "css": ""
+                            },
+                            {
+                                "name": "Outlined",
+                                "css": "@import url('https://prayag17.github.io/Jellyfin-Icons/Outline.css');"
+                            },
+                            {
+                                "name": "Rounded",
+                                "css": "@import url('https://prayag17.github.io/Jellyfin-Icons/round.css');"
+                            },
+                            {
+                                "name": "Sharp",
+                                "css": "@import url('https://prayag17.github.io/Jellyfin-Icons/Sharp.css');"
+                            }, {
+                                "name": "Outlined-Non google fonts",
+                                "css": "@import url('https://prayag17.github.io/Jellyfin-Icons/Outline.css');"
+                            },
+                            {
+                                "name": "Rounded-Non google fonts",
+                                "css": "@import url('https://prayag17.github.io/Jellyfin-Icons/round.css');"
+                            },
+                            {
+                                "name": "Sharp-Non google fonts",
+                                "css": "@import url('https://prayag17.github.io/Jellyfin-Icons/Sharp.css');"
+                            }
+                        ]
+                    },
+                    {
                         "type": "checkBox",
                         "name": "Image gradient in title page",
                         "description": "removes the bg of detail ribbon and replace it with image gradient",
