@@ -474,7 +474,7 @@
                         "name": "Background-color",
                         "description": "change background-color of the background",
                         "css": ".backgroundContainer.withBackdrop {background-color: $;}",
-                        "default": "#000000db"
+                        "default": "rgba(0, 0, 0, 0.86)"
                     },
                     {
                         "type": "blurSlider",
