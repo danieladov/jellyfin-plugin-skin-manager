@@ -338,7 +338,7 @@
                     '<div class="inputContainer"><label><span>' + name + '</span></label><input type="range" class="slider" value="' + defaultValue + '" oninput ="updateBlur(' + "'" + id + "'" + ')"' + 'step="' + step + '" data-css="' + css + '" id="' + id + '" name="' + id + '" min="0" max="40" label="' + name + '">' +
                     '<div class="fieldDescription">' + description + '</div>' +
                     '</div>' +
-                    '<div class="img"><img id="' + id + 'image"' + 'src="https://i.gifer.com/4KL.gif"></div>';
+                    '<div class="img"><img id="' + id + 'image"' + 'src="https://i.imgur.com/sMDQSdV.png"></div>';
                 return html;
             }
 
@@ -400,7 +400,7 @@
                 var css = $("#cssOptions").val();
                 savedHtml += document.getElementById("cssOptions").innerHTML;
                 var checkboxes = document.getElementsByClassName("checkbox");
-              
+
                 var selectedOptions = $(".checkbox:checked")
                     .map(function() {
                         return this.getAttribute("data-css");
@@ -413,7 +413,7 @@
 
                 //proccess selector
                 var selectors = document.getElementsByClassName("selector");
-                for (var i = 0;i<selectors.length;i++) {
+                for (var i = 0; i < selectors.length; i++) {
                     var element = selectors[i]
                     css +=
                         element.selectedOptions[0].value +
@@ -462,7 +462,9 @@
                         var element = fontPickers[i]
                         if (element.value != "") {
                             var url = "https://fonts.googleapis.com/css?family=" + element.value;
-                            var promise = await fetch(url, {mode: 'no-cors'})
+                            var promise = await fetch(url, {
+                                mode: 'no-cors'
+                            })
                             var text = await promise.text()
                             css += text
                             css += element.getAttribute("data-css").replaceAll("$", element.value.replaceAll("+", " "));
