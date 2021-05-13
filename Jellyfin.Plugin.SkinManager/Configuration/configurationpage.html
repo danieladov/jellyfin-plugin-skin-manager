@@ -415,10 +415,14 @@
                 var selectors = document.getElementsByClassName("selector");
                 for (var i = 0; i < selectors.length; i++) {
                     var element = selectors[i]
-                    css +=
-                        element.selectedOptions[0].value +
-                        "\n";
-                    savedHtml += element.outerHTML;
+                    if(checkForImport(element.selectedOptions[0].value)){
+                        css = element.selectedOptions[0].value + "\n" + css
+                    }else{
+                        css +=
+                            element.selectedOptions[0].value +
+                            "\n";
+                        savedHtml += element.outerHTML;
+                    }
                 }
 
                 //process colorPicker
@@ -476,6 +480,10 @@
                 return css
 
 
+            }
+
+            function checkForImport(css){
+                return css.includes("@import")
             }
 
 
