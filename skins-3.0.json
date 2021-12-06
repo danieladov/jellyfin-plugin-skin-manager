@@ -308,7 +308,11 @@
                 "name": "Player",
                 "url": "https://camo.githubusercontent.com/fcef7d4e498abf47f9dc44337436b2664ee2ce63195b93ec6ea564f1f689300c/68747470733a2f2f6d62636f6f70657238332e6769746875622e696f2f6a6663737364726b67726e2f6a6663737330342e706e673f7261773d74727565"
             }
-		]
+		],
+		"categories": [{
+            "name": "Default",
+            "options": []
+        }]
 	},
     {
         "name": "Custom",
