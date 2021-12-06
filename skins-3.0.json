@@ -286,6 +286,30 @@
             ]
         }]
     },
+	{
+		"name": "Dark And Green",
+        "author": "mbcooper83",
+        "description": "A Dark And Green Theme for Jellyfin.",
+        "defaultCss": "@import url('https://mbcooper83.github.io/jfcssdrkgrn/jellyfin-darkangreen.css');",
+        "previews": [
+			{
+                "name": "Home/Index Page",
+                "url": "https://camo.githubusercontent.com/6dd10c355679d68222c4bed4889be5e7c453e623acc0308bf0e5cab464fc5e66/68747470733a2f2f6d62636f6f70657238332e6769746875622e696f2f6a6663737364726b67726e2f6a6663737330312e706e673f7261773d74727565"
+            },
+			{
+                "name": "Settings Page",
+                "url": "https://camo.githubusercontent.com/fe309944755cf16b8a78ded952c28758bbf2fa8a2cd4a9f035953e9404747a50/68747470733a2f2f6d62636f6f70657238332e6769746875622e696f2f6a6663737364726b67726e2f6a6663737330322e706e673f7261773d74727565"
+            },
+			{
+                "name": "Episode/season page",
+                "url": "https://camo.githubusercontent.com/6d8dd75114e06bffbc9ea87f4fb2845dc8a49b9408b5f79322a6d4ce80b4ee50/68747470733a2f2f6d62636f6f70657238332e6769746875622e696f2f6a6663737364726b67726e2f6a6663737330332e706e673f7261773d74727565"
+            },
+			{
+                "name": "Player",
+                "url": "https://camo.githubusercontent.com/fcef7d4e498abf47f9dc44337436b2664ee2ce63195b93ec6ea564f1f689300c/68747470733a2f2f6d62636f6f70657238332e6769746875622e696f2f6a6663737364726b67726e2f6a6663737330342e706e673f7261773d74727565"
+            }
+		]
+	},
     {
         "name": "Custom",
         "author": "you",
