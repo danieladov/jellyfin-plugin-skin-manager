@@ -607,6 +607,93 @@
     }]
 },
 {
+    "name": "JellyTheme",
+    "author": "ShiniGandhi",
+    "description": "A heavily modified theme for Jellyfin with a very original name.",
+    "defaultCss": "/* JellyTheme */",
+    "previews": [
+        {
+            "name": "Main page, with resized cards (optional)",
+            "url": "https://github.com/ShiniGandhi/JellyTheme/raw/main/screenshots/Index-Resized-Cards.png"
+        },
+        {
+            "name": "Main page, no resized cards",
+            "url": "https://github.com/ShiniGandhi/JellyTheme/raw/main/screenshots/Index.png"
+        },
+        {
+            "name": "Movie page with a single version and no trailer playing",
+            "url": "https://github.com/ShiniGandhi/JellyTheme/raw/main/screenshots/Movie-No-Trailer_Single-Version.png"
+        },
+        {
+            "name": "Movie page with multiple versions and a trailer playing",
+            "url": "https://github.com/ShiniGandhi/JellyTheme/raw/main/screenshots/Movie-Trailer-and-Versions.png"
+        },
+        {
+            "name": "TV show page",
+            "url": "https://github.com/ShiniGandhi/JellyTheme/raw/main/screenshots/Show.png"
+        },
+        {
+            "name": "TV show - compact seasons list (optional)",
+            "url": "https://github.com/ShiniGandhi/JellyTheme/raw/main/screenshots/Season-List-Compact.png"
+        },
+        {
+            "name": "TV show - episodes in season",
+            "url": "https://github.com/ShiniGandhi/JellyTheme/raw/main/screenshots/Season.png"
+        },
+        {
+            "name": "TV show - episode entry",
+            "url": "https://github.com/ShiniGandhi/JellyTheme/raw/main/screenshots/Episode.png"
+        },
+        {
+            "name": "Cleaner user settings (optional)",
+            "url": "https://github.com/ShiniGandhi/JellyTheme/blob/main/screenshots/User-Settings.png?raw=true"
+        }
+    ],
+    "categories": [{
+        "name": "Default",
+        "options": [{
+                    "type": "selector",
+                    "name": "Mode",
+                    "description": "Select cleaner for a slightly cleaner UI, with no backdrop in the main menu and a few more things .",
+                    "css": "/*mode*/",
+                    "selections": [{
+                            "name": "Normal",
+                            "css": "@import url('https://cdn.jsdelivr.net/gh/ShiniGandhi/JellyTheme@latest/latest/JellyTheme.css'); "
+                        },
+                        {
+                            "name": "Cleaner",
+                            "css": "@import url('https://cdn.jsdelivr.net/gh/ShiniGandhi/JellyTheme@latest/latest/Cleaner-UI.css');"
+                        }
+                    ]
+                },
+				{
+                    "type": "colorPicker",
+                    "mode": "rgba",
+                    "name": "Accent color",
+                    "description": "Change the accent color.",
+                    "css": ":root {--accent:$!important;}",
+                    "default": "#6279cd"
+                },
+				{
+                "type": "checkBox",
+                "name": "Resize Some Elements",
+                "description": "If you want Continue Watching, Next Up and the list of seasons to be smaller, as shown in my screenshots, check this",
+                "css": "@import url('https://cdn.jsdelivr.net/gh/ShiniGandhi/JellyTheme@latest/latest/Resize-Cards.css');",
+				"default":"false"	
+				},
+				{
+                "type": "checkBox",
+                "name": "Right-to-Left Support",
+                "description": "If your server's metadata is in Hebrew, Arabic (or any other language that is written right-to-left, check this:",
+                "css": "@import url('https://cdn.jsdelivr.net/gh/ShiniGandhi/JellyTheme@latest/latest/RTL-Fix.css');",
+				"default":"false"	
+				}
+				
+				
+				]
+    }]
+},
+{
     "name": "Custom",
     "author": "you",
     "description": "customize the look of jellyfin by your needs",
