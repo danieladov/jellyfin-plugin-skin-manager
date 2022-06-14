@@ -433,7 +433,19 @@
                 for (var i = 0; i < inputs.length; i++) {
                     var element = inputs[i]
                     var values = $("#" + element.name).spectrum("get")
-                    var color = "rgba(" + values._r + "," + values._g + "," + values._b + "," + values._a + ")"
+                    var mode = element.getAttribute("data-mode");
+                    var color = "";
+                    switch (mode) {
+                        case "hex":
+                            color = "#" + values.toHex();
+                            break;
+                        case "only_numbers":
+                            color = values._r + "," + values._g + "," + values._b ;
+                            break;
+                        default:
+                            color = "rgba(" + values._r + "," + values._g + "," + values._b + "," + values._a + ")";
+                            break;
+                    }
                     css += element.getAttribute("data-css").replaceAll("$", color) + "\n";
                 }
 
