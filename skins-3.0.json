@@ -29,7 +29,7 @@
     "name": "JellySkin",
     "author": "prayagprajapati17",
     "description": "A very bright and colorful look using lots of drop shadows. Theme is by prayag17.",
-    "defaultCss": "@import url('https://prayag17.github.io/JellySkin/default.css');",
+    "defaultCss": "@import url('https://cdn.jsdelivr.net/npm/jellyskin@latest/dist/main.css');",
     "previews": [{
             "name": "Login Page",
             "url": "https://cdn.jsdelivr.net/gh/prayag17/JellySkin/img/login.jpg"
@@ -89,6 +89,18 @@
                 "name": "Theme Logo",
                 "description": "Styles title page in such a way in which logos are used instead of Names.",
                 "css": "@import url('https://cdn.jsdelivr.net/gh/prayag17/JellySkin/addons/Logo.css');"
+            },
+            {
+                "type": "checkBox",
+                "name": "Compact Posters",
+                "description": "If you want to display your posters to be compact.",
+                "css": "@import url('https://cdn.jsdelivr.net/gh/prayag17/JellySkin/addons/compact-poster.css');"
+            },
+            {
+                "type": "checkBox",
+                "name": "Improve Performance",
+                "description": "Removes all gradient transparecy due to performance issues on older devices.",
+                "css": "@import url('https://cdn.jsdelivr.net/gh/prayag17/JellySkin/addons/imp-per.css');"
             }
         ]
     }]
