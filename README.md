@@ -1,5 +1,5 @@
 <h1 align="center">Jellyfin Skin Manager Plugin</h1>
-<h3 align="center">Part of the <a href="https://jellyfin.media">Jellyfin Project</a></h3>
+<h3 align="center">Part of the <a href="https://jellyfin.org">Jellyfin Project</a></h3>
 
 <p align="center">
 Jellyfin Skin Manager is a plugin that helps you to download and install skins;
