@@ -1,0 +1,126 @@
+{
+    "skins": [
+        {
+            "name": "JellySkin",
+            "description": "A modern, customizable skin for Jellyfin.",
+            "css": "@import url('https://cdn.jsdelivr.net/npm/jellyskin@latest/dist/main.css');",
+            "previews": [
+                {
+                    "name": "Login Page",
+                    "url": "https://raw.githubusercontent.com/danieladov/jellyfin-plugin-skin-manager/master/src/img/Default/1.png"
+                },
+                {
+                    "name": "Home/Index Page",
+                    "url": "https://raw.githubusercontent.com/danieladov/jellyfin-plugin-skin-manager/master/src/img/Default/2.png"
+                },
+                {
+                    "name": "Library Page",
+                    "url": "https://raw.githubusercontent.com/danieladov/jellyfin-plugin-skin-manager/master/src/img/Default/3.png"
+                },
+                {
+                    "name": "Title page",
+                    "url": "https://raw.githubusercontent.com/danieladov/jellyfin-plugin-skin-manager/master/src/img/Default/4.png"
+                }
+            ],
+            "categories": [
+                {
+                    "name": "Default",
+                    "controls": [
+                        {
+                            "type": "color",
+                            "label": "Background Color",
+                            "description": "Set the background color of the skin",
+                            "id": "bgColor",
+                            "default": "#ffffff",
+                            "css": ":root { --bg-color: %value%; }"
+                        },
+                        {
+                            "type": "color",
+                            "label": "Text Color",
+                            "id": "textColor",
+                            "default": "#000000",
+                            "css": ":root { --text-color: %value%; }"
+                        },
+                        {
+                            "type": "slider",
+                            "label": "Font Size",
+                            "id": "fontSize",
+                            "min": 10,
+                            "max": 30,
+                            "default": 16,
+                            "css": ":root { --font-size: %value%px; }"
+                        },
+                        {
+                            "type": "checkbox",
+                            "label": "Dark Mode",
+                            "description": "Enable dark mode",
+                            "id": "checkbox",
+                            "default": true,
+                            "css": ":root { --dark-mode: %value%; }"
+                        },
+                        {
+                            "type": "number",
+                            "label": "Border Radius",
+                            "description": "Set the border radius",
+                            "id": "borderRadius",
+                            "min": 0,
+                            "max": 50,
+                            "default": 0,
+                            "css": ":root { --"
+                        },
+                        {
+                            "type": "select",
+                            "label": "Font Family",
+                            "description": "Select the font family",
+                            "id": "fontFamily",
+                            "default": "Arial",
+                            "css": ":root { --font-family: %value%; }",
+                            "options": [
+                                {
+                                    "label": "Arial",
+                                    "value": "Arial"
+                                },
+                                {
+                                    "label": "Verdana",
+                                    "value": "Verdana"
+                                },
+                                {
+                                    "label": "Georgia",
+                                    "value": "Georgia"
+                                },
+                                {
+                                    "label": "Times New Roman",
+                                    "value": "Times New Roman"
+                                },
+                                {
+                                    "label": "Trebuchet MS",
+                                    "value": "Trebuchet MS"
+                                },
+                                {
+                                    "label": "Arial Black",
+                                    "value": "Arial Black"
+                                },
+                                {
+                                    "label": "Impact",
+                                    "value": "Impact"
+                                },
+                                {
+                                    "label": "Comic Sans MS",
+                                    "value": "Comic Sans MS"
+                                },
+                                {
+                                    "label": "Courier New",
+                                    "value": "Courier New"
+                                },
+                                {
+                                    "label": "Lucida Console",
+                                    "value": "Lucida Console"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

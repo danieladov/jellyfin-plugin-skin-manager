@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Skin Manager</title>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+</head>
+
+<body>
+    <div id="historyPage" data-role="page"
+        class="page type-interior pluginConfigurationPage tbsConfigurationPage withTabs"
+        data-require="emby-input,emby-button" data-controller="__plugin/fontpicker.js">
+        <script src="/web/configurationpage?name=controls.Control.js"></script>
+        <script src="/web/configurationpage?name=controls.ColorControl.js"></script>
+        <script src="/web/configurationpage?name=controls.SliderControl.js"></script>
+        <script src="/web/configurationpage?name=controls.CheckBoxControl.js"></script>
+        <script src="/web/configurationpage?name=controls.NumberControl.js"></script>
+        <script src="/web/configurationpage?name=controls.SelectControl.js"></script>
+        <script src="/web/configurationpage?name=controls.FontPickerControl.js"></script>
+        <script src="/web/configurationpage?name=controls.TextAreaControl.js"></script>
+        <script src="/web/configurationpage?name=controls.Category.js"></script>
+        <script src="/web/configurationpage?name=skin.js"></script>
+        <script src="/web/configurationpage?name=fontpicker.js"></script>
+        <script src="/web/configurationpage?name=colorpicker.js"></script>
+        <script src="/web/configurationpage?name=MainController.js"></script>
+        <script src="/web/configurationpage?name=common.js"></script>
+        <script src="/web/configurationpage?name=ConfigController.js"></script>
+        <script src="/web/configurationpage?name=HistoryController.js"></script>
+
+        <link rel="stylesheet" href="/web/configurationpage?name=style.css" />
+
+        <div data-role="content">
+            <div class="content-primary">
+                <div class="tbsConfigurationPage">
+                    <div class="sectionTitleContainer flex align-items-center">
+                        <h2 class="sectionTitle">Skin Manager</h2>
+                        <a is="emby-linkbutton" class="raised button-alt headerHelpButton emby-button" target="_blank"
+                            href="https://prayag17.github.io/jellyfin-plugin-skin-manager/src/html/help.html">Help</a>
+                    </div>
+                    <div class="history-split">
+                        <section class="history-column history-column-skins">
+                            <header class="history-column-header">
+                                <h3>Skin History</h3>
+                                <p>Reapply any skin you used before.</p>
+                            </header>
+                            <div class="history-card">
+                                <label for="cssOptions-history" class="history-label">Select a skin</label>
+                                <select is="emby-select" id="cssOptions-history" class="history-select"></select>
+                            </div>
+                            <div class="history-panel" id="skinHistoryPanel">
+                                <div class="history-panel-inner checkboxList checkboxList-verticalwrap"
+                                    id="options-history"></div>
+                            </div>
+                            <button is="emby-button" type="button" class="raised history-action"
+                                id="setSkin-history"><span>Apply skin</span></button>
+                        </section>
+                        <section class="history-column history-column-css">
+                            <header class="history-column-header">
+                                <h3>User CSS</h3>
+                                <p>Keep your personal tweaks safe when switching skins.</p>
+                            </header>
+                            <div class="css-history" id="cssHistoryContainer" data-empty="true">
+                                <div class="history-card">
+                                    <label for="cssHistorySelect" class="history-label">Select a revision</label>
+                                    <select is="emby-select" id="cssHistorySelect" class="history-select"></select>
+                                </div>
+                                <button is="emby-button" type="button" class="raised history-action-secondary"
+                                    id="restoreCssButton">
+                                    <span>Restore CSS</span>
+                                </button>
+                                <p class="css-history-meta" id="cssHistoryMeta"></p>
+                                <pre class="css-history-code" id="cssHistoryCode"></pre>
+                                <div class="css-history-empty" id="cssHistoryEmpty">
+                                    No saved CSS yet.
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            console.log("history page loaded");
+            const setHistoryTabs = function () {
+                LibraryMenu.setTabs('history', 1, getTabs);
+            };
+            if (!window.SkinManagerHistoryViewListener) {
+                window.SkinManagerHistoryViewListener = function (e) {
+                    if (e.target && e.target.id === 'historyPage') {
+                        setHistoryTabs();
+                    }
+                };
+                document.addEventListener('viewshow', window.SkinManagerHistoryViewListener);
+            }
+            setHistoryTabs();
+            let historyController = new HistoryController();
+            historyController.init();
+        </script>
+    </div>
+</body>
+
+</html>

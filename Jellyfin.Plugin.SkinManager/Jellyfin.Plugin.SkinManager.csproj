@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>NET8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <IsPackable>true</IsPackable>
     <AssemblyVersion>2.0.2</AssemblyVersion>
     <FileVersion>2.0.2</FileVersion>
@@ -10,15 +10,18 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Jellyfin.Controller" Version="10.10.0" />
+    <PackageReference Include="Jellyfin.Controller" Version="10.11.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Configuration\configurationpage.html" />
-    <EmbeddedResource Include="Configuration\configurationpage.html" />
 
-    <None Remove="Configuration\fontpicker.js" />
-    <EmbeddedResource Include="Configuration\fontpicker.js" />
+
+  <None Remove="Configuration\*" />
+	<EmbeddedResource Include="Configuration\*" />
+
+  <None Remove="Configuration\controls\*" />
+	<EmbeddedResource Include="Configuration\controls\*" />
+
   </ItemGroup>
 
   <ItemGroup>

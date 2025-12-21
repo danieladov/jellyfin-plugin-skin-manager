@@ -1,0 +1,1964 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Skin Manager</title>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+</head>
+
+<body>
+    <script src="/web/configurationpage?name=test.js"></script>
+    <div data-role="page" class="page type-interior pluginConfigurationPage tbsConfigurationPage"
+        data-require="emby-input,emby-button" data-controller="__plugin/fontpicker.js">
+        <div data-role="content">
+            <div class="content-primary">
+                <form class="tbsConfigurationPage">
+                    <div class="sectionTitleContainer flex align-items-center">
+                        <h2 class="sectionTitle">Skin Manager</h2>
+                        <a is="emby-linkbutton" class="raised button-alt headerHelpButton emby-button" target="_blank"
+                            href="https://prayag17.github.io/jellyfin-plugin-skin-manager/src/html/help.html">Help</a>
+                    </div>
+                    <div class="verticalSection">
+                        <p>Select the skin you want to install and click Set Skin</p>
+                        <br />
+                    </div>
+                    <div class="allOptions">
+                        <div class="selectContainer">
+                            <label for="css">Skin</label>
+                            <select is="emby-select" id="cssOptions" onchange="updateSelectors()"></select>
+                            <br />
+                            <div class="fieldDescription" id="description"></div>
+                        </div>
+                        <div class="checkboxList checkboxList-verticalwrap" id="options"></div>
+                        <br />
+                    </div>
+                </form>
+            </div>
+        </div>
+        <script type="text/javascript">
+            var data;
+            var fonts;
+            var hasGoogleFont = false;
+
+            function start() {
+
+                Dashboard.showLoadingMsg();
+                $.getJSON(
+                    "https://raw.githubusercontent.com/danieladov/jellyfin-plugin-skin-manager/master/skins-3.0.json",
+                    function (json) {
+                        $.getJSON(
+                            "https://www.googleapis.com/webfonts/v1/webfonts?sort=popularity&key=AIzaSyB_bPGsf0vxnpO9GmkBjeoEIQ7rE9rbNck",
+                            function (jsonFonts) {
+                                fonts = jsonFonts;
+                            }
+                        );
+                        data = json;
+                        loadSkins();
+                        Dashboard.hideLoadingMsg();
+                        checkEasterEggs();
+                    }
+                );
+            }
+
+            function loadSkins() {
+                var cssOptions = document.getElementById("cssOptions");
+
+                data.forEach((element) => {
+                    var opt = document.createElement("option");
+                    opt.appendChild(document.createTextNode(element.name));
+                    opt.value = element.defaultCss;
+                    cssOptions.appendChild(opt);
+                });
+                updateSelectors();
+                loadConfig();
+                preloadPreviews();
+
+            }
+
+            function loadOptions(skin) {
+                var html = "";
+                html += '<div data-role="controlgroup" class="optionsContainer">';
+                skin.categories.forEach((categorie) => {
+                    if (categorie.options.length != 0) {
+                        html += getSection(categorie.name);
+                    }
+
+                    categorie.options.forEach((element) => {
+                        if (element.type == "checkBox") {
+                            html += getCheckBox(element);
+                        } else if (element.type == "colorPicker") {
+                            html += getColorPicker(element);
+                        } else if (element.type == "number") {
+                            html += getNumber(element);
+                        } else if (element.type == "selector") {
+                            html += getSelector(element);
+                        } else if (element.type == "slider") {
+                            html += getSlider(element);
+                        } else if (element.type == "googleFonts") {
+                            html += getFonts(element);
+                        } else if (element.type == "blurSlider") {
+                            html += getBlurSlider(element);
+                        }
+                    });
+                });
+                html += "</fieldset>";
+                html +=
+                    '<button is="emby-button" type="button" class="raised block" id="refresh-library" onclick=setSkin()><span>Set Skin</span></button>';
+                html += loadPreviews(skin);
+                html += "</div>";
+                $("#options").html(html).trigger("create");
+                generatePlugins();
+            }
+
+            function preloadPreviews() {
+                data.forEach((skin) => {
+                    if (skin.previews != undefined) {
+                        skin.previews.forEach((img) => {
+                            var image = new Image();
+                            image.src = img.url;
+                        });
+                    }
+                });
+            }
+
+            function loadPreviews(skin) {
+                if (skin.previews == undefined) {
+                    return "";
+                }
+                var html = "";
+
+                html += '<h2 class="sectionTitle" >Previews</h2>';
+                skin.previews.forEach((element) => {
+                    html += getImage(element.url);
+                    html += getImgnames(element.name);
+                });
+                return html;
+            }
+
+            function getCheckBox(option, saved) {
+                var html = "";
+                var checked = saved == "true" ? 'checked="checked"' : "";
+                var id = "chkFolder";
+                var name = option.name;
+                var css = option.css;
+                var description = option.description;
+
+                //html += '<label><input is="emby-checkbox" class="chkLibrary" type="checkbox" data-mini="true" id="' + id + '" name="' + id + '" data-value="' + value + '" '+' /><span>' + name  + '</span></label>';
+                html +=
+                    '<div class="checkboxContainer checkboxContainer-withDescription"><label><input class = "checkbox" type="checkbox" is="emby-checkbox" id="' +
+                    id +
+                    '"name="' +
+                    id +
+                    '" data-css="' +
+                    css +
+                    '" ' +
+                    checked +
+                    " /><span>" +
+                    name +
+                    "</span>" +
+                    getToolTip(option) +
+                    '</label><div class="fieldDescription checkboxFieldDescription">' +
+                    description +
+                    "</div></div>";
+                return html;
+            }
+            var colorPickers = {};
+
+            function getColorPicker(option, saved) {
+                var html = "";
+                var id = "colorPicker" + Object.keys(colorPickers).length;
+                var name = option.name;
+                var defaultValue =
+                    option.default == undefined ? "#000000" : option.default;
+                defaultValue = saved == undefined ? defaultValue : saved;
+                colorPickers[id] = defaultValue
+                var css = option.css;
+                var description = option.description;
+                var mode = option.mode;
+                html +=
+                    '<div class="inputContainer"><label></span>' +
+                    getToolTip(option) +
+                    '</label><input class = color type=text  value="' +
+                    defaultValue +
+                    '"data-css = "' +
+                    css +
+                    '" data-mode="' +
+                    mode +
+                    '" id="' +
+                    id +
+                    '" name="' +
+                    id +
+                    '" label="' +
+                    name +
+                    '"  /><span>' +
+                    name +
+                    '<div class="fieldDescription">' +
+                    description +
+                    "</div></div>";
+                return html;
+            }
+
+            function getNumber(option, saved) {
+                var html = "";
+                var id = "number";
+                var name = option.name;
+                var css = option.css;
+                var step = option.step == undefined ? 1 : option.step;
+                var defaultValue = option.default;
+                defaultValue = saved == undefined ? defaultValue : saved;
+                var description = option.description;
+                //html += '<label for=number><input is="emby-input" type=number value=' + defaultValue + ' class = "number" data-css = "'+ css+ '" +  data-mini="true" id="' + id + '" name="' + id + '" data-name="' + name + '" ' + ' /><span>' + name  + '</span></label><br>';
+                html +=
+                    '<div class="inputContainer"><input is="emby-input" type="number" class = "number" value=' +
+                    defaultValue +
+                    " step=" +
+                    step +
+                    ' data-css = "' +
+                    css +
+                    '"  id="' +
+                    id +
+                    '" name="' +
+                    id +
+                    '"  min="0" max="300" label="' +
+                    name +
+                    '" /><div class="fieldDescription">' +
+                    description +
+                    "</div></div>";
+                return html;
+            }
+
+            function getSelector(option, saved) {
+                var html = "";
+                var id = "selector";
+                var name = option.name;
+                var css = option.css;
+                var defaultValue = option.default;
+                var description = option.description;
+                //html += '<label for=number><input is="emby-input" type=number value=' + defaultValue + ' class = "number" data-css = "'+ css+ '" +  data-mini="true" id="' + id + '" name="' + id + '" data-name="' + name + '" ' + ' /><span>' + name  + '</span></label><br>';
+                html +=
+                    '<div class="selectContainer"><select is="emby-select"  data-css= "' +
+                    css +
+                    '"class="selector" label="' +
+                    name +
+                    '">' +
+                    getOptions(option, saved) +
+                    "</select></div>";
+                return html;
+            }
+            var savedGoogleFont;
+
+            function getFonts(option, saved) {
+                var html = "";
+
+                var name = "Change Font";
+                var css =
+                    "html {font-family:  '$',sans-serif ;  } body,h1,h2,h3 { font-family: '$' ,sans-serif;}";
+                var description = "Change the default fonts";
+                //html += '<label for=number><input is="emby-input" type=number value=' + defaultValue + ' class = "number" data-css = "'+ css+ '" +  data-mini="true" id="' + id + '" name="' + id + '" data-name="' + name + '" ' + ' /><span>' + name  + '</span></label><br>';
+                //html += '<div class="selectContainer" ><select is="emby-select" id = "googleFonts" data-css= "'+css + '"class="selector" label="'+name+' " onchange="updateFontPreview()">' + getFontOptions(fonts)+'</select></div>'
+                //html += '<div class = "fontPreview"> This is a preview </div>';
+                //html += '<div id="font-picker"></div><div class = "apply-font"> This is a preview </div>'
+                //html += '	<div class="selectContainer"><label>Change Font </label><br> <input id="font-picker" type="text"> </div>';
+                html += '<div class="selectContainer"><label>Change Font </label><br> <input class="fonts" data-css= "' + option.css + '">'
+                if (saved != undefined) {
+                    savedGoogleFont = saved;
+                }
+                hasGoogleFont = true;
+                return html;
+            }
+
+            function getFontPreview(categories, option, selections, name) {
+                var html = "";
+                if (name == "Fonts") {
+                    html +=
+                        '<div class="fontCont><p style="font-family: ' +
+                        categories.option.selections.value +
+                        ';">Hello, This is your selected font-family.</p></div>"';
+                    return html;
+                } else {
+                    return "";
+                }
+            }
+
+            function getOptions(option, saved) {
+                var html = "";
+                var selections = option.selections;
+                var css = option.css;
+                selections.forEach((element) => {
+                    var name = element.name;
+                    var value = element.css;
+                    var selected = saved == name ? ' selected="selected"' : "";
+                    html +=
+                        '<option value= "' +
+                        value + '"' +
+                        selected +
+                        ">" +
+                        name +
+                        "</option>";
+                });
+                return html;
+            }
+
+            function getSlider(option, saved) {
+                var html = "";
+                var id = "slider";
+                var name = option.name;
+                var css = option.css;
+                var step = option.step == undefined ? 1 : option.step;
+                var defaultValue = option.default;
+                defaultValue = saved == undefined ? defaultValue : saved;
+                var description = option.description;
+                html +=
+                    +'<div class="inputContainer">' +
+                    '<input type="range" class="slider" value="' + defaultValue + '" step="' + step + '" data-css="' + css + '" id="' + id + '" name="' + id + '"  min="0" max="300" label="' + name + '">' +
+                    '<div class="fieldDescription">' +
+                    description +
+                    +'</div>' +
+                    '</div>';
+                return html;
+            }
+
+            var blurSliderCount = 0;
+
+            function getBlurSlider(option, saved) {
+
+                var html = "";
+                var id = "blurSlider" + blurSliderCount;
+                blurSliderCount++;
+                var name = option.name;
+                var css = option.css;
+                var step = option.step == undefined ? 1 : option.step;
+                var defaultValue = option.default;
+                defaultValue = saved == undefined ? defaultValue : saved;
+                var description = option.description;
+                html +=
+                    '<div class="inputContainer"><label><span>' + name + '</span></label><input type="range" class="slider" value="' + defaultValue + '" oninput ="updateBlur(' + "'" + id + "'" + ')"' + 'step="' + step + '" data-css="' + css + '" id="' + id + '" name="' + id + '" min="0" max="40" label="' + name + '">' +
+                    '<div class="fieldDescription">' + description + '</div>' +
+                    '</div>' +
+                    '<div class="img"><img id="' + id + 'image"' + 'src="https://i.imgur.com/sMDQSdV.png"></div>';
+                return html;
+            }
+
+            function updateBlur(id) {
+                var slider = document.getElementById(id);
+                var image = document.getElementById(id + 'image');
+                image.style.filter = "blur(" + slider.value + "px)";
+            }
+
+            function updateBlurSliders() {
+                var sliders = document.getElementsByClassName("slider");
+                Array.from(sliders).forEach(slider => {
+                    if (slider.id.substring(0, 10) == "blurSlider") {
+                        updateBlur(slider.id);
+                    }
+                })
+            }
+
+            function getImage(url) {
+                var html = "";
+                html +=
+                    '<fieldset class="verticalSection verticalSection-extrabottompadding"><img src="' +
+                    url +
+                    '">';
+                return html;
+            }
+
+            function getImgnames(name) {
+                var html = "";
+                html += "<legend>" + name + "</legend></fieldset>";
+                return html;
+            }
+
+            function getSection(name) {
+                var html = "";
+                html += "</fieldset>";
+                html +=
+                    '<fieldset class="verticalSection verticalSection-extrabottompadding">';
+                html += "<legend>" + name + "</legend>";
+                return html;
+            }
+
+            function getToolTip(option) {
+                if (option.preview == undefined) {
+                    return "";
+                }
+                html = "";
+                html +=
+                    '<div class="tooltip"><span class="material-icons">info</span><span class="tooltiptext">';
+                html += '<img src="' + option.preview + '">';
+                html += "</span></div>";
+                return html;
+            }
+
+            async function createCss() {
+
+                var savedHtml = "";
+                //process checkbox
+                var css = $("#cssOptions").val();
+                savedHtml += document.getElementById("cssOptions").innerHTML;
+                var checkboxes = document.getElementsByClassName("checkbox");
+
+                var selectedOptions = $(".checkbox:checked")
+                    .map(function () {
+                        return this.getAttribute("data-css");
+                    })
+                    .get();
+
+                selectedOptions.forEach((element) => {
+                    css += element + "\n";
+                });
+
+                //proccess selector
+                var selectors = document.getElementsByClassName("selector");
+                for (var i = 0; i < selectors.length; i++) {
+                    var element = selectors[i]
+                    if (checkForImport(element.selectedOptions[0].value)) {
+                        css = element.selectedOptions[0].value + "\n" + css
+                    } else {
+                        css +=
+                            element.selectedOptions[0].value +
+                            "\n";
+                        savedHtml += element.outerHTML;
+                    }
+                }
+
+                //process colorPicker
+                selectedOptions.forEach((element) => {
+                    css += element + "\n";
+                });
+                var inputs = document.getElementsByClassName("color");
+                for (var i = 0; i < inputs.length; i++) {
+                    var element = inputs[i]
+                    var values = $("#" + element.name).spectrum("get")
+                    var mode = element.getAttribute("data-mode");
+                    var color = "";
+                    switch (mode) {
+                        case "hex":
+                            color = "#" + values.toHex();
+                            break;
+                        case "only_numbers":
+                            color = values._r + "," + values._g + "," + values._b;
+                            break;
+                        default:
+                            color = "rgba(" + values._r + "," + values._g + "," + values._b + "," + values._a + ")";
+                            break;
+                    }
+                    css += element.getAttribute("data-css").replaceAll("$", color) + "\n";
+                }
+
+                //procces number selector
+                var numberSelectors = document.getElementsByClassName("number");
+                for (let element of numberSelectors) {
+                    savedHtml += element.outerHTML;
+                    css +=
+                        element.getAttribute("data-css").replaceAll("$", element.value) +
+                        "\n";
+                }
+
+                //procces slider
+                var sliders = document.getElementsByClassName("slider");
+                for (let element of sliders) {
+                    css +=
+                        element.getAttribute("data-css").replaceAll("$", element.value) +
+                        "\n";
+                }
+
+
+                //procces google Fonts
+                if (document.getElementsByClassName("fonts").length > 0) {
+                    var fontPickers = Array.from(
+                        document.getElementsByClassName(
+                            "fonts"
+                        )
+                    )
+                    for (var i = 0; i < fontPickers.length; i++) {
+                        var element = fontPickers[i]
+                        if (element.value != "") {
+                            var url = "https://fonts.googleapis.com/css?family=" + element.value;
+                            var promise = await fetch(url, {
+                                mode: 'no-cors'
+                            })
+                            var text = await promise.text()
+                            css += text
+                            css += element.getAttribute("data-css").replaceAll("$", element.value.replaceAll("+", " "));
+                        }
+                    }
+                    console.log("fuera del loop")
+                }
+
+                return css
+
+
+            }
+
+            function checkForImport(css) {
+                return css.includes("@import")
+            }
+
+
+
+            function generatePlugins() {
+                if (hasGoogleFont) {
+                    createFontPicker()
+                }
+                for (var colorPicker in colorPickers) {
+                    var id = "#" + colorPicker
+                    $(id).spectrum({
+                        color: colorPickers[colorPicker],
+                        showInput: true,
+                        className: "full-spectrum",
+                        showInitial: true,
+                        showPalette: true,
+                        showAlpha: true,
+                        showSelectionPalette: true,
+                        maxSelectionSize: 10,
+                        preferredFormat: "hex",
+                        localStorageKey: "spectrum.demo",
+                        move: function (color) {
+
+                        },
+                        show: function () {
+
+                        },
+                        beforeShow: function () {
+
+                        },
+                        hide: function () {
+
+                        },
+                        change: function () {
+
+                        },
+                        palette: [
+                            ["rgb(0, 0, 0)", "rgb(67, 67, 67)", "rgb(102, 102, 102)",
+                                "rgb(204, 204, 204)", "rgb(217, 217, 217)", "rgb(255, 255, 255)"
+                            ],
+                            ["rgb(152, 0, 0)", "rgb(255, 0, 0)", "rgb(255, 153, 0)", "rgb(255, 255, 0)", "rgb(0, 255, 0)",
+                                "rgb(0, 255, 255)", "rgb(74, 134, 232)", "rgb(0, 0, 255)", "rgb(153, 0, 255)", "rgb(255, 0, 255)"
+                            ],
+                            ["rgb(230, 184, 175)", "rgb(244, 204, 204)", "rgb(252, 229, 205)", "rgb(255, 242, 204)", "rgb(217, 234, 211)",
+                                "rgb(208, 224, 227)", "rgb(201, 218, 248)", "rgb(207, 226, 243)", "rgb(217, 210, 233)", "rgb(234, 209, 220)",
+                                "rgb(221, 126, 107)", "rgb(234, 153, 153)", "rgb(249, 203, 156)", "rgb(255, 229, 153)", "rgb(182, 215, 168)",
+                                "rgb(162, 196, 201)", "rgb(164, 194, 244)", "rgb(159, 197, 232)", "rgb(180, 167, 214)", "rgb(213, 166, 189)",
+                                "rgb(204, 65, 37)", "rgb(224, 102, 102)", "rgb(246, 178, 107)", "rgb(255, 217, 102)", "rgb(147, 196, 125)",
+                                "rgb(118, 165, 175)", "rgb(109, 158, 235)", "rgb(111, 168, 220)", "rgb(142, 124, 195)", "rgb(194, 123, 160)",
+                                "rgb(166, 28, 0)", "rgb(204, 0, 0)", "rgb(230, 145, 56)", "rgb(241, 194, 50)", "rgb(106, 168, 79)",
+                                "rgb(69, 129, 142)", "rgb(60, 120, 216)", "rgb(61, 133, 198)", "rgb(103, 78, 167)", "rgb(166, 77, 121)",
+                                "rgb(91, 15, 0)", "rgb(102, 0, 0)", "rgb(120, 63, 4)", "rgb(127, 96, 0)", "rgb(39, 78, 19)",
+                                "rgb(12, 52, 61)", "rgb(28, 69, 135)", "rgb(7, 55, 99)", "rgb(32, 18, 77)", "rgb(76, 17, 48)"
+                            ]
+                        ]
+                    });
+                }
+            }
+
+
+            function createFontPicker() {
+                $('input.fonts').fontpicker({
+                    variants: false
+                });
+
+                if (savedGoogleFont != undefined) {
+                    $('input.fonts').val(savedGoogleFont).trigger('change')
+                }
+            }
+
+            function applyFont(font) {
+                console.log("You selected font: " + font);
+
+                // Replace + signs with spaces for css
+                font = font.replace(/\+/g, " ");
+
+                // Split font into family and weight
+                font = font.split(":");
+
+                var fontFamily = font[0];
+                var fontWeight = font[1] || 400;
+
+                // Set selected font on paragraphs
+                $("fontPreview").css({
+                    fontFamily: "'" + fontFamily + "'",
+                    fontWeight: fontWeight,
+                });
+            }
+
+            //$("#font-picker")
+            //.fontselect()
+            //.on("change", function () {
+            //  applyFont(this.value);
+            //});
+
+            function getFontOptions(fonts) {
+                var html = "";
+                var selections = fonts.items;
+                selections.forEach((element) => {
+                    var name = element.family;
+                    var value = element.family;
+                    //var selected = saved==name?'selected="selected"' : "";
+                    var selected = "";
+                    html +=
+                        "<option value=" + value + selected + ">" + name + "</option>";
+                });
+                return html;
+            }
+
+            function updateFontPreview() {
+                var preview = document.getElementsByClassName("fontPreview")[0];
+                var selectedOption = document.getElementById("googleFonts")
+                    .selectedOptions[0].innerText;
+                var url =
+                    "https://fonts.googleapis.com/css?family=" +
+                    selectedOption.replaceAll(" ", "+");
+
+                fetch(url).then(function (response) {
+                    response.text().then(function (text) {
+                        var sheet = document.createElement("style");
+                        sheet.innerHTML =
+                            text + ".fontPreview{font-family:'" + selectedOption + "'}";
+                        preview.appendChild(sheet);
+                    });
+                });
+            }
+
+            function updateSelectors() {
+                var selected = document.getElementById("cssOptions");
+                var description = document.getElementById("description");
+                data.forEach((element) => {
+                    if (element.name == selected.selectedOptions[0].innerText) {
+                        loadOptions(element);
+                        description.innerHTML = element.description;
+                    }
+                });
+                updateBlurSliders();
+            }
+
+            var config = undefined;
+
+            function loadConfig() {
+                var pluginId = "e9ca8b8e-ca6d-40e7-85dc-58e536df8eb3";
+
+                ApiClient.getPluginConfiguration(pluginId).then(function (
+                    savedConfig
+                ) {
+                    config = savedConfig;
+
+                    if (!config) {
+                        config.selectedSkin = "";
+                        config.options = [];
+                    }
+                    loadSavedOptions();
+                });
+            }
+
+            function loadSavedOptions() {
+                var skin = undefined;
+                data.forEach((element) => {
+                    if (element.defaultCss == config.selectedSkin) {
+                        skin = element;
+                    }
+                });
+                if (skin == undefined) {
+                    return;
+                }
+                var count = 0;
+                for (let option of document.getElementById("cssOptions").options) {
+                    if (option.value == config.selectedSkin) {
+                        document.getElementById("cssOptions").selectedIndex = count;
+                    }
+                    count++;
+                }
+
+                var savedOptions = config.options;
+                var html = "";
+                html += '<div data-role="controlgroup">';
+                skin.categories.forEach((categorie) => {
+                    if (categorie.options.length != 0) {
+                        html += getSection(categorie.name);
+                    }
+                    var options = categorie.options;
+
+                    options.forEach((element) => {
+                        var savedValue = undefined;
+                        var count = 0;
+                        savedOptions.forEach((savedOption) => {
+                            if (element.css == savedOption) {
+                                savedValue = savedOptions[count + 1];
+                            }
+                            count++;
+                        });
+                        if (element.type == "checkBox") {
+                            html += getCheckBox(element, savedValue);
+                        } else if (element.type == "colorPicker") {
+                            html += getColorPicker(element, savedValue);
+                        } else if (element.type == "number") {
+                            html += getNumber(element, savedValue);
+                        } else if (element.type == "selector") {
+                            html += getSelector(element, savedValue);
+                        } else if (element.type == "slider") {
+                            html += getSlider(element, savedValue);
+                        } else if (element.type == "googleFonts") {
+                            html += getFonts(element, savedValue);
+                        } else if (element.type == "blurSlider") {
+                            html += getBlurSlider(element, savedValue);
+                        }
+                    });
+                });
+                html += "</fieldset>";
+                html +=
+                    '<button is="emby-button" type="button" class="raised block" id="refresh-library" onclick=setSkin()><span>Set Skin</span></button>';
+                html += loadPreviews(skin);
+                html += "</div>";
+
+                $("#options").html(html).trigger("create");
+                generatePlugins()
+
+            }
+
+            function saveConfig() {
+                var pluginId = "e9ca8b8e-ca6d-40e7-85dc-58e536df8eb3";
+                config.selectedSkin = $("#cssOptions").val();
+
+                var options = [];
+                var count = 0;
+                data[
+                    document.getElementById("cssOptions").selectedIndex
+                ].categories.forEach((categorie) => {
+                    categorie.options.forEach((option) => {
+                        options[count] = option.css;
+                        options[count + 1] = getValue(option);
+                        count += 2;
+                    });
+                });
+                config.options = options;
+
+                ApiClient.getPluginConfiguration(pluginId).then(function (oldConfig) {
+                    oldConfig = config;
+                    ApiClient.updatePluginConfiguration(pluginId, oldConfig).then(
+                        function (res) {
+                            Dashboard.processPluginConfigurationUpdateResult(res);
+                        }
+                    );
+                });
+            }
+
+            function getValue(option) {
+                var result = "";
+                switch (option.type) {
+                    case "checkBox":
+                        Array.from(
+                            document.getElementsByClassName("checkbox emby-checkbox")
+                        ).forEach((element) => {
+                            if (option.css == element.getAttribute("data-css")) {
+                                result = element.checked ? "true" : "false";
+                            }
+
+                        });
+                        break;
+                    case "number":
+                        Array.from(
+                            document.getElementsByClassName("number emby-input")
+                        ).forEach((element) => {
+                            if (option.css == element.getAttribute("data-css")) {
+                                result = element.value;
+                            }
+
+                        });
+                        break;
+                    case "colorPicker":
+                        Array.from(document.getElementsByClassName("color")).forEach(
+                            (element) => {
+                                if (option.css == element.getAttribute("data-css")) {
+                                    result = element.value;
+                                }
+                            }
+                        );
+                        break;
+                    case "slider":
+                    case "blurSlider":
+                        Array.from(document.getElementsByClassName("slider")).forEach(
+                            (element) => {
+                                if (option.css == element.getAttribute("data-css")) {
+                                    result = element.value;
+                                }
+                            }
+                        );
+                        break;
+
+                    case "selector":
+                        Array.from(
+                            document.getElementsByClassName(
+                                "selector emby-select-withcolor emby-select"
+                            )
+                        ).forEach((element) => {
+                            if (option.css == element.getAttribute("data-css")) {
+                                result = element.selectedOptions[0].innerText;
+                            }
+
+
+                        });
+                        break;
+                    case "googleFonts":
+                        Array.from(
+                            document.getElementsByClassName(
+                                "fonts"
+                            )
+                        ).forEach((element) => {
+                            if (option.css == element.getAttribute("data-css")) {
+                                result = element.value;
+                            }
+                        });
+                        break;
+                }
+                return result;
+            }
+
+            function checkEasterEggs() {
+                var d = new Date();
+
+                if (
+                    (d.getDate() >= 18 && d.getMonth() == 11) ||
+                    (d.getDate() <= 10 && d.getMonth() == 0)
+                ) {
+                    //startChristmas();
+                }
+            }
+
+            function startChristmas() {
+                $.getScript(
+                    "https://unpkg.com/magic-snowflakes/dist/snowflakes.min.js",
+                    function () {
+                        var sf = new Snowflakes({
+                            count: 200,
+                            maxSize: 25,
+                        });
+                    }
+                );
+            }
+            async function setSkin() {
+                saveConfig();
+                ApiClient.getServerConfiguration().then(function (config) {
+                    ApiClient.updateServerConfiguration(config).then(function () {
+                        ApiClient.getNamedConfiguration("branding").then(async function (
+                            brandingConfig
+                        ) {
+                            createCss().then(r => {
+                                console.log("despues de then")
+                                brandingConfig.CustomCss = r;
+                                ApiClient.updateNamedConfiguration(
+                                    "branding",
+                                    brandingConfig
+                                ).then(function () {
+                                    Dashboard.processServerConfigurationUpdateResult();
+                                    window.location.reload(true);
+                                });
+
+                            })
+                        });
+                    });
+                });
+            }
+
+            function hexToRgb(hex) {
+                // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
+                var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+                hex = hex.replace(shorthandRegex, function (m, r, g, b) {
+                    return r + r + g + g + b + b;
+                });
+                var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+                return result ? {
+                    r: parseInt(result[1], 16),
+                    g: parseInt(result[2], 16),
+                    b: parseInt(result[3], 16),
+                } :
+                    null;
+            }
+        </script>
+        <script type="text/javascript">
+            var plugin = {
+                guid: "e9ca8b8e-ca6d-40e7-85dc-58e536df8eb3",
+            };
+            $("#configPage").on("pageshow", function () {
+                Dashboard.showLoadingMsg();
+                ApiClient.getPluginConfiguration(plugin.guid).then(function (config) {
+                    $("#cssOptions").val(config.selectedCss).change();
+                    Dashboard.hideLoadingMsg();
+                });
+            });
+            $("#configForm").on("submit", function () {
+                Dashboard.showLoadingMsg();
+                ApiClient.getPluginConfiguration(plugin.guid).then(function (config) {
+                    config.selectedCss = $("#cssOptions").val();
+                    ApiClient.updatePluginConfiguration(plugin.guid, config).then(
+                        function (result) {
+                            Dashboard.processPluginConfigurationUpdateResult(result);
+                        }
+                    );
+                });
+                return false;
+            });
+        </script>
+        <!-- ALL CSS is made and edited by @prayag17 -->
+        <style>
+            img {
+                width: 100%;
+            }
+
+            fieldset.verticalSection.verticalSection-extrabottompadding {
+                border: 1px solid #333333;
+                border-radius: 10px;
+            }
+
+            legend {
+                font-size: 135%;
+            }
+
+            .img {
+                overflow: hidden;
+            }
+
+            .tooltip {
+                position: relative;
+                display: inline-block;
+                border-bottom: 1px dotted black;
+            }
+
+            .tooltip .tooltiptext {
+                visibility: hidden;
+                width: 400px;
+                background-color: transparent;
+                color: #fff;
+                text-align: center;
+                border-radius: 6px;
+                padding: 5px 0;
+                /* Position the tooltip */
+                position: absolute;
+                z-index: 1;
+                top: -5px;
+                left: 105%;
+            }
+
+            .tooltip:hover .tooltiptext {
+                visibility: visible;
+            }
+
+            input#favcolor {
+                width: 100%;
+                height: 3em !important;
+                background: none;
+                border: none;
+            }
+        </style>
+        <style>
+            .font-select * {
+                -webkit-box-sizing: border-box;
+                box-sizing: border-box;
+            }
+
+            .font-select {
+                font-size: 16px;
+                width: 100%;
+                position: relative;
+                display: inline-block;
+                border-color: red;
+            }
+
+            .font-select .fs-drop {
+                position: absolute;
+                top: 38px;
+                left: 0;
+                z-index: 999;
+                background: #292929;
+                color: #fff;
+                width: 100%;
+                border: 1px solid #aaa;
+                border-top: 0;
+                box-shadow: 0 4px 5px rgba(0, 0, 0, 0.15);
+                border-radius: 0 0 4px 4px;
+            }
+
+            .font-select>span {
+                outline: 0;
+                border-radius: 0.25rem;
+                border: 1px solid #ced4da;
+                display: block;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                height: 38px;
+                line-height: 32px;
+                padding: 3px 8px 3px 8px;
+                color: #fff;
+                background: #292929 url(https://cosycorner.co.nz/wp-content/uploads/revslider/slider-1/white-down-arrow-png-2.png) no-repeat right 0.75em center/8px 9px;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+                background-size: 1.15em;
+            }
+
+            .font-select-active>span {
+                background-color: #292929;
+                border-bottom-left-radius: 0;
+                border-bottom-right-radius: 0;
+            }
+
+            .font-select .fs-results {
+                max-height: 190px;
+                overflow-x: hidden;
+                overflow-y: auto;
+                margin: 0;
+                padding: 0;
+            }
+
+            .font-select .fs-results li {
+                line-height: 80%;
+                padding: 8px;
+                margin: 0;
+                list-style: none;
+                font-size: 18px;
+                white-space: nowrap;
+            }
+
+            .font-select .fs-results li.active {
+                background-color: #3875d7;
+                color: #fff;
+                cursor: pointer;
+            }
+
+            .font-select .fs-search {
+                border-bottom: 1px solid #aaa;
+                padding: 4px;
+                background: #292929;
+            }
+
+            .font-select .fs-search input {
+                padding: 7px;
+                width: 100%;
+                border: 1px solid #aaa;
+                font: 16px Helvetica, Sans-serif;
+                box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.06);
+                border-radius: 0.1875rem;
+                background: #292929;
+                color: #fff
+            }
+
+            .font-picker {
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+                color: #000;
+                width: -webkit-fill-available;
+                pointer-events: auto;
+            }
+
+            .font-picker * {
+                -webkit-box-sizing: border-box;
+                box-sizing: border-box
+            }
+
+            .font-picker.fp-select {
+                outline: 0;
+                border-radius: .25rem;
+                border: 1px solid #292929;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                line-height: 28px;
+                padding: 3px 8px;
+                color: white;
+                background: #292929;
+                -webkit-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+                font-size: 16px;
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .font-picker.fp-select::after {
+                content: "\e5cf";
+                font-family: 'Material Icons';
+                font-size: 25px;
+            }
+
+            .fp-row,
+            .fp-btns {
+                display: flex
+            }
+
+            .fp-row>input,
+            .fp-row>select {
+                flex: 1
+            }
+
+            .fp-favorite {
+                display: inline-block;
+                width: 24px;
+                height: 24px;
+                margin-right: 2px;
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1024 1024'%3E%3Cpath d='M923 283.6a260.04 260.04 0 0 0-56.9-82.8a264.4 264.4 0 0 0-84-55.5A265.34 265.34 0 0 0 679.7 125c-49.3 0-97.4 13.5-139.2 39c-10 6.1-19.5 12.8-28.5 20.1c-9-7.3-18.5-14-28.5-20.1c-41.8-25.5-89.9-39-139.2-39c-35.5 0-69.9 6.8-102.4 20.3c-31.4 13-59.7 31.7-84 55.5a258.44 258.44 0 0 0-56.9 82.8c-13.9 32.3-21 66.6-21 101.9c0 33.3 6.8 68 20.3 103.3c11.3 29.5 27.5 60.1 48.2 91c32.8 48.9 77.9 99.9 133.9 151.6c92.8 85.7 184.7 144.9 188.6 147.3l23.7 15.2c10.5 6.7 24 6.7 34.5 0l23.7-15.2c3.9-2.5 95.7-61.6 188.6-147.3c56-51.7 101.1-102.7 133.9-151.6c20.7-30.9 37-61.5 48.2-91c13.5-35.3 20.3-70 20.3-103.3c.1-35.3-7-69.6-20.9-101.9zM512 814.8S156 586.7 156 385.5C156 283.6 240.3 201 344.3 201c73.1 0 136.5 40.8 167.7 100.4C543.2 241.8 606.6 201 679.7 201c104 0 188.3 82.6 188.3 184.5c0 201.2-356 429.3-356 429.3z' fill='%23fff'/%3E%3C/svg%3E");
+                background-repeat: no-repeat
+            }
+
+            .fp-favorite.checked {
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1024 1024'%3E%3Cpath d='M923 283.6a260.04 260.04 0 0 0-56.9-82.8a264.4 264.4 0 0 0-84-55.5A265.34 265.34 0 0 0 679.7 125c-49.3 0-97.4 13.5-139.2 39c-10 6.1-19.5 12.8-28.5 20.1c-9-7.3-18.5-14-28.5-20.1c-41.8-25.5-89.9-39-139.2-39c-3.5 0-69.9 6.8-102.4 20.3c-31.4 13-59.7 31.7-84 55.5a258.44 258.44 0 0 0-56.9 82.8c-13.9 32.3-21 66.6-21 101.9c0 33.3 6.8 68 20.3 103.3c11.3 29.5 27.5 60.1 48.2 91c32.8 48.9 77.9 99.9 133.9 151.6c92.8 85.7 184.7 144.9 188.6 147.3l23.7 15.2c10.5 6.7 24 6.7 34.5 0l23.7-15.2c3.9-2.5 95.7-61.6 188.6-147.3c56-51.7 101.1-102.7 133.9-151.6c20.7-30.9 37-61.5 48.2-91c13.5-35.3 20.3-70 20.3-103.3c.1-35.3-7-69.6-20.9-101.9z' fill='%23d00'/%3E%3C/svg%3E")
+            }
+
+            .font-picker .fp-btn {
+                display: inline-block;
+                background-color: #24272b;
+                color: #fff;
+                padding: 3px 8px;
+                font-size: 14px;
+                border-radius: 5px;
+                border: none;
+                cursor: pointer
+            }
+
+            .font-picker .fp-btn:hover {
+                background-color: #333;
+                -webkit-box-shadow: 0 0 4px #ddd;
+                box-shadow: 0 0 4px #ddd
+            }
+
+            .font-picker .fp-btn:active {
+                background-color: #fff;
+                color: #000
+            }
+
+            .font-picker .fp-btns {
+                position: absolute;
+                top: 6px;
+                right: 12px
+            }
+
+            .font-picker .fp-btn.apply {
+                font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important
+            }
+
+            .font-picker .fp-header {
+                flex: none;
+                border-bottom: 1px solid #dee2e6;
+                padding: 4px 8px;
+                font-size: 20px
+            }
+
+            .font-picker .fp-header h5 {
+                margin: 0;
+                line-height: 1.5;
+                font-weight: 500
+            }
+
+            .font-picker .fp-header .fp-icons {
+                float: right;
+                margin-top: -2px
+            }
+
+            .font-picker .fp-header .fp-icons>span {
+                cursor: pointer
+            }
+
+            .fp-modal-open {
+                overflow: hidden
+            }
+
+            .font-picker .fp-modal-backdrop {
+                position: fixed;
+                top: 0;
+                left: 0;
+                z-index: 1040;
+                width: 100%;
+                height: 100%;
+                background-color: #000;
+                opacity: .5
+            }
+
+            .font-picker .fp-modal {
+                display: none;
+                flex-flow: column;
+                position: fixed;
+                height: 800px;
+                max-height: 95%;
+                width: 400px;
+                max-width: 95%;
+                background: #fff;
+                z-index: 1050;
+                box-shadow: 0 4px 5px rgba(0, 0, 0, .15);
+                border-radius: 4px;
+                left: 50%;
+                transform: translateX(-50%);
+                top: 15px;
+                bottom: 15px
+            }
+
+            .font-picker .fp-filter {
+                font-size: 12px;
+                border-bottom: 1px solid #aaa;
+                padding: 6px;
+                flex: none
+            }
+
+            .font-picker .fp-lang,
+            .font-picker .fp-search {
+                width: 100%;
+                font-size: 13px;
+                border: 1px solid #ced4da;
+                color: #495057;
+                box-shadow: inset 0 1px 3px rgba(0, 0, 0, .06);
+                border-radius: .1875rem
+            }
+
+            .font-picker .fp-search:focus {
+                box-shadow: 0 0 0 2px #bfdeff
+            }
+
+            .font-picker .fp-search-wrap {
+                position: relative
+            }
+
+            .font-picker .fp-clear {
+                margin-left: 8px;
+                vertical-align: -2px;
+                width: 16px;
+                height: 16px;
+                display: inline-block;
+                cursor: pointer;
+                background: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 1000'%3e%3cpath fill='%23aaa' d='M500,10C229.4,10,10,229.4,10,500c0,270.6,219.4,490,490,490c270.6,0,490-219.4,490-490C990,229.4,770.6,10,500,10z M718.5,631.1c24.1,24.1,24.1,63.3,0,87.4s-63.3,24.1-87.4,0L500,587.4L368.9,718.5c-24.1,24.1-63.3,24.1-87.4,0c-24.1-24.1-24.1-63.3,0-87.4L412.6,500L281.5,368.9c-24.1-24.1-24.1-63.3,0-87.4c24.1-24.1,63.3-24.1,87.4,0L500,412.6l131.1-131.1c24.1-24.1,63.3-24.1,87.4,0s24.1,63.3,0,87.4L587.4,500L718.5,631.1z'/%3e%3c/svg%3e") no-repeat right center/16px 16px
+            }
+
+            .font-picker .fp-search-wrap .fp-clear {
+                position: absolute;
+                top: 6px;
+                right: 4px
+            }
+
+            .font-picker .fp-lang {
+                padding: 4px 2px;
+                background: #fff url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3e%3cpath fill='%23303030' d='M2 0L0 2h4zm0 5L0 3h4z'/%3e%3c/svg%3e") no-repeat right .75rem center/8px 10px;
+                -moz-appearance: none;
+                -webkit-appearance: none;
+                appearance: none;
+                outline: 0
+            }
+
+            .font-picker .fp-search {
+                padding: 5px 6px
+            }
+
+            .font-picker .fp-sample {
+                flex: none;
+                border-bottom: 1px solid #ced4da;
+                font-size: 18px;
+                height: 50px;
+                padding: 0 6px;
+                line-height: 50px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis
+            }
+
+            .font-picker .hr {
+                border-bottom: 1px solid #ced4da;
+                margin: 6px -6px
+            }
+
+            .font-picker .fp-divider {
+                background-color: #eee;
+                color: #666;
+                font-size: 14px !important;
+                padding: 6px 8px;
+                border-bottom: 1px solid #ced4da;
+                border-top: 1px solid #ced4da;
+                text-align: center;
+                cursor: default !important
+            }
+
+            .font-picker [contenteditable] {
+                outline: none
+            }
+
+            .font-picker .fp-results {
+                list-style: none;
+                overflow-x: hidden;
+                overflow-y: auto;
+                margin: 0;
+                padding: 0;
+                -webkit-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+                margin-top: -1px;
+                outline: none
+            }
+
+            .font-picker .fp-results li {
+                padding: 6px 8px;
+                list-style: none;
+                font-size: 16px;
+                white-space: nowrap;
+                cursor: pointer
+            }
+
+            .font-picker .fp-results li>small {
+                font-size: 10px;
+                color: #999;
+                font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important
+            }
+
+            .font-picker .fp-results li.fp-hover {
+                background-color: #d5e2f6
+            }
+
+            .font-picker .fp-results li.fp-active {
+                background-color: #3875d7;
+                color: #fff;
+                font-size: 18px;
+                padding: 8px;
+                position: relative
+            }
+
+            .font-picker .fp-results li.fp-active small {
+                color: #fff
+            }
+
+            .font-picker .fp-variants {
+                margin-top: 3px;
+                font-size: 12px;
+                font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important
+            }
+
+            .font-picker .fp-pill {
+                -webkit-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+                display: inline-block;
+                padding: 2px 6px;
+                margin-bottom: 2px;
+                white-space: nowrap;
+                border-radius: 5rem;
+                background-color: #eee;
+                color: #555;
+                cursor: pointer
+            }
+
+            .font-picker .fp-variants .fp-pill {
+                padding: 1px 4px;
+                border-radius: 5rem;
+                background-color: #eee;
+                color: #555
+            }
+
+            .font-picker .fp-pill.checked {
+                background-color: #000;
+                color: #fff
+            }
+
+            .font-picker .fp-variants .fp-pill.italic {
+                font-style: italic
+            }
+
+            .font-picker .fp-variants .fp-pill.italic.checked {
+                background-color: #804;
+                font-style: italic
+            }
+
+            /***
+Spectrum Colorpicker v1.8.1
+https://github.com/bgrins/spectrum
+Author: Brian Grinstead
+License: MIT
+***/
+
+            .sp-container {
+                position: absolute;
+                top: 0;
+                left: 0;
+                display: inline-block;
+                *display: inline;
+                *zoom: 1;
+                /* https://github.com/bgrins/spectrum/issues/40 */
+                z-index: 9999994;
+                overflow: hidden;
+            }
+
+            .sp-container.sp-flat {
+                position: relative;
+            }
+
+            /* Fix for * { box-sizing: border-box; } */
+
+            .sp-container,
+            .sp-container * {
+                -webkit-box-sizing: content-box;
+                -moz-box-sizing: content-box;
+                box-sizing: content-box;
+            }
+
+            /* http://ansciath.tumblr.com/post/7347495869/css-aspect-ratio */
+
+            .sp-top {
+                position: relative;
+                width: 100%;
+                display: inline-block;
+            }
+
+            .sp-top-inner {
+                position: absolute;
+                top: 0;
+                left: 0;
+                bottom: 0;
+                right: 0;
+            }
+
+            .sp-color {
+                position: absolute;
+                top: 0;
+                left: 0;
+                bottom: 0;
+                right: 20%;
+            }
+
+            .sp-hue {
+                position: absolute;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                left: 84%;
+                height: 100%;
+            }
+
+            .sp-clear-enabled .sp-hue {
+                top: 33px;
+                height: 77.5%;
+            }
+
+            .sp-fill {
+                padding-top: 80%;
+            }
+
+            .sp-sat,
+            .sp-val {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+            }
+
+            .sp-alpha-enabled .sp-top {
+                margin-bottom: 18px;
+                flex-shrink: 0;
+            }
+
+            .sp-alpha-enabled .sp-alpha {
+                display: block;
+            }
+
+            .sp-alpha-handle {
+                position: absolute;
+                top: -4px;
+                bottom: -4px;
+                width: 6px;
+                left: 50%;
+                cursor: pointer;
+                border: 1px solid black;
+                background: white;
+                opacity: .8;
+            }
+
+            .sp-alpha {
+                display: none;
+                position: absolute;
+                bottom: -18px;
+                right: 0;
+                left: 0;
+                height: 15px;
+            }
+
+            .sp-alpha-inner {
+                border: solid 1px #333;
+            }
+
+            .sp-clear {
+                display: none;
+            }
+
+            .sp-clear.sp-clear-display {
+                background-position: center;
+            }
+
+            .sp-clear-enabled .sp-clear {
+                display: block;
+                position: absolute;
+                top: 0px;
+                right: 0;
+                bottom: 0;
+                left: 84%;
+                height: 28px;
+            }
+
+            /* Don't allow text selection */
+
+            .sp-container,
+            .sp-replacer,
+            .sp-preview,
+            .sp-dragger,
+            .sp-slider,
+            .sp-alpha,
+            .sp-clear,
+            .sp-alpha-handle,
+            .sp-container.sp-dragging .sp-input,
+            .sp-container button {
+                -webkit-user-select: none;
+                -moz-user-select: -moz-none;
+                -o-user-select: none;
+                user-select: none;
+            }
+
+            .sp-container.sp-input-disabled .sp-input-container {
+                display: none;
+            }
+
+            .sp-container.sp-buttons-disabled .sp-button-container {
+                display: none;
+            }
+
+            .sp-container.sp-palette-buttons-disabled .sp-palette-button-container {
+                display: none;
+            }
+
+            .sp-palette-only .sp-picker-container {
+                display: none;
+            }
+
+            .sp-palette-disabled .sp-palette-container {
+                display: none;
+            }
+
+            .sp-initial-disabled .sp-initial {
+                display: none;
+            }
+
+            /* Gradients for hue, saturation and value instead of images.  Not pretty... but it works */
+
+            .sp-sat {
+                background-image: -webkit-gradient(linear, 0 0, 100% 0, from(#FFF), to(rgba(204, 154, 129, 0)));
+                background-image: -webkit-linear-gradient(left, #FFF, rgba(204, 154, 129, 0));
+                background-image: -moz-linear-gradient(left, #fff, rgba(204, 154, 129, 0));
+                background-image: -o-linear-gradient(left, #fff, rgba(204, 154, 129, 0));
+                background-image: -ms-linear-gradient(left, #fff, rgba(204, 154, 129, 0));
+                background-image: linear-gradient(to right, #fff, rgba(204, 154, 129, 0));
+                -ms-filter: "progid:DXImageTransform.Microsoft.gradient(GradientType = 1, startColorstr=#FFFFFFFF, endColorstr=#00CC9A81)";
+                filter: progid: DXImageTransform.Microsoft.gradient(GradientType=1, startColorstr='#FFFFFFFF', endColorstr='#00CC9A81');
+            }
+
+            .sp-val {
+                background-image: -webkit-gradient(linear, 0 100%, 0 0, from(#000000), to(rgba(204, 154, 129, 0)));
+                background-image: -webkit-linear-gradient(bottom, #000000, rgba(204, 154, 129, 0));
+                background-image: -moz-linear-gradient(bottom, #000, rgba(204, 154, 129, 0));
+                background-image: -o-linear-gradient(bottom, #000, rgba(204, 154, 129, 0));
+                background-image: -ms-linear-gradient(bottom, #000, rgba(204, 154, 129, 0));
+                background-image: linear-gradient(to top, #000, rgba(204, 154, 129, 0));
+                -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#00CC9A81, endColorstr=#FF000000)";
+                filter: progid: DXImageTransform.Microsoft.gradient(startColorstr='#00CC9A81', endColorstr='#FF000000');
+            }
+
+            .sp-hue {
+                background: -moz-linear-gradient(top, #ff0000 0%, #ffff00 17%, #00ff00 33%, #00ffff 50%, #0000ff 67%, #ff00ff 83%, #ff0000 100%);
+                background: -ms-linear-gradient(top, #ff0000 0%, #ffff00 17%, #00ff00 33%, #00ffff 50%, #0000ff 67%, #ff00ff 83%, #ff0000 100%);
+                background: -o-linear-gradient(top, #ff0000 0%, #ffff00 17%, #00ff00 33%, #00ffff 50%, #0000ff 67%, #ff00ff 83%, #ff0000 100%);
+                background: -webkit-gradient(linear, left top, left bottom, from(#ff0000), color-stop(0.17, #ffff00), color-stop(0.33, #00ff00), color-stop(0.5, #00ffff), color-stop(0.67, #0000ff), color-stop(0.83, #ff00ff), to(#ff0000));
+                background: -webkit-linear-gradient(top, #ff0000 0%, #ffff00 17%, #00ff00 33%, #00ffff 50%, #0000ff 67%, #ff00ff 83%, #ff0000 100%);
+                background: linear-gradient(to bottom, #ff0000 0%, #ffff00 17%, #00ff00 33%, #00ffff 50%, #0000ff 67%, #ff00ff 83%, #ff0000 100%);
+            }
+
+            /* IE filters do not support multiple color stops.
+   Generate 6 divs, line them up, and do two color gradients for each.
+   Yes, really.
+ */
+
+            .sp-1 {
+                height: 17%;
+                filter: progid: DXImageTransform.Microsoft.gradient(startColorstr='#ff0000', endColorstr='#ffff00');
+            }
+
+            .sp-2 {
+                height: 16%;
+                filter: progid: DXImageTransform.Microsoft.gradient(startColorstr='#ffff00', endColorstr='#00ff00');
+            }
+
+            .sp-3 {
+                height: 17%;
+                filter: progid: DXImageTransform.Microsoft.gradient(startColorstr='#00ff00', endColorstr='#00ffff');
+            }
+
+            .sp-4 {
+                height: 17%;
+                filter: progid: DXImageTransform.Microsoft.gradient(startColorstr='#00ffff', endColorstr='#0000ff');
+            }
+
+            .sp-5 {
+                height: 16%;
+                filter: progid: DXImageTransform.Microsoft.gradient(startColorstr='#0000ff', endColorstr='#ff00ff');
+            }
+
+            .sp-6 {
+                height: 17%;
+                filter: progid: DXImageTransform.Microsoft.gradient(startColorstr='#ff00ff', endColorstr='#ff0000');
+            }
+
+            .sp-hidden {
+                display: none !important;
+            }
+
+            /* Clearfix hack */
+
+            .sp-cf:before,
+            .sp-cf:after {
+                content: "";
+                display: table;
+            }
+
+            .sp-cf:after {
+                clear: both;
+            }
+
+            .sp-cf {
+                *zoom: 1;
+            }
+
+            /* Mobile devices, make hue slider bigger so it is easier to slide */
+
+            @media (max-device-width: 480px) {
+                .sp-color {
+                    right: 40%;
+                }
+
+                .sp-hue {
+                    left: 63%;
+                }
+
+                .sp-fill {
+                    padding-top: 60%;
+                }
+            }
+
+            .sp-dragger {
+                border-radius: 5px;
+                height: 5px;
+                width: 5px;
+                border: 1px solid #fff;
+                background: #000;
+                cursor: pointer;
+                position: absolute;
+                top: 0;
+                left: 0;
+            }
+
+            .sp-slider {
+                position: absolute;
+                top: 0;
+                cursor: pointer;
+                height: 3px;
+                left: -1px;
+                right: -1px;
+                border: 1px solid #000;
+                background: white;
+                opacity: .8;
+            }
+
+            /*
+Theme authors:
+Here are the basic themeable display options (colors, fonts, global widths).
+See http://bgrins.github.io/spectrum/themes/ for instructions.
+*/
+            /*Edited by Prayag17*/
+
+            .sp-container {
+                background-color: rgb(62 62 62 / 99%);
+                padding: 0;
+                border-radius: 10px;
+                box-shadow: 0 0 15px #111;
+                display: flex;
+                flex-direction: column;
+                flex-flow: column-reverse;
+            }
+
+            .sp-container,
+            .sp-container button,
+            .sp-container input,
+            .sp-color,
+            .sp-hue,
+            .sp-clear {
+                font: normal 12px "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Verdana, sans-serif;
+                -webkit-box-sizing: border-box;
+                -moz-box-sizing: border-box;
+                -ms-box-sizing: border-box;
+                box-sizing: border-box;
+            }
+
+            .sp-top {
+                margin-bottom: 3px;
+            }
+
+            .sp-color,
+            .sp-hue,
+            .sp-clear {
+                border: solid 1px #666;
+            }
+
+            /* Input */
+
+            .sp-input-container {
+                float: right;
+                width: 100px;
+                margin-bottom: 4px;
+            }
+
+            .sp-initial-disabled .sp-input-container {
+                width: 100%;
+            }
+
+            .sp-input {
+                font-size: 12px !important;
+                border: 1px inset;
+                padding: 4px 5px;
+                margin: 0;
+                width: 100%;
+                background: transparent;
+                border-radius: 3px;
+                color: #fff;
+            }
+
+            .sp-input:focus {
+                border: 1px solid orange;
+            }
+
+            .sp-input.sp-validation-error {
+                border: 1px solid red;
+                background: #fdd;
+            }
+
+            .sp-picker-container,
+            .sp-palette-container {
+                float: left;
+                position: relative;
+                padding: 10px;
+            }
+
+            .sp-picker-container {
+                width: calc(100% - 20px);
+                display: flex;
+                flex-wrap: wrap;
+                grid-gap: 5px;
+            }
+
+            /* Palettes */
+
+            .sp-palette-container {
+                border-bottom: 1px solid #5b5b5b;
+            }
+
+            .sp-palette-only .sp-palette-container {
+                border: 0;
+            }
+
+            .sp-palette .sp-thumb-el {
+                display: block;
+                position: relative;
+                float: left;
+                width: 24px;
+                height: 15px;
+                margin: 3px;
+                cursor: pointer;
+                border: solid 2px transparent;
+            }
+
+            .sp-palette .sp-thumb-el:hover,
+            .sp-palette .sp-thumb-el.sp-thumb-active {
+                border-color: orange;
+            }
+
+            .sp-thumb-el {
+                position: relative;
+            }
+
+            /* Initial */
+
+            .sp-initial {
+                float: left;
+                border: solid 1px #333;
+            }
+
+            .sp-initial span {
+                width: 30px;
+                height: 25px;
+                border: none;
+                display: block;
+                float: left;
+                margin: 0;
+            }
+
+            .sp-initial .sp-clear-display {
+                background-position: center;
+            }
+
+            /* Buttons */
+
+            .sp-palette-button-container,
+            .sp-button-container {
+                float: right;
+            }
+
+            /* Replacer (the little preview div that shows up instead of the <input>) */
+
+            .sp-replacer {
+                margin: 0;
+                overflow: hidden;
+                cursor: pointer;
+                padding: 4px;
+                border: 1px solid #333;
+                background: transparent;
+                width: -webkit-fill-available;
+                vertical-align: middle;
+                border-radius: 2.5px;
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .sp-replacer.sp-disabled {
+                cursor: default;
+                border-color: silver;
+                color: silver;
+            }
+
+            .sp-dd {
+                padding: 0;
+                height: 0;
+                line-height: 0;
+                float: left;
+                font-size: 10px;
+                width: 16px;
+                color: white;
+            }
+
+            .sp-preview {
+                position: relative;
+                width: calc(100% - 26px);
+                height: 20px;
+                border: none;
+                float: left;
+                z-index: 0;
+            }
+
+            .sp-palette {
+                *width: 220px;
+                max-width: 220px;
+            }
+
+            .sp-palette .sp-thumb-el {
+                width: 16px;
+                height: 16px;
+                margin: 2px 1px;
+                border: solid 1px #d0d0d0;
+            }
+
+            .sp-container {
+                padding-bottom: 0;
+            }
+
+            /* Buttons: http://hellohappy.org/css3-buttons/ */
+
+            .sp-container button {
+                border: none;
+                border-radius: 50px;
+                color: #fff;
+                font-size: 15px;
+                padding: 4px 8px;
+                text-align: center;
+                vertical-align: middle;
+                background: #2db93c !important;
+                transition: .2s;
+            }
+
+            .sp-container button:hover {
+                background-color: #23802d !important;
+                cursor: pointer;
+            }
+
+            .sp-container button:active {
+                border: 1px solid #aaa;
+                border-bottom: 1px solid #888;
+                -webkit-box-shadow: inset 0 0 5px 2px #aaaaaa, 0 1px 0 0 #eeeeee;
+                -moz-box-shadow: inset 0 0 5px 2px #aaaaaa, 0 1px 0 0 #eeeeee;
+                -ms-box-shadow: inset 0 0 5px 2px #aaaaaa, 0 1px 0 0 #eeeeee;
+                -o-box-shadow: inset 0 0 5px 2px #aaaaaa, 0 1px 0 0 #eeeeee;
+                box-shadow: inset 0 0 5px 2px #aaaaaa, 0 1px 0 0 #eeeeee;
+            }
+
+            .sp-cancel:hover {
+                text-decoration: none;
+                background: #b23232 !important;
+            }
+
+            .sp-cancel {
+                font-size: 15px;
+                color: white;
+                margin: 0;
+                padding: 4px 8px;
+                margin-right: 5px;
+                vertical-align: middle;
+                text-decoration: none;
+                background: #d93f3f !important;
+                border-radius: 50px;
+                transition: .2s;
+            }
+
+            .sp-palette span:hover,
+            .sp-palette span.sp-thumb-active {
+                border-color: #000;
+            }
+
+            .sp-preview,
+            .sp-alpha,
+            .sp-thumb-el {
+                position: relative;
+                background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAIAAADZF8uwAAAAGUlEQVQYV2M4gwH+YwCGIasIUwhT25BVBADtzYNYrHvv4gAAAABJRU5ErkJggg==);
+            }
+
+            .sp-preview-inner,
+            .sp-alpha-inner,
+            .sp-thumb-inner {
+                display: block;
+                position: absolute;
+                top: 0;
+                left: 0;
+                bottom: 0;
+                right: 0;
+            }
+
+            .sp-palette .sp-thumb-inner {
+                background-position: 50% 50%;
+                background-repeat: no-repeat;
+            }
+
+            .sp-palette .sp-thumb-light.sp-thumb-active .sp-thumb-inner {
+                background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAYAAABWzo5XAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAIVJREFUeNpiYBhsgJFMffxAXABlN5JruT4Q3wfi/0DsT64h8UD8HmpIPCWG/KemIfOJCUB+Aoacx6EGBZyHBqI+WsDCwuQ9mhxeg2A210Ntfo8klk9sOMijaURm7yc1UP2RNCMbKE9ODK1HM6iegYLkfx8pligC9lCD7KmRof0ZhjQACDAAceovrtpVBRkAAAAASUVORK5CYII=);
+            }
+
+            .sp-palette .sp-thumb-dark.sp-thumb-active .sp-thumb-inner {
+                background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAYAAABWzo5XAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAadEVYdFNvZnR3YXJlAFBhaW50Lk5FVCB2My41LjEwMPRyoQAAAMdJREFUOE+tkgsNwzAMRMugEAahEAahEAZhEAqlEAZhEAohEAYh81X2dIm8fKpEspLGvudPOsUYpxE2BIJCroJmEW9qJ+MKaBFhEMNabSy9oIcIPwrB+afvAUFoK4H0tMaQ3XtlrggDhOVVMuT4E5MMG0FBbCEYzjYT7OxLEvIHQLY2zWwQ3D+9luyOQTfKDiFD3iUIfPk8VqrKjgAiSfGFPecrg6HN6m/iBcwiDAo7WiBeawa+Kwh7tZoSCGLMqwlSAzVDhoK+6vH4G0P5wdkAAAAASUVORK5CYII=);
+            }
+
+            .sp-clear-display {
+                background-repeat: no-repeat;
+                background-position: center;
+                background-image: url(data:image/gif;base64,R0lGODlhFAAUAPcAAAAAAJmZmZ2dnZ6enqKioqOjo6SkpKWlpaampqenp6ioqKmpqaqqqqurq/Hx8fLy8vT09PX19ff39/j4+Pn5+fr6+vv7+wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAAP8ALAAAAAAUABQAAAihAP9FoPCvoMGDBy08+EdhQAIJCCMybCDAAYUEARBAlFiQQoMABQhKUJBxY0SPICEYHBnggEmDKAuoPMjS5cGYMxHW3IiT478JJA8M/CjTZ0GgLRekNGpwAsYABHIypcAgQMsITDtWJYBR6NSqMico9cqR6tKfY7GeBCuVwlipDNmefAtTrkSzB1RaIAoXodsABiZAEFB06gIBWC1mLVgBa0AAOw==);
+            }
+        </style>
+
+    </div>
+</body>
+
+</html>

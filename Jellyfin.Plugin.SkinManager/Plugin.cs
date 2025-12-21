@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Jellyfin.Plugin.SkinManager.Configuration;
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Common.Plugins;
@@ -20,32 +21,53 @@ namespace Jellyfin.Plugin.SkinManager
 
         public static Plugin Instance { get; private set; }
 
-        public override string Description
-            => "Skin Manager";
+        public override string Description => "Skin Manager";
 
         private readonly Guid _id = new Guid("e9ca8b8e-ca6d-40e7-85dc-58e536df8eb3");
         public override Guid Id => _id;
 
+        public PluginConfiguration PluginConfiguration => Configuration;
+
         public IEnumerable<PluginPageInfo> GetPages()
         {
-            return new[]
+            var pageNames = new[]
             {
-                new PluginPageInfo
-                {
-                    Name = "SkinManager",
-                    EmbeddedResourcePath = GetType().Namespace + ".Configuration.configurationpage.html"
-                },
-                 new PluginPageInfo
-                {
-                    Name = "fontpicker.js",
-                    EmbeddedResourcePath = GetType().Namespace + ".Configuration.fontpicker.js"
-                }, 
-                new PluginPageInfo
-                {
-                    Name = "fontpicker.css",
-                    EmbeddedResourcePath = GetType().Namespace + ".Configuration.jquery.fontpicker.min.css"
-                }
+                "SkinManager",
+                "fontpicker.js",
+                "fontpicker.css",
+                "skin.js",
+                "controls.Control.js",
+                "controls.ColorControl.js",
+                "controls.SliderControl.js",
+                "controls.CheckBoxControl.js",
+                "controls.NumberControl.js",
+                "controls.SelectControl.js",
+                "controls.FontPickerControl.js",
+                "controls.TextAreaControl.js",
+                "controls.Category.js",
+                "colorpicker.js",
+                "MainController.js",
+                "style.css",
+                "common.js",
+                "history",
+                "ConfigController.js",
+                "HistoryController.js",
             };
+
+            var prefix = GetType().Namespace + ".Configuration.";
+
+            return pageNames.Select(name => new PluginPageInfo
+            {
+                Name = name,
+                EmbeddedResourcePath = name switch
+                {
+                    "SkinManager"   => prefix + "configurationpage.html",
+                    "history"       => prefix + "history.html",
+                    "fontpicker.css" => prefix + "jquery.fontpicker.min.css",
+                    _                => prefix + name
+                },
+                EnableInMainMenu = name.Equals("SkinManager", StringComparison.OrdinalIgnoreCase)
+            });
         }
     }
 }
