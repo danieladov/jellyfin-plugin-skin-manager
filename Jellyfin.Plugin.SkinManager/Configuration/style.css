@@ -170,21 +170,35 @@
      border: none;
  }
 
- .optionsContainer {
-     display: flex;
-     flex-direction: row;
-     gap: 10px;
- }
+.optionsContainer {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 10px;
+}
 
- .optionsContainer .categoriesContainer {
-     flex: 6;
- }
+.optionsContainer .categoriesContainer {
+    flex: 6;
+}
+
+.previewsContainer {
+    flex: 5;
+    min-width: 320px;
+}
+
+.optionsContainer[data-has-previews="false"] .previewsContainer {
+    display: none;
+}
+
+.optionsContainer[data-has-previews="false"] .categoriesContainer {
+    flex: 1 1 100%;
+}
 
 
- .optionsContainer:only-child .categoriesContainer,
- .optionsContainer .categoriesContainer:only-child {
-     flex: 1 1 100%;
- }
+.optionsContainer:only-child .categoriesContainer,
+.optionsContainer .categoriesContainer:only-child {
+    flex: 1 1 100%;
+}
 
  @media (max-width: 600px) {
      .optionsContainer {
@@ -195,7 +209,11 @@
      .optionsContainer div {
          flex: 1 1 100%;
      }
- }
+
+    .optionsContainer .previewSection {
+        min-width: 100%;
+    }
+}
 
 .fontPickerInput {
     width: 100%;
@@ -215,9 +233,216 @@
 }
 
 
- .previewSection {
-     max-width: fit-content;
- }
+.previewSection {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.previewSection-header {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.previewActions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.previewAction {
+    min-width: 160px;
+}
+
+.previewAction-secondary {
+    background: rgba(255, 255, 255, 0.06) !important;
+}
+
+.sectionSubtitle {
+    margin: 4px 0 0;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.95rem;
+}
+
+.previewCarousel {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 10px;
+    align-items: center;
+}
+
+.previewCarousel:only-child {
+    grid-template-columns: 1fr;
+}
+
+.previewViewport {
+    position: relative;
+    overflow: hidden;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(0, 0, 0, 0.35);
+    min-height: 280px;
+}
+
+.previewTrack {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.35s ease;
+}
+
+.previewSection[data-has-previews="false"] .previewViewport {
+    min-height: 120px;
+}
+
+.previewSlide {
+    flex: 0 0 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.previewSlide-imgWrapper {
+    flex: 1;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+}
+
+.previewSlide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.previewSlide-label {
+    padding: 10px 12px;
+    font-weight: 600;
+    background: rgba(0, 0, 0, 0.25);
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.previewCaption {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 0.95rem;
+}
+
+.previewDots {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
+}
+
+.previewDot {
+    width: 10px;
+    height: 10px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.15);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.previewDot.is-active {
+    background: #00a4dc;
+    border-color: #00a4dc;
+    width: 20px;
+}
+
+.previewNav {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: inherit;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.previewNav:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-1px);
+}
+
+.previewEmpty {
+    margin: 0;
+    padding: 16px;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.previewSection[data-has-previews="false"] .previewDots,
+.previewSection[data-has-previews="false"] .previewNav {
+    display: none;
+}
+
+.livePreviewShell {
+    width: 100%;
+    max-width: 100%;
+    margin-top: 6px;
+    padding: 12px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(0, 0, 0, 0.35);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.livePreviewHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.livePreviewTitle {
+    margin: 0 0 4px;
+}
+
+.livePreviewHint {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.95rem;
+}
+
+.livePreviewSync {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 600;
+}
+
+.livePreviewFrameWrapper {
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: #0a0a0a;
+    min-height: 340px;
+}
+
+#livePreviewShell[data-expanded="true"] .livePreviewFrameWrapper {
+    min-height: 70vh;
+    max-height: calc(100vh - 180px);
+}
+
+#skinLivePreviewFrame {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
 
  .textareaLabel {
      display: inline-block;

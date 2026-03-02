@@ -50,7 +50,10 @@ class HistoryController {
     }
 
     showSkin() {
-        this.optionsElement.innerHTML = this.currentSkin.generateHTML({ includePreview: false });
+        this.optionsElement.innerHTML = this.currentSkin.generateHTML({
+            includePreview: false,
+            includeLivePreview: false
+        });
         this.currentSkin.attachEventListeners();
     }
 
@@ -59,6 +62,40 @@ class HistoryController {
         this.currentSkin = this.history[selectedIndex];
         this.showSkin();
         console.log(`Skin changed to: ${this.currentSkin.name}`);
+    }
+
+    async applyCurrentSkin() {
+        if (!this.currentSkin) {
+            return;
+        }
+
+        const css = this.currentSkin.generateCSS();
+        const appliedSkinName = this.currentSkin.name;
+
+        try {
+            const serverConfig = await ApiClient.getServerConfiguration();
+            await ApiClient.updateServerConfiguration(serverConfig);
+
+            const brandingConfig = await ApiClient.getNamedConfiguration("branding");
+            const existingCss = brandingConfig && typeof brandingConfig.CustomCss === "string"
+                ? brandingConfig.CustomCss
+                : "";
+
+            if (existingCss && !this.configController.isManagedCss(existingCss)) {
+                await this.configController.saveUserCss(existingCss);
+            }
+
+            brandingConfig.CustomCss = css;
+            await ApiClient.updateNamedConfiguration("branding", brandingConfig);
+            Dashboard.processServerConfigurationUpdateResult();
+
+            await this.configController.saveSkin(this.currentSkin);
+            await this.configController.setSelectedSkin(appliedSkinName);
+
+            window.location.reload(true);
+        } catch (error) {
+            console.error("Error applying skin from history:", error);
+        }
     }
 
     initEventListeners() {
