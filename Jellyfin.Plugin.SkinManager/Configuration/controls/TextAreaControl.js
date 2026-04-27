@@ -1,15 +1,16 @@
-class TextAreaControl extends Control {
+var TextAreaControl = window.TextAreaControl || class TextAreaControl extends Control {
     constructor(config) {
         super(config);
         this.type = 'textarea';
     }
 
     generateHTML() {
-        return `<div class="inputContainer customCssContainer">
-                    <label class= "textareaLabel" for="${this.id}">${this.label}</label>
-                    <textarea is="emby-textarea" class= "textarea-mono emby-textarea" id="${this.id}" rows="1">${this.value}</textarea>
-                    <div class="fieldDescription">${this.description}</div>
-                </div>`;
+        return this.renderShell({
+            className: "controlCard-textarea customCssContainer",
+            inputHtml: `
+                <textarea is="emby-textarea" class="textarea-mono emby-textarea" id="${this.id}" rows="6">${this.escapeHtml(this.value)}</textarea>
+            `
+        });
     }
 
     attachEventListeners() {

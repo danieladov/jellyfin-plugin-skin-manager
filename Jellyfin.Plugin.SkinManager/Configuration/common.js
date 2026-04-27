@@ -1,16 +1,20 @@
-const getConfigurationPageUrl = (name) => {
-    return 'configurationpage?name=' + encodeURIComponent(name);
-}
+var getConfigurationPageUrl = window.getConfigurationPageUrl || function (name) {
+    return "configurationpage?name=" + encodeURIComponent(name);
+};
 
-function getTabs() {
-    var tabs = [
+window.getConfigurationPageUrl = getConfigurationPageUrl;
+
+var getTabs = window.getTabs || function getTabs() {
+    return [
         {
-            href: getConfigurationPageUrl('SkinManager'),
-            name: 'Skin Manager'
+            href: getConfigurationPageUrl("SkinManager"),
+            name: "Skin Manager"
         },
         {
-            href: getConfigurationPageUrl('history'),
-            name: 'History'
-        }];
-    return tabs;
-}
+            href: getConfigurationPageUrl("history"),
+            name: "History"
+        }
+    ];
+};
+
+window.getTabs = getTabs;

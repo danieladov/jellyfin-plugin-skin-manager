@@ -1,4 +1,6 @@
-class ConfigController {
+var ConfigController = window.ConfigController || class ConfigController {
+    static MAX_SKIN_HISTORY = 25;
+    static MAX_USER_CSS_HISTORY = 25;
 
     constructor() {
         console.log("ConfigController initialized");
@@ -7,15 +9,21 @@ class ConfigController {
     }
 
     async saveSkin(skin) {
-        skin.name = new Date().toLocaleString() + " - " + skin.name;
-        console.log("Saving skin:", skin);
+        if (!skin) {
+            return "";
+        }
+
+        const historyEntry = this.createHistorySkinEntry(skin);
+        console.log("Saving skin:", historyEntry);
         const config = await this.getPluginConfiguration();
-        const serialized = this.serializeSkin(skin);
+        const serialized = this.serializeSkin(historyEntry);
         if (serialized) {
             config.skinHistory.push(serialized);
+            config.skinHistory = this.trimHistory(config.skinHistory, ConfigController.MAX_SKIN_HISTORY);
         }
         const result = await ApiClient.updatePluginConfiguration(this.pluginId, config);
         Dashboard.processPluginConfigurationUpdateResult(result);
+        return historyEntry.name || "";
     }
 
     async loadHistorySkins() {
@@ -69,6 +77,7 @@ class ConfigController {
         const serialized = this.serializeUserCssEntry(cssEntry);
         if (serialized) {
             config.userCssHistory.push(serialized);
+            config.userCssHistory = this.trimHistory(config.userCssHistory, ConfigController.MAX_USER_CSS_HISTORY);
         }
         await ApiClient.updatePluginConfiguration(this.pluginId, config);
     }
@@ -122,7 +131,10 @@ class ConfigController {
     }
 
     async getPluginConfiguration() {
-        const config = await ApiClient.getPluginConfiguration(this.pluginId);
+        const config = await ApiClient.getPluginConfiguration(this.pluginId) || {};
+        if (typeof config.selectedSkin !== "string") {
+            config.selectedSkin = "";
+        }
         if (!Array.isArray(config.skinHistory)) {
             config.skinHistory = [];
         }
@@ -130,6 +142,39 @@ class ConfigController {
             config.userCssHistory = [];
         }
         return config;
+    }
+
+    createHistorySkinEntry(skin) {
+        const plainSkin = this.toPlainSkin(skin);
+        const originalName = typeof plainSkin.name === "string" && plainSkin.name.trim()
+            ? plainSkin.name.trim()
+            : "Unnamed skin";
+
+        return {
+            ...plainSkin,
+            name: `${new Date().toLocaleString()} - ${originalName}`
+        };
+    }
+
+    toPlainSkin(skin) {
+        try {
+            return JSON.parse(JSON.stringify(skin));
+        } catch (error) {
+            console.error("Error cloning the skin data:", error);
+            return skin;
+        }
+    }
+
+    trimHistory(history, maxEntries) {
+        if (!Array.isArray(history)) {
+            return [];
+        }
+
+        if (!Number.isInteger(maxEntries) || maxEntries <= 0) {
+            return history;
+        }
+
+        return history.slice(-maxEntries);
     }
 
     async setSelectedSkin(skinName) {

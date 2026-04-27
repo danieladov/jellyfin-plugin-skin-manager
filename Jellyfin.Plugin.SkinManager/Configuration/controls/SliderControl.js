@@ -1,4 +1,4 @@
-class SliderControl extends Control {
+var SliderControl = window.SliderControl || class SliderControl extends Control {
     constructor(config) {
         super(config);
         this.min = config.min;
@@ -7,18 +7,30 @@ class SliderControl extends Control {
     }
 
     generateHTML() {
-        return `<div class="inputContainer" >
-            <input type="range" class="slider" value="${this.value}" data-css="${this.css}" id="${this.id}" min="${this.min}" max="${this.max}" label="${this.name}">
-                <div class="fieldDescription">${this.label}
+        return this.renderShell({
+            className: "controlCard-slider",
+            valueHtml: `<span class="valueBadge" id="${this.id}-value">${this.formatValueLabel()}</span>`,
+            inputHtml: `
+                <div class="sliderField">
+                    <input type="range" class="slider" value="${this.value}" data-css="${this.css}" id="${this.id}" min="${this.min}" max="${this.max}">
+                    <div class="sliderMeta">
+                        <span>${this.min}</span>
+                        <span>Current value</span>
+                        <span>${this.max}</span>
+                    </div>
                 </div>
-            </div>`;
+            `
+        });
     }
 
     attachEventListeners() {
         const slider = document.getElementById(this.id);
+        const valueBadge = document.getElementById(`${this.id}-value`);
         slider.addEventListener('input', (event) => {
-            console.log(event.target.value);
             this.value = event.target.value;
+            if (valueBadge) {
+                valueBadge.textContent = this.formatValueLabel();
+            }
         });
     }
 }

@@ -1,38 +1,60 @@
-class Category {
+var Category = window.Category || class Category {
 
     constructor(name, controls) {
         console.log('Initializing Category with controls:', controls);
-        this.name = name;
-        this.controls = controls.map(controlConfig => {
-            switch (controlConfig.type) {
-                case 'color':
-                    return new ColorControl(controlConfig);
-                case 'slider':
-                    return new SliderControl(controlConfig);
-                case 'checkbox':
-                    return new CheckBoxControl(controlConfig);
-                case 'number':
-                    return new NumberControl(controlConfig);
-                case 'select':
-                    return new SelectControl(controlConfig);
-                case 'fontPicker':
-                    return new FontPickerControl(controlConfig);
-                case 'textarea':
-                    return new TextAreaControl(controlConfig);
-            }
-        });
+        this.name = typeof name === "string" && name.trim() ? name : "Options";
+        this.controls = Array.isArray(controls)
+            ? controls
+                .map(controlConfig => this.createControl(controlConfig))
+                .filter(Boolean)
+            : [];
     }
 
-    generateHeader() {
-        return `<fieldset class="verticalSection verticalSection-extrabottompadding"><legend>${this.name}</legend>`;
+    createControl(controlConfig) {
+        if (!controlConfig || typeof controlConfig !== "object") {
+            console.warn("Ignoring invalid control configuration:", controlConfig);
+            return null;
+        }
+
+        switch (controlConfig.type) {
+            case 'color':
+                return new ColorControl(controlConfig);
+            case 'slider':
+                return new SliderControl(controlConfig);
+            case 'checkbox':
+                return new CheckBoxControl(controlConfig);
+            case 'number':
+                return new NumberControl(controlConfig);
+            case 'select':
+                return new SelectControl(controlConfig);
+            case 'fontPicker':
+                return new FontPickerControl(controlConfig);
+            case 'textarea':
+                return new TextAreaControl(controlConfig);
+            default:
+                console.warn(`Ignoring unsupported control type: ${controlConfig.type}`);
+                return null;
+        }
     }
 
-    generateFooter() {
-        return "</fieldset>";
+    escapeHtml(value) {
+        return String(value ?? "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#39;");
     }
 
     generateHTML() {
-        return this.generateHeader() + this.controls.map(control => control.generateHTML()).join('</br>') + this.generateFooter();
+        return `
+            <fieldset class="verticalSection verticalSection-extrabottompadding">
+                <legend>${this.escapeHtml(this.name)}</legend>
+                <div class="categoryControls">
+                    ${this.controls.map(control => control.generateHTML()).join('')}
+                </div>
+            </fieldset>
+        `;
     }
 
     generateCSS() {

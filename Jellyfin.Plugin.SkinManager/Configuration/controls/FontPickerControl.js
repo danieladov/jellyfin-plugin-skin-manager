@@ -1,8 +1,12 @@
-class FontPickerControl extends Control {
+var FontPickerControl = window.FontPickerControl || class FontPickerControl extends Control {
     constructor(config) {
         super(config);
         this.type = 'fontPicker';
-        this.previewText = config.previewText || "Hello, This is your selected font-family.";
+        const legacyPreviewText = "Hello, This is your selected font-family.";
+        this.previewText = config.previewText && config.previewText !== legacyPreviewText
+            ? config.previewText
+            : "The quick brown fox jumps over the lazy dog.";
+        this.value = this.normalizeFontValue(this.value);
     }
 
     generateHTML() {
@@ -13,26 +17,29 @@ class FontPickerControl extends Control {
             ? ` style="${this._composePreviewStyle(parsed)}"`
             : "";
 
-        return `<div class="inputContainer">
-                    <label for="${this.id}">${this.label}</label>
-                    <input
-                        is="emby-input"
-                        type="text"
-                        class="fontPickerInput"
-                        id="${this.id}"
-                        name="${this.id}"
-                        value="${safeValue}"
-                    />
-                    <div class="fontCont fontPreviewContainer">
-                        <p class="fontPreviewText" id="${this.id}-preview"${previewStyle}>${this.previewText}</p>
-                    </div>
-                    <div class="fieldDescription">${this.description}</div>
-                </div>`;
+        return this.renderShell({
+            className: "controlCard-font",
+            valueHtml: `<span class="valueBadge" id="${this.id}-value">${this.escapeHtml(fontValue || "System default")}</span>`,
+            inputHtml: `
+                <input
+                    is="emby-input"
+                    type="text"
+                    class="fontPickerInput"
+                    id="${this.id}"
+                    name="${this.id}"
+                    value="${safeValue}"
+                />
+                <div class="fontCont fontPreviewContainer">
+                    <p class="fontPreviewText" id="${this.id}-preview"${previewStyle}>${this.escapeHtml(this.previewText)}</p>
+                </div>
+            `
+        });
     }
 
     attachEventListeners() {
         const input = document.getElementById(this.id);
         const preview = document.getElementById(`${this.id}-preview`);
+        const valueBadge = document.getElementById(`${this.id}-value`);
 
         const updatePreview = (fontValue) => {
             const sanitizedValue = fontValue || "";
@@ -42,6 +49,9 @@ class FontPickerControl extends Control {
                 preview.style.fontFamily = family || sanitizedValue;
                 preview.style.fontWeight = weight ? String(weight) : "";
                 preview.style.fontStyle = italic ? "italic" : "";
+            }
+            if (valueBadge) {
+                valueBadge.textContent = sanitizedValue || "System default";
             }
         };
 
@@ -61,6 +71,25 @@ class FontPickerControl extends Control {
 
     _escapeFontFamily(fontFamily) {
         return (fontFamily || "").replace(/"/g, '\\"');
+    }
+
+    normalizeFontValue(fontValue) {
+        const rawValue = String(fontValue || "").trim();
+        if (!rawValue) {
+            return "";
+        }
+
+        const [familyPart, variantPart] = rawValue.split(":");
+        const normalizedFamily = familyPart
+            .split(",")[0]
+            .trim()
+            .replace(/^['"]|['"]$/g, "");
+
+        if (!variantPart) {
+            return normalizedFamily;
+        }
+
+        return `${normalizedFamily}:${variantPart.trim()}`;
     }
 
     _parseFontSpec(fontSpec) {

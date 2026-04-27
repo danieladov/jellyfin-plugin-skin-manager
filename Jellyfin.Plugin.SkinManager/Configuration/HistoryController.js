@@ -1,9 +1,6 @@
-class HistoryController {
+var HistoryController = window.HistoryController || class HistoryController {
     constructor() {
-        // Initialize ConfigController to handle skin serialization
         this.configController = new ConfigController();
-
-        // Array to keep track of the history of saved skins
         this.history = [];
         this.currentSkin = null;
         this.userCssHistory = [];
@@ -12,6 +9,7 @@ class HistoryController {
         this.selectElement = document.getElementById("cssOptions-history");
         this.optionsElement = document.getElementById("options-history");
         this.setSkinButton = document.getElementById("setSkin-history");
+        this.setSkinButtonLabel = this.setSkinButton ? this.setSkinButton.querySelector("span") : null;
 
         this.cssContainerElement = document.getElementById("cssHistoryContainer");
         this.cssSelectElement = document.getElementById("cssHistorySelect");
@@ -19,9 +17,11 @@ class HistoryController {
         this.cssCodeElement = document.getElementById("cssHistoryCode");
         this.cssEmptyElement = document.getElementById("cssHistoryEmpty");
         this.restoreCssButton = document.getElementById("restoreCssButton");
+
+        this.historySelectedSkinElement = document.getElementById("historySelectedSkin");
+        this.historySelectedSkinHintElement = document.getElementById("historySelectedSkinHint");
     }
 
-    // Initialize history controller logic
     async init() {
         console.log("HistoryController initialized");
         this.history = await this.configController.loadHistorySkins();
@@ -31,6 +31,69 @@ class HistoryController {
         await this.loadUserCssHistory();
         this.renderCssHistory();
         this.initCssEventListeners();
+        this.renderOverview();
+    }
+
+    extractSkinBaseName(name) {
+        if (!name) {
+            return "unknown";
+        }
+
+        const match = String(name).match(/-\s*(.+)$/);
+        if (match && match[1]) {
+            return match[1].trim();
+        }
+
+        return String(name).trim();
+    }
+
+    setApplyButtonState({ busy = false, disabled = false } = {}) {
+        if (!this.setSkinButton) {
+            return;
+        }
+
+        const isDisabled = busy || disabled || !this.currentSkin;
+        this.setSkinButton.disabled = isDisabled;
+
+        if (this.setSkinButtonLabel) {
+            this.setSkinButtonLabel.textContent = busy
+                ? "Restoring..."
+                : "Restore selected skin";
+        }
+    }
+
+    setSnapshotMode(enabled) {
+        if (!this.optionsElement) {
+            return;
+        }
+
+        this.optionsElement.classList.toggle("historySnapshot", enabled);
+        this.optionsElement.dataset.mode = enabled ? "snapshot" : "empty";
+
+        if (!enabled) {
+            return;
+        }
+
+        this.optionsElement.querySelectorAll("select, input, textarea, button").forEach(element => {
+            element.disabled = true;
+            element.tabIndex = -1;
+            element.setAttribute("aria-readonly", "true");
+        });
+    }
+
+    renderOverview() {
+        if (this.historySelectedSkinElement) {
+            this.historySelectedSkinElement.textContent = this.currentSkin
+                ? this.extractSkinBaseName(this.currentSkin.name)
+                : "No applied skins yet";
+        }
+
+        if (this.historySelectedSkinHintElement) {
+            this.historySelectedSkinHintElement.textContent = this.currentSkin
+                ? "Read-only snapshot of the skin that will be restored."
+                : "Apply a skin from the main tab and it will be saved here automatically.";
+        }
+
     }
 
     populateSelect() {
@@ -46,21 +109,44 @@ class HistoryController {
             this.selectElement.value = 0;
             this.currentSkin = this.history[0];
             this.showSkin();
+            this.setApplyButtonState();
+            return;
         }
+
+        this.optionsElement.innerHTML = '<div class="historyDetailEmpty">No applied skins saved yet.</div>';
+        this.setSnapshotMode(false);
+        this.currentSkin = null;
+        this.renderOverview();
+        this.setApplyButtonState({ disabled: true });
     }
 
     showSkin() {
+        if (!this.currentSkin) {
+            this.optionsElement.innerHTML = "";
+            this.setSnapshotMode(false);
+            this.renderOverview();
+            return;
+        }
+
         this.optionsElement.innerHTML = this.currentSkin.generateHTML({
             includePreview: false,
-            includeLivePreview: false
+            includeLivePreview: false,
+            context: "history"
         });
         this.currentSkin.attachEventListeners();
+        this.setSnapshotMode(true);
+        this.renderOverview();
     }
 
     changeSkin() {
-        const selectedIndex = this.selectElement.value;
+        const selectedIndex = parseInt(this.selectElement.value, 10);
+        if (Number.isNaN(selectedIndex) || !this.history[selectedIndex]) {
+            return;
+        }
+
         this.currentSkin = this.history[selectedIndex];
         this.showSkin();
+        this.setApplyButtonState();
         console.log(`Skin changed to: ${this.currentSkin.name}`);
     }
 
@@ -70,7 +156,7 @@ class HistoryController {
         }
 
         const css = this.currentSkin.generateCSS();
-        const appliedSkinName = this.currentSkin.name;
+        this.setApplyButtonState({ busy: true });
 
         try {
             const serverConfig = await ApiClient.getServerConfiguration();
@@ -89,23 +175,24 @@ class HistoryController {
             await ApiClient.updateNamedConfiguration("branding", brandingConfig);
             Dashboard.processServerConfigurationUpdateResult();
 
-            await this.configController.saveSkin(this.currentSkin);
-            await this.configController.setSelectedSkin(appliedSkinName);
+            const appliedSkinName = await this.configController.saveSkin(this.currentSkin);
+            await this.configController.setSelectedSkin(appliedSkinName || this.currentSkin.name);
 
             window.location.reload(true);
         } catch (error) {
             console.error("Error applying skin from history:", error);
+            this.setApplyButtonState();
         }
     }
 
     initEventListeners() {
-        this.setSkinButton.addEventListener('click', () => {
+        this.setSkinButton.addEventListener("click", () => {
             if (this.currentSkin) {
                 this.applyCurrentSkin();
             }
         });
 
-        this.selectElement.addEventListener('change', () => {
+        this.selectElement.addEventListener("change", () => {
             this.changeSkin();
         });
     }
@@ -141,9 +228,10 @@ class HistoryController {
             this.cssSelectElement.disabled = true;
             this.updateCssContainerState(true);
             if (this.cssEmptyElement) {
-                this.cssEmptyElement.textContent = "No saved CSS yet.";
+                this.cssEmptyElement.textContent = "No saved custom CSS yet.";
             }
             this.clearCssDetail();
+            this.renderOverview();
             return;
         }
 
@@ -158,6 +246,7 @@ class HistoryController {
         const firstEntryId = String(this.userCssHistory[0].id);
         this.cssSelectElement.value = firstEntryId;
         this.selectCssEntry(firstEntryId);
+        this.renderOverview();
     }
 
     generateEntryId(entry) {
@@ -169,14 +258,14 @@ class HistoryController {
 
     buildCssListLabel(entry) {
         const formattedDate = this.formatDate(entry.savedAt);
-        return formattedDate ? `Saved on ${formattedDate}` : "Saved CSS";
+        return formattedDate ? `Saved on ${formattedDate}` : "Custom CSS backup";
     }
 
     buildCssDetailMeta(entry) {
         if (!entry.savedAt) {
             return "";
         }
-        return `Saved on ${this.formatDate(entry.savedAt)}`;
+        return `Saved before a skin replaced your custom CSS on ${this.formatDate(entry.savedAt)}`;
     }
 
     formatDate(isoString) {
@@ -222,7 +311,7 @@ class HistoryController {
         }
 
         if (this.cssEmptyElement) {
-            this.cssEmptyElement.textContent = "Select a revision to inspect its content.";
+            this.cssEmptyElement.textContent = "Select a saved custom CSS backup to inspect it.";
         }
 
         this.toggleRestoreButton(true);
@@ -253,8 +342,8 @@ class HistoryController {
 
         if (this.cssEmptyElement) {
             this.cssEmptyElement.textContent = hasEntries
-                ? "Select a revision to inspect its content."
-                : "No saved CSS yet.";
+                ? "Select a saved custom CSS backup to inspect it."
+                : "No saved custom CSS yet.";
         }
 
         this.toggleRestoreButton(false);

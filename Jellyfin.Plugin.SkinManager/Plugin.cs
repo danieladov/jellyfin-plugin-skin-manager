@@ -49,6 +49,7 @@ namespace Jellyfin.Plugin.SkinManager
                 "MainController.js",
                 "style.css",
                 "common.js",
+                "skins.json",
                 "history",
                 "ConfigController.js",
                 "HistoryController.js",

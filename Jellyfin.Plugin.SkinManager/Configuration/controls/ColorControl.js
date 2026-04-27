@@ -1,23 +1,32 @@
-class ColorControl extends Control {
+var ColorControl = window.ColorControl || class ColorControl extends Control {
     constructor(config) {
         super(config);
         this.type = 'color';
     }
 
     generateHTML() {
-        return `
-            <div class="inputContainer">
-                <label for="${this.id}">${this.label}</label>
+        const safeValue = this.escapeHtml(this.value || "");
+        const swatchValue = safeValue || "transparent";
+
+        return this.renderShell({
+            className: "controlCard-color",
+            valueHtml: `
+                <span class="valueBadge valueBadge-color" id="${this.id}-value">
+                    <span class="colorSwatch" style="--swatch-color:${swatchValue};"></span>
+                    <span>${safeValue || "Default"}</span>
+                </span>
+            `,
+            inputHtml: `
                 <input
-                class="color"
-                type="text"
-                id="${this.id}"
-                name="${this.id}"
-                data-css="${this.css}"
+                    class="color"
+                    type="text"
+                    id="${this.id}"
+                    name="${this.id}"
+                    value="${safeValue}"
+                    data-css="${this.css}"
                 />
-                <div class="fieldDescription">${this.description}</div>
-            </div>
-            `;
+            `
+        });
     }
 
     attachEventListeners() {
@@ -40,6 +49,7 @@ class ColorControl extends Control {
             localStorageKey: "spectrum.demo",
             move: (color) => {
                 this.value = this._formatColor(color);
+                this.updateValueBadge();
             },
             show: function () {
 
@@ -52,6 +62,7 @@ class ColorControl extends Control {
             },
             change: (color) => {
                 this.value = this._formatColor(color);
+                this.updateValueBadge();
                 $el.val(this.value).trigger("input");
             },
             palette: [
@@ -78,6 +89,25 @@ class ColorControl extends Control {
 
     _formatColor(color) {
         return color.getAlpha() < 1 ? color.toHex8String() : color.toHexString();
+    }
+
+    updateValueBadge() {
+        const valueBadge = document.getElementById(`${this.id}-value`);
+        if (!valueBadge) {
+            return;
+        }
+
+        const label = valueBadge.querySelector("span:last-child");
+        const swatch = valueBadge.querySelector(".colorSwatch");
+        const formatted = this.value || "Default";
+
+        if (label) {
+            label.textContent = formatted;
+        }
+
+        if (swatch) {
+            swatch.style.setProperty("--swatch-color", this.value || "transparent");
+        }
     }
 }
 
