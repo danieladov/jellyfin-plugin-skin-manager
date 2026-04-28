@@ -19,10 +19,11 @@ var SelectControl = window.SelectControl || class SelectControl extends Control 
             valueHtml: `<span class="valueBadge" id="${this.id}-value">${this.escapeHtml(this.getSelectedOptionLabel())}</span>`,
             inputHtml: `
                 <div class="selectContainer controlSelectContainer">
-                    <select is="emby-select" id="${this.id}">
+                    <select is="emby-select" id="${this.id}" label="${this.label}"">
                         ${this.options.map(option => `<option value="${this.escapeHtml(option.value)}"
                             ${option.value == this.value ? "selected" : ""}>${this.escapeHtml(option.label)}</option>`).join('')}
                     </select>
+                        
                 </div>
             `
         });

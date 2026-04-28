@@ -14,9 +14,9 @@ var CheckBoxControl = window.CheckBoxControl || class CheckBoxControl extends Co
             className: "controlCard-checkbox",
             valueHtml: `<span class="statusPill ${stateClass}" id="${this.id}-pill">${stateText}</span>`,
             inputHtml: `
-                <label class="checkboxField" for="${this.id}">
+                <label for="${this.id}">
                     <input class="checkbox" type="checkbox" is="emby-checkbox" id="${this.id}" ${checkValue} />
-                    <span class="checkboxState" id="${this.id}-state">${stateText}</span>
+                    <span class="checkboxState" id="${this.id}-state">${this.label}</span>
                 </label>
             `
         });

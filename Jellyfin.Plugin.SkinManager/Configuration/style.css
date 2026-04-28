@@ -171,6 +171,10 @@ input#favcolor {
     gap: 24px;
 }
 
+.selectContainer {
+    margin-bottom: 0;
+}
+
 .optionsContainer .categoriesContainer {
     min-width: 0;
 }
@@ -2244,7 +2248,7 @@ See http://bgrins.github.io/spectrum/themes/ for instructions.
 }
 
 #skinManagerPage .fontCont {
-    margin-top: 0;
+    margin-top: 8px;
     padding: 14px 16px;
     border-radius: 14px;
 }
@@ -2665,9 +2669,12 @@ See http://bgrins.github.io/spectrum/themes/ for instructions.
 
 #skinManagerPage fieldset.categoryCard,
 #historyPage fieldset.categoryCard,
+#skinManagerPage .categoriesContainer > fieldset.verticalSection,
+#historyPage .categoriesContainer > fieldset.verticalSection,
 #skinManagerPage fieldset.livePreviewShell {
     min-inline-size: 0;
     margin: 0;
+    box-sizing: border-box;
 }
 
 #skinManagerPage fieldset.livePreviewShell {
@@ -2675,14 +2682,10 @@ See http://bgrins.github.io/spectrum/themes/ for instructions.
     flex-direction: column;
 }
 
-#skinManagerPage .categoryCard > .categoryTitle,
-#historyPage .categoryCard > .categoryTitle,
-#skinManagerPage .livePreviewShell > .livePreviewTitle {
-    padding: 0 6px;
-}
-
 #skinManagerPage .categoryCard > .categoryControls,
-#historyPage .categoryCard > .categoryControls {
+#historyPage .categoryCard > .categoryControls,
+#skinManagerPage .categoriesContainer > fieldset.verticalSection > .categoryControls,
+#historyPage .categoriesContainer > fieldset.verticalSection > .categoryControls {
     margin-top: 14px;
 }
 
@@ -2755,8 +2758,16 @@ See http://bgrins.github.io/spectrum/themes/ for instructions.
 }
 
 #skinManagerPage .livePreviewHeader {
+    position: absolute;
+    top: -12px;
+    right: 10px;
+    z-index: 2;
     justify-content: flex-end;
-    margin-bottom: 12px;
+    width: auto;
+    height: 28px;
+    min-height: 0;
+    margin-bottom: 0;
+    line-height: 1;
 }
 
 #skinManagerPage .sectionSubtitle,
@@ -2886,6 +2897,52 @@ See http://bgrins.github.io/spectrum/themes/ for instructions.
     box-sizing: border-box;
 }
 
+#skinManagerPage .livePreviewShell {
+    position: relative;
+    padding-top: 14px;
+}
+
+#skinManagerPage .skinManagerShell {
+    display: grid;
+    grid-template-columns: minmax(440px, 500px) minmax(0, 1fr);
+    gap: 20px;
+    align-items: start;
+}
+
+#skinManagerPage .skinManagerHeader {
+    grid-column: 1 / -1;
+}
+
+#skinManagerPage .skinSelectionPanel {
+    grid-column: 1;
+    grid-row: 2;
+    width: 100%;
+    max-width: none;
+    box-sizing: border-box;
+}
+
+#skinManagerPage .allOptions,
+#skinManagerPage #options.checkboxList.checkboxList-verticalwrap,
+#skinManagerPage .optionsContainer {
+    display: contents;
+}
+
+#skinManagerPage .categoriesContainer {
+    grid-column: 1;
+    grid-row: 3;
+    width: 100%;
+}
+
+#skinManagerPage .previewColumn {
+    grid-column: 2;
+    grid-row: 2 / span 2;
+    width: 100%;
+    min-width: 0;
+    align-self: start;
+    position: sticky;
+    top: 16px;
+}
+
 #skinManagerPage .optionsContainer[data-layout="micro"] .workspaceSummaryCard,
 #skinManagerPage .optionsContainer[data-layout="compact"] .workspaceSummaryCard {
     padding: 18px 18px 16px;
@@ -2935,6 +2992,40 @@ See http://bgrins.github.io/spectrum/themes/ for instructions.
 #skinManagerPage .previewAction-secondary span,
 #skinManagerPage .previewAction-primary span {
     color: inherit !important;
+}
+
+#skinManagerPage .livePreviewHeader .previewActions {
+    width: auto;
+    height: 28px;
+    margin-left: auto;
+    gap: 0;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+#skinManagerPage .livePreviewFullscreenButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0 !important;
+    border-radius: 8px;
+    background: transparent !important;
+    color: #f6f8fa !important;
+}
+
+#skinManagerPage .livePreviewFullscreenButton:hover {
+    background: rgba(255, 255, 255, 0.08) !important;
+}
+
+#skinManagerPage .livePreviewFullscreenButton .xlargePaperIconButton {
+    color: inherit !important;
+    font-size: 22px;
+    line-height: 1;
 }
 
 #skinManagerPage .livePreviewFrameWrapper {
@@ -3001,21 +3092,30 @@ body.skinPreviewFullscreenActive {
 
 #skinManagerPage #livePreviewShell[data-expanded="true"] {
     position: fixed;
-    inset: 0;
-    z-index: 9999;
+    top: 64px;
+    right: 24px;
+    bottom: 24px;
+    left: 264px;
+    z-index: 1080;
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 10px;
     width: auto;
     max-width: none;
     height: auto;
-    padding: 16px;
-    border: 0;
-    border-radius: 0;
+    padding: 14px 16px 16px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
     background: #0f1216;
+    box-sizing: border-box;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.24);
 }
 
 #skinManagerPage #livePreviewShell[data-expanded="true"] .livePreviewHeader {
+    position: absolute;
+    top: -12px;
+    right: 12px;
+    z-index: 3;
     flex: 0 0 auto;
     align-items: center;
 }
@@ -3380,11 +3480,36 @@ body.skinPreviewFullscreenActive {
 }
 
 @media (max-width: 1200px) {
+    #skinManagerPage .skinManagerShell {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+    }
+
     #skinManagerPage .optionsContainer[data-layout="default"],
     #skinManagerPage .optionsContainer[data-layout="balanced"],
     #skinManagerPage .optionsContainer[data-layout="compact"],
     #skinManagerPage .optionsContainer[data-layout="micro"] {
         grid-template-columns: minmax(0, 1fr);
+    }
+
+    #skinManagerPage .skinSelectionPanel,
+    #skinManagerPage .categoriesContainer,
+    #skinManagerPage .previewColumn {
+        grid-column: auto;
+        grid-row: auto;
+        width: 100%;
+    }
+
+    #skinManagerPage .previewColumn {
+        position: static;
+    }
+
+    #skinManagerPage #livePreviewShell[data-expanded="true"] {
+        top: 64px;
+        right: 16px;
+        bottom: 16px;
+        left: 16px;
     }
 
     #historyPage .historySectionLayout {

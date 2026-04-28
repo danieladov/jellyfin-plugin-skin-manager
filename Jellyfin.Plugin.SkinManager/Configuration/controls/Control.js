@@ -42,17 +42,10 @@ var Control = window.Control || class Control {
             : "";
             
         return `
-            <section class="controlCard ${className}">
-                <div class="controlHeader">
-                    <div class="controlHeader-copy">
-                        <label class="controlLabel" for="${this.id}">${this.escapeHtml(this.label || "Option")}</label>
-                        ${helperHtml}
-                    </div>
-                    ${valueBlock}
-                </div>
-                <div class="controlField">
-                    ${inputHtml}
-                </div>
+            <section class=" ${className}">
+                ${inputHtml}
+                <span class="">${helperHtml}</span>
+                
             </section>
         `;
     }

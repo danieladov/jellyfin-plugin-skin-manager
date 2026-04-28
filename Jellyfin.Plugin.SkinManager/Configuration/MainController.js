@@ -211,7 +211,6 @@ var MainController = window.MainController || class MainController {
         this.previewNavButtons = Array.from(document.querySelectorAll(".previewNav"));
         this.previewSection = document.querySelector(".previewSection");
         this.livePreviewExpandButton = document.getElementById("livePreviewExpand");
-        this.livePreviewRefreshButton = document.getElementById("livePreviewRefresh");
         this.livePreviewContainer = document.getElementById("livePreviewShell");
         this.livePreviewFrame = document.getElementById("skinLivePreviewFrame");
         this.livePreviewAuto = null;
@@ -318,12 +317,6 @@ var MainController = window.MainController || class MainController {
     }
 
     bindLivePreviewEvents() {
-        if (this.livePreviewRefreshButton) {
-            this.livePreviewRefreshButton.addEventListener("click", () => {
-                this.resetLivePreview();
-            });
-        }
-
         if (this.livePreviewExpandButton) {
             this.livePreviewExpandButton.addEventListener("click", () => {
                 this.setPreviewExpanded(!this.previewExpanded);
@@ -491,12 +484,17 @@ var MainController = window.MainController || class MainController {
             this.livePreviewExpandButton.setAttribute("aria-pressed", this.previewExpanded ? "true" : "false");
             this.livePreviewExpandButton.setAttribute(
                 "aria-label",
-                this.previewExpanded ? "Exit preview fullscreen" : "View preview fullscreen"
+                this.previewExpanded ? "Salir de pantalla completa" : "Pantalla completa"
+            );
+            this.livePreviewExpandButton.setAttribute(
+                "title",
+                this.previewExpanded ? "Salir de pantalla completa" : "Pantalla completa (F)"
             );
 
-            const label = this.livePreviewExpandButton.querySelector("span");
-            if (label) {
-                label.textContent = this.previewExpanded ? "Exit fullscreen" : "Fullscreen";
+            const icon = this.livePreviewExpandButton.querySelector(".material-icons");
+            if (icon) {
+                icon.classList.toggle("fullscreen", !this.previewExpanded);
+                icon.classList.toggle("fullscreen_exit", this.previewExpanded);
             }
         }
     }

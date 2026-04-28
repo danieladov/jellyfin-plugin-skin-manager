@@ -162,15 +162,14 @@ var Skin = window.Skin || class Skin {
 
     generateLivePreviewHTML() {
         return `
-            <fieldset class="verticalSection verticalSection-extrabottompadding" id="livePreviewShell">
-                <legend >Live preview</legend>
+            <fieldset class="livePreviewShell verticalSection verticalSection-extrabottompadding" id="livePreviewShell">
+                <legend>Live preview</legend>
                 <div class="livePreviewHeader">
                     <div class="previewActions">
-                        <button is="emby-button" type="button" class="previewAction previewAction-secondary" id="livePreviewRefresh">
-                            <span>Reload</span>
-                        </button>
-                        <button is="emby-button" type="button" class="previewAction previewAction-primary" id="livePreviewExpand">
-                            <span>Fullscreen</span>
+                        <button is="paper-icon-button-light" type="button"
+                            class="btnFullscreen autoSize paper-icon-button-light livePreviewFullscreenButton"
+                            title="Pantalla completa (F)" aria-label="Pantalla completa" id="livePreviewExpand">
+                            <span class="xlargePaperIconButton material-icons fullscreen" aria-hidden="true"></span>
                         </button>
                     </div>
                 </div>
