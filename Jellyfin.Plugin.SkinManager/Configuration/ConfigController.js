@@ -1,6 +1,9 @@
 var ConfigController = window.ConfigController || class ConfigController {
     static MAX_SKIN_HISTORY = 25;
     static MAX_USER_CSS_HISTORY = 25;
+    static MAX_IMPORTED_SKINS = 50;
+    static EXPORT_SCHEMA = "jellyfin-skin-manager-export/v1";
+    static MAX_IMPORT_SIZE = 2 * 1024 * 1024;
 
     constructor() {
         console.log("ConfigController initialized");
@@ -32,6 +35,47 @@ var ConfigController = window.ConfigController || class ConfigController {
             .reverse()
             .map(s => this.deserializeSkin(s))
             .filter(Boolean);
+    }
+
+    async loadImportedSkins() {
+        const config = await this.getPluginConfiguration();
+        return [...config.importedSkins]
+            .reverse()
+            .map(entry => this.deserializeSkin(entry))
+            .filter(Boolean)
+            .map(skin => {
+                skin.isImported = true;
+                return skin;
+            });
+    }
+
+    async saveImportedSkin(skin) {
+        if (!skin) {
+            return null;
+        }
+
+        const plainSkin = this.toPlainSkin(skin);
+        const importedSkin = new Skin(plainSkin);
+        importedSkin.isImported = true;
+
+        const config = await this.getPluginConfiguration();
+        const importedName = importedSkin.name.trim().toLocaleLowerCase();
+
+        config.importedSkins = config.importedSkins
+            .map(entry => this.deserializeSkin(entry))
+            .filter(existingSkin => existingSkin && existingSkin.name.trim().toLocaleLowerCase() !== importedName)
+            .map(existingSkin => this.serializeSkin(this.toPlainSkin(existingSkin)))
+            .filter(Boolean);
+
+        const serialized = this.serializeSkin(importedSkin);
+        if (serialized) {
+            config.importedSkins.push(serialized);
+            config.importedSkins = this.trimHistory(config.importedSkins, ConfigController.MAX_IMPORTED_SKINS);
+        }
+
+        const result = await ApiClient.updatePluginConfiguration(this.pluginId, config);
+        Dashboard.processPluginConfigurationUpdateResult(result);
+        return importedSkin;
     }
 
     serializeSkin(skin) {
@@ -141,19 +185,155 @@ var ConfigController = window.ConfigController || class ConfigController {
         if (!Array.isArray(config.userCssHistory)) {
             config.userCssHistory = [];
         }
+        if (!Array.isArray(config.importedSkins)) {
+            config.importedSkins = [];
+        }
         return config;
+    }
+
+    createSkinExport(skin, { name, description } = {}) {
+        if (!skin) {
+            throw new Error("No skin selected to export.");
+        }
+
+        const plainSkin = this.toPlainSkin(skin);
+        const exportName = this.cleanText(name) || this.cleanText(plainSkin.name) || "Shared skin";
+        const exportDescription = this.cleanText(description) || this.cleanText(plainSkin.description);
+
+        plainSkin.name = exportName;
+        plainSkin.description = exportDescription;
+
+        const exportSkin = new Skin(plainSkin);
+
+        return {
+            schema: ConfigController.EXPORT_SCHEMA,
+            version: 1,
+            exportedAt: new Date().toISOString(),
+            name: exportName,
+            description: exportDescription,
+            skin: this.toPlainSkin(exportSkin),
+            compiledCss: exportSkin.generateCSS(),
+            source: {
+                plugin: "SkinManager",
+                baseSkin: this.cleanText(skin.name)
+            }
+        };
+    }
+
+    serializeSkinExport(exportData) {
+        return JSON.stringify(exportData, null, 2);
+    }
+
+    parseSkinExport(input) {
+        const raw = typeof input === "string" ? input.trim() : input;
+        if (!raw) {
+            throw new Error("Paste a Skin Manager export or choose a JSON file.");
+        }
+
+        if (typeof raw === "string" && raw.length > ConfigController.MAX_IMPORT_SIZE) {
+            throw new Error("This file is too large to import.");
+        }
+
+        let data = raw;
+        if (typeof raw === "string") {
+            try {
+                data = JSON.parse(raw);
+            } catch (error) {
+                throw new Error("This is not valid JSON.");
+            }
+        }
+
+        const skinData = this.extractImportedSkinData(data);
+        this.validateImportedSkinData(skinData);
+
+        const skin = new Skin(skinData);
+        skin.isImported = true;
+        return {
+            skin,
+            payload: data,
+            schema: typeof data?.schema === "string" ? data.schema : "raw-skin"
+        };
+    }
+
+    extractImportedSkinData(data) {
+        if (!data || typeof data !== "object") {
+            throw new Error("This file is not a Skin Manager export.");
+        }
+
+        if (data.schema === ConfigController.EXPORT_SCHEMA && data.skin && typeof data.skin === "object") {
+            const skinData = this.toPlainSkin(data.skin);
+            skinData.name = this.cleanText(skinData.name) || this.cleanText(data.name) || "Imported skin";
+            skinData.description = this.cleanText(skinData.description) || this.cleanText(data.description);
+            if (!this.cleanText(skinData.css) && this.cleanText(data.compiledCss)) {
+                skinData.css = data.compiledCss;
+            }
+            return skinData;
+        }
+
+        if (data.skin && typeof data.skin === "object") {
+            const skinData = this.toPlainSkin(data.skin);
+            skinData.name = this.cleanText(skinData.name) || this.cleanText(data.name) || "Imported skin";
+            skinData.description = this.cleanText(skinData.description) || this.cleanText(data.description);
+            if (!this.cleanText(skinData.css) && this.cleanText(data.compiledCss)) {
+                skinData.css = data.compiledCss;
+            }
+            return skinData;
+        }
+
+        if (typeof data.name === "string" && (Array.isArray(data.categories) || typeof data.css === "string")) {
+            return this.toPlainSkin(data);
+        }
+
+        throw new Error("This JSON does not contain a skin.");
+    }
+
+    validateImportedSkinData(skinData) {
+        if (!skinData || typeof skinData !== "object") {
+            throw new Error("This file does not contain a valid skin.");
+        }
+
+        if (!this.cleanText(skinData.name)) {
+            throw new Error("The imported skin needs a name.");
+        }
+
+        if (!Array.isArray(skinData.categories)) {
+            skinData.categories = [];
+        }
+
+        if (typeof skinData.css !== "string") {
+            skinData.css = "";
+        }
+
+        if (!skinData.css.trim() && skinData.categories.length === 0) {
+            throw new Error("The imported skin does not include CSS or editable options.");
+        }
     }
 
     createHistorySkinEntry(skin) {
         const plainSkin = this.toPlainSkin(skin);
-        const originalName = typeof plainSkin.name === "string" && plainSkin.name.trim()
-            ? plainSkin.name.trim()
-            : "Unnamed skin";
+        const originalName = this.getSkinBaseName(plainSkin.name, "Unnamed skin");
+        delete plainSkin.isCurrentSetup;
 
         return {
             ...plainSkin,
             name: `${new Date().toLocaleString()} - ${originalName}`
         };
+    }
+
+    getSkinBaseName(name, fallback = "unknown") {
+        let baseName = typeof name === "string" ? name.trim() : "";
+        const historyPrefixPattern = /^\d{1,4}[/-]\d{1,2}[/-]\d{1,4}[^-]*-\s*/;
+        const currentPrefixPattern = /^Currently applied\s*-\s*/i;
+
+        while (historyPrefixPattern.test(baseName)) {
+            baseName = baseName.replace(historyPrefixPattern, "").trim();
+        }
+
+        while (currentPrefixPattern.test(baseName)) {
+            baseName = baseName.replace(currentPrefixPattern, "").trim();
+        }
+
+        return baseName || fallback;
     }
 
     toPlainSkin(skin) {
@@ -193,5 +373,9 @@ var ConfigController = window.ConfigController || class ConfigController {
         const trimmed = css.trimStart();
         return trimmed.startsWith(this.MANAGED_CSS_MARKER)
             || trimmed.startsWith("#Skin Manager CSS");
+    }
+
+    cleanText(value) {
+        return typeof value === "string" ? value.trim() : "";
     }
 }

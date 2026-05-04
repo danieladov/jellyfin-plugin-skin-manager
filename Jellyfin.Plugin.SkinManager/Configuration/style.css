@@ -2633,6 +2633,135 @@ See http://bgrins.github.io/spectrum/themes/ for instructions.
     line-height: 1.6;
 }
 
+#skinManagerPage .skinShareParking {
+    display: none;
+}
+
+#skinManagerPage .skinShareTools {
+    order: 3;
+    margin-top: 0;
+    padding-top: 14px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+#skinManagerPage .skinShareTitle {
+    margin: 0 0 10px;
+    font-size: 0.98rem;
+}
+
+#skinManagerPage .skinShareColumns {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+#skinManagerPage .skinShareColumn {
+    display: grid;
+    align-content: start;
+    gap: 7px;
+}
+
+#skinManagerPage .skinShareColumn label {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.86rem;
+    font-weight: 600;
+}
+
+#skinManagerPage .skinShareColumn .emby-input,
+#skinManagerPage .skinShareColumn .emby-textarea {
+    width: 100%;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+#skinManagerPage .skinShareColumn .emby-textarea {
+    min-height: 64px;
+    resize: vertical;
+}
+
+#skinManagerPage .skinShareActions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 2px;
+}
+
+#skinManagerPage .skinShareActions .emby-button,
+#skinManagerPage #skinImportButton {
+    min-height: 36px;
+    margin: 0;
+}
+
+#skinManagerPage .skinShareButton {
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    background: #151a20 !important;
+    box-shadow: none !important;
+    color: #f4f4f4 !important;
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
+#skinManagerPage .skinShareButton:hover {
+    background: #1b2128 !important;
+}
+
+#skinManagerPage .skinShareButton-primary {
+    background: #303030 !important;
+}
+
+#skinManagerPage .skinShareButton-primary:hover {
+    background: #383838 !important;
+}
+
+#skinManagerPage .skinShareButton[disabled] {
+    background: #111418 !important;
+    color: rgba(255, 255, 255, 0.46) !important;
+    border-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+#skinManagerPage .skinShareButton .emby-button-foreground,
+#skinManagerPage .skinShareButton span {
+    color: inherit !important;
+}
+
+#skinManagerPage .skinShareActions .skinShareButton {
+    flex: 1 1 0;
+    min-width: 0;
+}
+
+#skinManagerPage #skinImportButton {
+    width: 100%;
+    margin-top: 2px;
+}
+
+#skinManagerPage .skinImportFile {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.025);
+    color: rgba(255, 255, 255, 0.9);
+    box-sizing: border-box;
+}
+
+#skinManagerPage .skinShareStatus {
+    min-height: 1.35em;
+    margin: 2px 0 0;
+    color: var(--sm-text-soft);
+    font-size: 0.82rem;
+    line-height: 1.45;
+}
+
+#skinManagerPage .skinShareStatus[data-state="success"] {
+    color: #9ad9ad;
+}
+
+#skinManagerPage .skinShareStatus[data-state="error"] {
+    color: #ffb3a8;
+}
+
 #skinManagerPage .skinApplyButton {
     min-height: 52px;
     font-size: 0.95rem;
@@ -3048,7 +3177,7 @@ See http://bgrins.github.io/spectrum/themes/ for instructions.
 }
 
 :is(#skinManagerPage, #historyPage) .selectContainer > .selectArrowContainer {
-    top: 50%;
+    top: 70%;
     right: 8px;
     width: 28px;
     height: 28px;
@@ -3531,6 +3660,10 @@ body.skinPreviewFullscreenActive {
 }
 
 @media (max-width: 700px) {
+    #skinManagerPage .skinShareColumns {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
     #historyPage .skinManagerHelpButton {
         width: 100%;
     }

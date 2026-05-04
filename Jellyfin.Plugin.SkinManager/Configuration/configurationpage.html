@@ -8,7 +8,7 @@
 <body>
     <div id="skinManagerPage" data-role="page"
         class="page type-interior pluginConfigurationPage tbsConfigurationPage withTabs"
-        data-require="emby-input,emby-button" data-controller="__plugin/fontpicker.js">
+        data-require="emby-input,emby-button,emby-textarea" data-controller="__plugin/fontpicker.js">
         <script src="/web/configurationpage?name=controls.Control.js"></script>
         <script src="/web/configurationpage?name=controls.ColorControl.js"></script>
         <script src="/web/configurationpage?name=controls.SliderControl.js"></script>
@@ -50,12 +50,10 @@
                         </div>
                     </section>
 
-                    <section class="skinSelectionPanel">
+                    <fieldset>
+                        <legend>Choose a preset</legend>
                         <div class="skinSelectionIntro">
-                            <div class="skinSelectionCopy">
-                                <h3 class="skinSelectionTitle">Choose a preset</h3>
                                 <p class="skinSelectionText">Pick a starting point and refine it below.</p>
-                            </div>
                         </div>
 
                         <div class="skinSelectionGrid">
@@ -71,10 +69,54 @@
                                 </button>
                             </div>
                         </div>
-                    </section>
+
+                    </fieldset>
 
                     <div class="allOptions">
                         <div class="checkboxList checkboxList-verticalwrap" id="options"></div>
+                    </div>
+
+                    <div class="skinShareParking" id="skinShareParking">
+                        <div class="skinShareTools" id="skinShareTools" aria-labelledby="skinShareTitle">
+                            <h4 class="skinShareTitle" id="skinShareTitle">Share skins</h4>
+                            <div class="skinShareColumns">
+                                <div class="skinShareColumn">
+                                    <label for="skinExportName">Export name</label>
+                                    <input class="emby-input" id="skinExportName" type="text" autocomplete="off">
+
+                                    <label for="skinExportDescription">Description</label>
+                                    <textarea class="emby-textarea" id="skinExportDescription"
+                                        rows="2"></textarea>
+
+                                    <div class="skinShareActions">
+                                        <button is="emby-button" type="button" class="raised skinShareButton skinShareButton-secondary"
+                                            id="skinExportDownload">
+                                            <span>Download JSON</span>
+                                        </button>
+                                        <button is="emby-button" type="button" class="raised skinShareButton skinShareButton-secondary"
+                                            id="skinExportCopy">
+                                            <span>Copy JSON</span>
+                                        </button>
+                                    </div>
+                                    <p class="skinShareStatus" id="skinExportStatus" aria-live="polite"></p>
+                                </div>
+
+                                <div class="skinShareColumn">
+                                    <label for="skinImportFile">Import skin</label>
+                                    <input class="skinImportFile" id="skinImportFile" type="file"
+                                        accept=".json,application/json">
+
+                                    <textarea class="emby-textarea textarea-mono" id="skinImportText"
+                                        rows="3" placeholder="Paste exported JSON here"></textarea>
+
+                                    <button is="emby-button" type="button" class="raised skinShareButton skinShareButton-primary"
+                                        id="skinImportButton">
+                                        <span>Add to presets</span>
+                                    </button>
+                                    <p class="skinShareStatus" id="skinImportStatus" aria-live="polite"></p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

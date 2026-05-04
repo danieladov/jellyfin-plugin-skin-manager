@@ -9,12 +9,14 @@ namespace Jellyfin.Plugin.SkinManager.Configuration
         public string selectedSkin { get; set; }
         public string[] skinHistory { get; set; }
         public string[] userCssHistory { get; set; }
+        public string[] importedSkins { get; set; }
 
         public PluginConfiguration()
         {
             selectedSkin = "";
             skinHistory = Array.Empty<String>();
             userCssHistory = Array.Empty<String>();
+            importedSkins = Array.Empty<String>();
         }
     }
 }

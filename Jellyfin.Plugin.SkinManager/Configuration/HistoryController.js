@@ -35,16 +35,7 @@ var HistoryController = window.HistoryController || class HistoryController {
     }
 
     extractSkinBaseName(name) {
-        if (!name) {
-            return "unknown";
-        }
-
-        const match = String(name).match(/-\s*(.+)$/);
-        if (match && match[1]) {
-            return match[1].trim();
-        }
-
-        return String(name).trim();
+        return this.configController.getSkinBaseName(name, "unknown");
     }
 
     setApplyButtonState({ busy = false, disabled = false } = {}) {
