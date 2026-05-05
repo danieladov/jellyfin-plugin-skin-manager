@@ -1,4 +1,4 @@
-var MainController = window.MainController || class MainController {
+var MainController = class MainController {
     constructor(jsonUrl) {
         this.jsonUrl = jsonUrl;
         this.skins = [];
@@ -9,6 +9,11 @@ var MainController = window.MainController || class MainController {
         this.optionsElement = document.getElementById("options");
         this.setSkinButton = document.getElementById("setSkin");
         this.setSkinButtonLabel = this.setSkinButton ? this.setSkinButton.querySelector("span") : null;
+        this.presetBrowserElement = document.getElementById("presetBrowser");
+        this.presetBrowserListElement = document.getElementById("presetBrowserList");
+        this.presetSearchElement = document.getElementById("presetSearch");
+        this.presetSourceFilterElement = document.getElementById("presetSourceFilter");
+        this.presetBrowserStatusElement = document.getElementById("presetBrowserStatus");
         this.heroCurrentSkinElement = document.getElementById("heroCurrentSkin");
         this.heroCurrentSkinHintElement = document.getElementById("heroCurrentSkinHint");
         this.shareToolsElement = document.getElementById("skinShareTools");
@@ -23,7 +28,13 @@ var MainController = window.MainController || class MainController {
         this.importButton = document.getElementById("skinImportButton");
         this.importStatusElement = document.getElementById("skinImportStatus");
         this.configController = new ConfigController();
+        this.bundledSkins = [];
         this.importedSkins = [];
+        this.sourceSkins = [];
+        this.skinSources = [];
+        this.officialManifest = null;
+        this.officialManifestStatus = null;
+        this.currentSetupSkin = null;
         this.pendingImportedSkin = null;
         this.previewState = { index: 0, count: 0 };
         this.livePreviewTimer = null;
@@ -35,31 +46,114 @@ var MainController = window.MainController || class MainController {
 
     async init() {
         try {
-            const [json, appliedSkin, importedSkins] = await Promise.all([
-                this.fetchJson(),
+            const [officialManifest, appliedSkin, importedSkins, skinSources] = await Promise.all([
+                this.configController.loadOfficialSkinManifest(this.jsonUrl),
                 this.loadCurrentSkinFromHistory(),
-                this.configController.loadImportedSkins()
+                this.configController.loadImportedSkins(),
+                this.configController.loadSkinSources()
             ]);
 
             this.appliedSkin = appliedSkin;
             this.importedSkins = importedSkins;
-            this.loadSkins(json);
+            this.skinSources = skinSources;
+            this.officialManifest = officialManifest;
+            this.officialManifestStatus = this.createOfficialManifestStatus(officialManifest)
+                || this.createOfficialManifestStatus(await this.configController.loadOfficialManifestStatus());
+            this.loadSkins(officialManifest);
             this.addImportedSkins(importedSkins);
             this.injectCurrentSkin(appliedSkin);
+            this.rebuildSkinList();
             this.populateSelect();
+            this.showOfficialManifestStatus();
             this.initEventListeners();
+            this.loadSourceSkins().catch(error => {
+                console.warn("Could not load manifest skins:", error);
+                this.setPresetBrowserStatus("Some manifest sources could not be loaded.", "error");
+            });
         } catch (error) {
             console.error("Error loading skins:", error);
         }
     }
 
-    async fetchJson() {
-        const response = await fetch(this.jsonUrl);
-        if (!response.ok) {
-            throw new Error(`HTTP error: ${response.status}`);
+    createSkin(skinData, meta = {}) {
+        return this.setSkinMeta(new Skin(skinData), meta);
+    }
+
+    setSkinMeta(skin, meta = {}) {
+        if (!skin) {
+            return skin;
         }
 
-        return await response.json();
+        Object.entries(meta).forEach(([key, value]) => {
+            Object.defineProperty(skin, key, {
+                value,
+                writable: true,
+                configurable: true,
+                enumerable: false
+            });
+        });
+
+        return skin;
+    }
+
+    rebuildSkinList() {
+        this.skins = [
+            ...(this.currentSetupSkin ? [this.currentSetupSkin] : []),
+            ...this.bundledSkins,
+            ...this.importedSkins,
+            ...this.sourceSkins
+        ];
+    }
+
+    async loadSourceSkins() {
+        const enabledSources = this.skinSources.filter(source => source && source.enabled !== false);
+        if (!enabledSources.length) {
+            return;
+        }
+
+        this.setPresetBrowserStatus("Loading manifest sources...");
+
+        const sourceSkins = [];
+        const failedSources = [];
+
+        for (const source of enabledSources) {
+            try {
+                const manifest = await this.configController.fetchSkinSource(source);
+                manifest.skins.forEach(skinData => {
+                    try {
+                        const skin = this.createSkin(skinData, {
+                            isExternal: true,
+                            sourceType: "source",
+                            sourceId: source.id,
+                            sourceName: manifest.sourceName || source.name,
+                            sourceUrl: source.url
+                        });
+                        sourceSkins.push(skin);
+                    } catch (error) {
+                        console.warn("Ignoring invalid manifest skin:", skinData, error);
+                    }
+                });
+            } catch (error) {
+                console.warn(`Could not load source ${source.name}:`, error);
+                failedSources.push(source.name);
+            }
+        }
+
+        this.sourceSkins = sourceSkins;
+        this.rebuildSkinList();
+        this.populateSelect(this.currentSkin);
+
+        if (failedSources.length) {
+            const officialStatus = this.getOfficialManifestStatus();
+            const sourceStatus = `Could not load: ${failedSources.join(", ")}.`;
+            this.setPresetBrowserStatus(
+                officialStatus ? `${officialStatus.message} ${sourceStatus}` : sourceStatus,
+                "error"
+            );
+            return;
+        }
+
+        this.showOfficialManifestStatus();
     }
 
     async loadCurrentSkinFromHistory() {
@@ -88,13 +182,19 @@ var MainController = window.MainController || class MainController {
         }
     }
 
-    loadSkins(json) {
-        const skins = Array.isArray(json?.skins) ? json.skins : [];
-        this.skins = skins
+    loadSkins(manifest) {
+        const skins = Array.isArray(manifest?.skins) ? manifest.skins : [];
+        this.bundledSkins = skins
             .filter(skin => skin && typeof skin === "object")
             .map(skin => {
                 try {
-                    return new Skin(skin);
+                    return this.createSkin(skin, {
+                        sourceType: "official",
+                        sourceId: ConfigController.OFFICIAL_SOURCE_ID,
+                        sourceName: ConfigController.OFFICIAL_SOURCE_NAME,
+                        sourceUrl: ConfigController.OFFICIAL_MANIFEST_URL,
+                        sourceLoadMode: manifest?.loadMode || "remote"
+                    });
                 } catch (error) {
                     console.warn("Ignoring invalid skin definition:", skin, error);
                     return null;
@@ -105,6 +205,7 @@ var MainController = window.MainController || class MainController {
 
     addImportedSkins(importedSkins) {
         if (!Array.isArray(importedSkins) || importedSkins.length === 0) {
+            this.importedSkins = [];
             return;
         }
 
@@ -123,7 +224,11 @@ var MainController = window.MainController || class MainController {
             return true;
         });
 
-        this.skins = [...uniqueImportedSkins, ...this.skins];
+        this.importedSkins = uniqueImportedSkins.map(skin => this.setSkinMeta(skin, {
+            sourceType: "imported",
+            sourceId: "imported",
+            sourceName: "Saved skins"
+        }));
     }
 
     injectCurrentSkin(currentSkin) {
@@ -131,7 +236,7 @@ var MainController = window.MainController || class MainController {
             return;
         }
 
-        this.skins.unshift(this.cloneAsCurrentSkin(currentSkin));
+        this.currentSetupSkin = this.cloneAsCurrentSkin(currentSkin);
     }
 
     cloneAsCurrentSkin(skin) {
@@ -150,7 +255,11 @@ var MainController = window.MainController || class MainController {
 
         const currentSetupSkin = new Skin(plainSkin);
         currentSetupSkin.isCurrentSetup = true;
-        return currentSetupSkin;
+        return this.setSkinMeta(currentSetupSkin, {
+            sourceType: "current",
+            sourceId: "current",
+            sourceName: "Current setup"
+        });
     }
 
     extractSkinBaseName(name) {
@@ -189,8 +298,13 @@ var MainController = window.MainController || class MainController {
             return;
         }
 
-        this.setSkinButtonLabel.textContent = this.isCurrentSkinSelected()
-            ? "Reapply Current Setup"
+        if (this.isCurrentSkinSelected()) {
+            this.setSkinButtonLabel.textContent = "Reapply Current Setup";
+            return;
+        }
+
+        this.setSkinButtonLabel.textContent = this.currentSkin?.isExternal
+            ? "Apply & Save"
             : "Apply Skin";
     }
 
@@ -209,17 +323,29 @@ var MainController = window.MainController || class MainController {
             this.descriptionElement.textContent = "No skins available.";
             this.optionsElement.innerHTML = "";
             this.renderSelectionOverview();
+            this.renderPresetSourceFilter();
+            this.renderPresetBrowser();
             this.setApplyButtonState({ disabled: true });
             return;
         }
 
         const selectedIndex = selectedSkin
-            ? Math.max(0, this.skins.findIndex(skin => skin === selectedSkin || skin.name === selectedSkin.name))
+            ? Math.max(0, this.skins.findIndex(skin => this.isSameSkinOption(skin, selectedSkin)))
             : 0;
 
         this.selectElement.value = selectedIndex;
         this.currentSkin = this.skins[selectedIndex];
         this.showSkin();
+    }
+
+    isSameSkinOption(left, right) {
+        if (!left || !right) {
+            return false;
+        }
+
+        return left === right
+            || left.name === right.name
+            && this.getSkinSourceKey(left) === this.getSkinSourceKey(right);
     }
 
     getSkinSelectLabel(skin) {
@@ -230,11 +356,290 @@ var MainController = window.MainController || class MainController {
         return skin?.isImported ? `${skin.name} (imported)` : skin?.name || "Unnamed skin";
     }
 
+    renderPresetSourceFilter() {
+        if (!this.presetSourceFilterElement) {
+            return;
+        }
+
+        const selectedValue = this.presetSourceFilterElement.value || "all";
+        const options = [
+            { value: "all", label: "All sources" },
+            ...(this.currentSetupSkin ? [{ value: "current", label: "Current setup" }] : []),
+            { value: "official", label: "Official" },
+            ...(this.importedSkins.length ? [{ value: "imported", label: "Saved skins" }] : []),
+            ...this.skinSources
+                .filter(source => source && source.enabled !== false)
+                .map(source => ({
+                    value: `source:${source.id}`,
+                    label: source.name
+                }))
+        ];
+
+        this.presetSourceFilterElement.innerHTML = "";
+        options.forEach(optionData => {
+            const option = document.createElement("option");
+            option.value = optionData.value;
+            option.textContent = optionData.label;
+            this.presetSourceFilterElement.appendChild(option);
+        });
+
+        this.presetSourceFilterElement.value = options.some(option => option.value === selectedValue)
+            ? selectedValue
+            : "all";
+    }
+
+    renderPresetBrowser() {
+        if (!this.presetBrowserListElement) {
+            return;
+        }
+
+        this.renderPresetSourceFilter();
+        this.clearElement(this.presetBrowserListElement);
+
+        const visibleSkins = this.getFilteredPresetSkins();
+        if (!visibleSkins.length) {
+            this.presetBrowserListElement.appendChild(this.createPresetEmptyState());
+            return;
+        }
+
+        this.getPresetGroups().forEach(group => {
+            const groupSkins = visibleSkins.filter(entry => this.getSkinSourceKey(entry.skin) === group.key);
+            if (!groupSkins.length) {
+                return;
+            }
+
+            const section = document.createElement("section");
+            section.className = "presetBrowserGroup";
+
+            const header = document.createElement("div");
+            header.className = "presetBrowserGroupHeader";
+            header.textContent = `${group.label} (${groupSkins.length})`;
+            section.appendChild(header);
+
+            groupSkins.forEach(entry => {
+                section.appendChild(this.createPresetRow(entry));
+            });
+
+            this.presetBrowserListElement.appendChild(section);
+        });
+    }
+
+    getFilteredPresetSkins() {
+        const query = this.cleanText(this.presetSearchElement?.value).toLocaleLowerCase();
+        const sourceFilter = this.presetSourceFilterElement?.value || "all";
+
+        return this.skins
+            .map((skin, index) => ({ skin, index }))
+            .filter(entry => sourceFilter === "all" || this.getSkinSourceKey(entry.skin) === sourceFilter)
+            .filter(entry => {
+                if (!query) {
+                    return true;
+                }
+
+                return [
+                    entry.skin.name,
+                    entry.skin.description,
+                    this.getSkinSourceLabel(entry.skin)
+                ].some(value => this.cleanText(value).toLocaleLowerCase().includes(query));
+            });
+    }
+
+    getPresetGroups() {
+        return [
+            ...(this.currentSetupSkin ? [{ key: "current", label: "Current setup" }] : []),
+            { key: "official", label: "Official" },
+            ...(this.importedSkins.length ? [{ key: "imported", label: "Saved skins" }] : []),
+            ...this.skinSources
+                .filter(source => source && source.enabled !== false)
+                .map(source => ({
+                    key: `source:${source.id}`,
+                    label: source.name
+                }))
+        ];
+    }
+
+    createPresetRow(entry) {
+        const { skin, index } = entry;
+        const row = document.createElement("button");
+        row.type = "button";
+        row.className = "presetBrowserRow";
+        row.dataset.index = String(index);
+        row.setAttribute("role", "option");
+        row.setAttribute("aria-selected", skin === this.currentSkin ? "true" : "false");
+        row.classList.toggle("is-active", skin === this.currentSkin);
+
+        const thumbnail = this.createPresetThumbnail(skin);
+        const body = document.createElement("span");
+        body.className = "presetBrowserRowBody";
+
+        const title = document.createElement("span");
+        title.className = "presetBrowserRowTitle";
+        title.textContent = this.getSkinDisplayName(skin);
+
+        const meta = document.createElement("span");
+        meta.className = "presetBrowserRowMeta";
+        meta.textContent = this.getSkinSourceLabel(skin);
+
+        const description = document.createElement("span");
+        description.className = "presetBrowserRowDescription";
+        description.textContent = this.cleanText(skin.description) || "No description.";
+
+        body.appendChild(title);
+        body.appendChild(meta);
+        body.appendChild(description);
+        row.appendChild(thumbnail);
+        row.appendChild(body);
+        row.addEventListener("click", () => this.selectSkinByIndex(index));
+
+        return row;
+    }
+
+    createPresetThumbnail(skin) {
+        const thumbnail = document.createElement("span");
+        thumbnail.className = "presetBrowserThumb";
+
+        const preview = Array.isArray(skin?.previews)
+            ? skin.previews.find(item => item && item.url)
+            : null;
+
+        if (preview) {
+            const image = document.createElement("img");
+            image.src = preview.url;
+            image.alt = "";
+            image.loading = "lazy";
+            thumbnail.appendChild(image);
+            return thumbnail;
+        }
+
+        thumbnail.classList.add("presetBrowserThumb-empty");
+        thumbnail.textContent = this.getSkinDisplayName(skin).slice(0, 1).toUpperCase();
+        return thumbnail;
+    }
+
+    createPresetEmptyState() {
+        const emptyState = document.createElement("div");
+        emptyState.className = "presetBrowserEmpty";
+        emptyState.textContent = "No skins found.";
+        return emptyState;
+    }
+
+    selectSkinByIndex(index) {
+        if (!this.skins[index]) {
+            return;
+        }
+
+        this.selectElement.value = String(index);
+        this.currentSkin = this.skins[index];
+        this.showSkin();
+        console.log(`Skin changed to: ${this.currentSkin.name}`);
+    }
+
+    handlePresetFilterChanged() {
+        const visibleSkins = this.getFilteredPresetSkins();
+        const selectedIsVisible = visibleSkins.some(entry => entry.skin === this.currentSkin);
+
+        if (visibleSkins.length && !selectedIsVisible) {
+            this.selectSkinByIndex(visibleSkins[0].index);
+            return;
+        }
+
+        this.renderPresetBrowser();
+        this.setApplyButtonState({ disabled: !visibleSkins.length });
+    }
+
+    getSkinSourceKey(skin) {
+        if (skin?.isCurrentSetup || skin?.sourceType === "current") {
+            return "current";
+        }
+
+        if (skin?.isImported || skin?.sourceType === "imported") {
+            return "imported";
+        }
+
+        if (skin?.sourceType === "source" && skin.sourceId) {
+            return `source:${skin.sourceId}`;
+        }
+
+        if (skin?.sourceType === "official" || skin?.sourceType === "bundled") {
+            return "official";
+        }
+
+        return "official";
+    }
+
+    getSkinSourceLabel(skin) {
+        if (skin?.isCurrentSetup || skin?.sourceType === "current") {
+            return "Current setup";
+        }
+
+        if (skin?.isImported || skin?.sourceType === "imported") {
+            return "Saved skins";
+        }
+
+        if (skin?.sourceName) {
+            return skin.sourceName;
+        }
+
+        return "Official";
+    }
+
+    showOfficialManifestStatus() {
+        const officialStatus = this.getOfficialManifestStatus();
+        if (!officialStatus) {
+            this.setPresetBrowserStatus("");
+            return;
+        }
+
+        this.setPresetBrowserStatus(officialStatus.message, officialStatus.state);
+    }
+
+    getOfficialManifestStatus() {
+        return this.officialManifestStatus;
+    }
+
+    createOfficialManifestStatus(manifest) {
+        if (!manifest || manifest.loadMode === "remote") {
+            return null;
+        }
+
+        if (manifest.loadMode === "cache") {
+            return {
+                message: "Official manifest unavailable. Using cached catalog.",
+                state: "idle"
+            };
+        }
+
+        if (manifest.loadMode === "backup") {
+            return {
+                message: "Official manifest unavailable. Using bundled backup.",
+                state: "idle"
+            };
+        }
+
+        if (manifest.loadMessage) {
+            return {
+                message: manifest.loadMessage,
+                state: "error"
+            };
+        }
+
+        return null;
+    }
+
+    getSkinDisplayName(skin) {
+        if (skin?.isCurrentSetup) {
+            return this.extractSkinBaseName(skin.name);
+        }
+
+        return skin?.name || "Unnamed skin";
+    }
+
     showSkin() {
         if (!this.currentSkin) {
             return;
         }
 
+        this.renderPresetBrowser();
         this.renderSkinDescription();
         this.renderSelectionOverview();
         this.parkShareTools();
@@ -611,9 +1016,7 @@ var MainController = window.MainController || class MainController {
             return;
         }
 
-        this.currentSkin = this.skins[selectedIndex];
-        this.showSkin();
-        console.log(`Skin changed to: ${this.currentSkin.name}`);
+        this.selectSkinByIndex(selectedIndex);
     }
 
     renderSkinDescription() {
@@ -648,10 +1051,11 @@ var MainController = window.MainController || class MainController {
             return;
         }
 
-        const css = this.currentSkin.generateCSS();
         this.setApplyButtonState({ busy: true });
 
         try {
+            const skinToApply = await this.prepareSkinForApply();
+            const css = skinToApply.generateCSS();
             const serverConfig = await ApiClient.getServerConfiguration();
             await ApiClient.updateServerConfiguration(serverConfig);
 
@@ -668,14 +1072,36 @@ var MainController = window.MainController || class MainController {
             await ApiClient.updateNamedConfiguration("branding", brandingConfig);
             Dashboard.processServerConfigurationUpdateResult();
 
-            const appliedSkinName = await this.configController.saveSkin(this.currentSkin);
-            await this.configController.setSelectedSkin(appliedSkinName || this.currentSkin.name);
+            const appliedSkinName = await this.configController.saveSkin(skinToApply);
+            await this.configController.setSelectedSkin(appliedSkinName || skinToApply.name);
 
             window.location.reload(true);
         } catch (error) {
             console.error("Error applying skin:", error);
             this.setApplyButtonState();
         }
+    }
+
+    async prepareSkinForApply() {
+        if (!this.currentSkin?.isExternal) {
+            return this.currentSkin;
+        }
+
+        this.setPresetBrowserStatus(`Saving ${this.currentSkin.name}...`);
+        const savedSkin = await this.configController.saveImportedSkin(this.currentSkin);
+        if (!savedSkin) {
+            throw new Error("This manifest skin could not be saved.");
+        }
+
+        this.setSkinMeta(savedSkin, {
+            sourceType: "imported",
+            sourceId: "imported",
+            sourceName: "Saved skins"
+        });
+        this.insertImportedSkin(savedSkin, { select: false });
+        this.currentSkin = savedSkin;
+        this.setPresetBrowserStatus(`${savedSkin.name} saved. Applying...`, "success");
+        return savedSkin;
     }
 
     initEventListeners() {
@@ -688,6 +1114,18 @@ var MainController = window.MainController || class MainController {
         this.selectElement.addEventListener("change", () => {
             this.changeSkin();
         });
+
+        if (this.presetSearchElement) {
+            this.presetSearchElement.addEventListener("input", () => {
+                this.handlePresetFilterChanged();
+            });
+        }
+
+        if (this.presetSourceFilterElement) {
+            this.presetSourceFilterElement.addEventListener("change", () => {
+                this.handlePresetFilterChanged();
+            });
+        }
 
         if (this.exportDownloadButton) {
             this.exportDownloadButton.addEventListener("click", () => {
@@ -878,21 +1316,27 @@ var MainController = window.MainController || class MainController {
         }
     }
 
-    insertImportedSkin(importedSkin) {
+    insertImportedSkin(importedSkin, { select = true } = {}) {
         const normalizedName = importedSkin.name.trim().toLocaleLowerCase();
-        this.skins = this.skins.filter(skin => {
-            const isSameImportedSkin = skin.isImported
-                && skin.name.trim().toLocaleLowerCase() === normalizedName;
-            return !isSameImportedSkin;
+        importedSkin.isImported = true;
+        this.setSkinMeta(importedSkin, {
+            sourceType: "imported",
+            sourceId: "imported",
+            sourceName: "Saved skins"
         });
 
-        const firstSkinIsCurrentSetup = !!this.skins[0]?.isCurrentSetup
-            || typeof this.skins[0]?.name === "string"
-            && this.skins[0].name.startsWith("Currently applied - ");
-        const insertIndex = firstSkinIsCurrentSetup ? 1 : 0;
-        importedSkin.isImported = true;
-        this.skins.splice(insertIndex, 0, importedSkin);
-        this.populateSelect(importedSkin);
+        this.importedSkins = this.importedSkins
+            .filter(skin => skin && skin.name.trim().toLocaleLowerCase() !== normalizedName);
+        this.importedSkins.unshift(importedSkin);
+        this.rebuildSkinList();
+
+        if (select) {
+            this.populateSelect(importedSkin);
+            return;
+        }
+
+        this.renderPresetSourceFilter();
+        this.renderPresetBrowser();
     }
 
     setExportStatus(message, state = "idle") {
@@ -913,6 +1357,25 @@ var MainController = window.MainController || class MainController {
         this.importStatusElement.dataset.state = state;
     }
 
+    setPresetBrowserStatus(message, state = "idle") {
+        if (!this.presetBrowserStatusElement) {
+            return;
+        }
+
+        this.presetBrowserStatusElement.textContent = message || "";
+        this.presetBrowserStatusElement.dataset.state = state;
+    }
+
+    clearElement(element) {
+        while (element && element.firstChild) {
+            element.removeChild(element.firstChild);
+        }
+    }
+
+    cleanText(value) {
+        return typeof value === "string" ? value.trim() : "";
+    }
+
     toSafeFilename(name) {
         const safeName = String(name || "skin")
             .trim()
@@ -922,4 +1385,6 @@ var MainController = window.MainController || class MainController {
 
         return safeName || "skin";
     }
-}
+};
+
+window.MainController = MainController;

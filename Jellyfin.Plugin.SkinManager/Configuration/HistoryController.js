@@ -1,4 +1,4 @@
-var HistoryController = window.HistoryController || class HistoryController {
+var HistoryController = class HistoryController {
     constructor() {
         this.configController = new ConfigController();
         this.history = [];
@@ -439,4 +439,6 @@ var HistoryController = window.HistoryController || class HistoryController {
         delete this.restoreCssButton.dataset.restoreState;
         this.restoreCssButton.disabled = !this.currentCss;
     }
-}
+};
+
+window.HistoryController = HistoryController;

@@ -52,16 +52,30 @@
 
                     <fieldset>
                         <legend>Choose a preset</legend>
-                        <div class="skinSelectionIntro">
-                                <p class="skinSelectionText">Pick a starting point and refine it below.</p>
-                        </div>
 
                         <div class="skinSelectionGrid">
-                            <div class="skinPickerField">
-                                <label for="cssOptions">Available skins</label>
-                                <div class="selectContainer skinPickerSelectContainer">
+                            <div class="skinPickerField presetBrowser" id="presetBrowser">
+                                <div class="presetBrowserToolbar">
+                                    <div class="presetBrowserField">
+                                        <label for="presetSearch">Search</label>
+                                        <input class="emby-input" id="presetSearch" type="text" autocomplete="off">
+                                    </div>
+
+                                    <div class="presetBrowserField">
+                                        <label for="presetSourceFilter">Source</label>
+                                        <div class="selectContainer presetSourceSelectContainer">
+                                            <select is="emby-select" id="presetSourceFilter"></select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="selectContainer skinPickerSelectContainer presetLegacySelect" aria-hidden="true">
                                     <select is="emby-select" id="cssOptions"></select>
                                 </div>
+
+                                <div class="presetBrowserStatus" id="presetBrowserStatus" aria-live="polite"></div>
+                                <div class="presetBrowserList" id="presetBrowserList" role="listbox"
+                                    aria-label="Available skins"></div>
                                 <div class="fieldDescription skinPickerDescription" id="description"></div>
 
                                 <button is="emby-button" type="button" class="raised block skinApplyButton" id="setSkin">

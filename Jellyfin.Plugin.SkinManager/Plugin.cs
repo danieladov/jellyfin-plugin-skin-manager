@@ -50,9 +50,11 @@ namespace Jellyfin.Plugin.SkinManager
                 "style.css",
                 "common.js",
                 "skins.json",
+                "library",
                 "history",
                 "ConfigController.js",
                 "HistoryController.js",
+                "LibraryController.js",
             };
 
             var prefix = GetType().Namespace + ".Configuration.";
@@ -63,6 +65,7 @@ namespace Jellyfin.Plugin.SkinManager
                 EmbeddedResourcePath = name switch
                 {
                     "SkinManager"   => prefix + "configurationpage.html",
+                    "library"       => prefix + "library.html",
                     "history"       => prefix + "history.html",
                     "fontpicker.css" => prefix + "jquery.fontpicker.min.css",
                     _                => prefix + name

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Skin Manager</title>
+</head>
+
+<body>
+    <div id="libraryPage" data-role="page"
+        class="page type-interior pluginConfigurationPage tbsConfigurationPage withTabs"
+        data-require="emby-input,emby-button,emby-textarea,emby-select" data-controller="__plugin/fontpicker.js">
+        <script src="/web/configurationpage?name=controls.Control.js"></script>
+        <script src="/web/configurationpage?name=controls.ColorControl.js"></script>
+        <script src="/web/configurationpage?name=controls.SliderControl.js"></script>
+        <script src="/web/configurationpage?name=controls.CheckBoxControl.js"></script>
+        <script src="/web/configurationpage?name=controls.NumberControl.js"></script>
+        <script src="/web/configurationpage?name=controls.SelectControl.js"></script>
+        <script src="/web/configurationpage?name=controls.FontPickerControl.js"></script>
+        <script src="/web/configurationpage?name=controls.TextAreaControl.js"></script>
+        <script src="/web/configurationpage?name=controls.Category.js"></script>
+        <script src="/web/configurationpage?name=skin.js"></script>
+        <script src="/web/configurationpage?name=fontpicker.js"></script>
+        <script src="/web/configurationpage?name=colorpicker.js"></script>
+        <script src="/web/configurationpage?name=common.js"></script>
+        <script src="/web/configurationpage?name=ConfigController.js"></script>
+        <script src="/web/configurationpage?name=LibraryController.js"></script>
+
+        <link rel="stylesheet" href="/web/configurationpage?name=style.css" />
+
+        <div data-role="content">
+            <div class="content-primary">
+                <div class="tbsConfigurationPage skinManagerShell libraryShell">
+                    <header class="libraryPageHeader">
+                        <div class="libraryPageIntro">
+                            <h2 class="sectionTitle">Library</h2>
+                            <p class="skinManagerLead">Saved skins and manifest sources.</p>
+                        </div>
+                    </header>
+
+                    <div class="libraryTabs" role="tablist" aria-label="Library sections">
+                        <button type="button" class="libraryTab is-active" data-section="saved"
+                            role="tab" aria-selected="true">Saved Skins</button>
+                        <button type="button" class="libraryTab" data-section="sources"
+                            role="tab" aria-selected="false">Manifest Sources</button>
+                    </div>
+
+                    <section class="libraryPanel" data-section="saved">
+                        <div class="libraryPanelHeader">
+                            <div>
+                                <h3>Saved Skins</h3>
+                                <p id="librarySavedSkinsCount">0 skins</p>
+                            </div>
+                        </div>
+
+                        <div class="libraryImportGrid">
+                            <div class="libraryImportField">
+                                <label for="libraryImportFile">Import file</label>
+                                <input class="libraryFileInput" id="libraryImportFile" type="file"
+                                    accept=".json,application/json">
+                            </div>
+
+                            <div class="libraryImportField">
+                                <label for="libraryImportText">Import JSON</label>
+                                <textarea class="emby-textarea textarea-mono" id="libraryImportText"
+                                    rows="4"></textarea>
+                            </div>
+
+                            <button is="emby-button" type="button"
+                                class="raised libraryPrimaryButton" id="libraryImportButton">
+                                <span>Add to Saved Skins</span>
+                            </button>
+                        </div>
+
+                        <div class="libraryStatus" id="libraryImportStatus" aria-live="polite"></div>
+                        <div class="libraryList" id="librarySavedSkinsList"></div>
+                    </section>
+
+                    <section class="libraryPanel" data-section="sources" hidden>
+                        <div class="libraryPanelHeader">
+                            <div>
+                                <h3>Manifest Sources</h3>
+                                <p id="librarySourcesCount">0 sources</p>
+                            </div>
+                            <button is="emby-button" type="button"
+                                class="raised libraryPrimaryButton" id="librarySourcesRefresh">
+                                <span>Refresh enabled</span>
+                            </button>
+                        </div>
+
+                        <div class="libraryListRow libraryOfficialSource" id="libraryOfficialSource">
+                            <div class="libraryListBody">
+                                <div class="libraryListTitle">Official</div>
+                                <div class="libraryListMeta" id="libraryOfficialUrl"></div>
+                                <div class="librarySourceHealth" id="libraryOfficialHealth">Not checked</div>
+                                <div class="libraryListDescription" id="libraryOfficialDescription"></div>
+                            </div>
+                            <div class="libraryListActions">
+                                <button type="button" class="libraryActionButton" id="libraryOfficialRefresh">
+                                    Refresh
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="librarySourceForm">
+                            <div class="librarySourceField">
+                                <label for="librarySourceName">Name</label>
+                                <input class="emby-input" id="librarySourceName" type="text" autocomplete="off">
+                            </div>
+
+                            <div class="librarySourceField librarySourceField-url">
+                                <label for="librarySourceUrl">Manifest URL</label>
+                                <input class="emby-input" id="librarySourceUrl" type="url" autocomplete="off">
+                            </div>
+
+                            <button is="emby-button" type="button"
+                                class="raised libraryPrimaryButton" id="librarySourceAdd">
+                                <span>Add source</span>
+                            </button>
+                        </div>
+
+                        <div class="libraryStatus" id="librarySourceStatus" aria-live="polite"></div>
+                        <div class="libraryList" id="librarySourcesList"></div>
+                    </section>
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript">
+            console.log("library page loaded");
+            const setLibraryTabs = function () {
+                LibraryMenu.setTabs('library', 1, getTabs);
+            };
+            if (!window.SkinManagerLibraryViewListener) {
+                window.SkinManagerLibraryViewListener = function (e) {
+                    if (e.target && e.target.id === 'libraryPage') {
+                        setLibraryTabs();
+                    }
+                };
+                document.addEventListener('viewshow', window.SkinManagerLibraryViewListener);
+            }
+            setLibraryTabs();
+
+            const libraryController = new LibraryController("/web/configurationpage?name=skins.json");
+            libraryController.init();
+        </script>
+    </div>
+</body>
+
+</html>
