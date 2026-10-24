@@ -28,7 +28,7 @@
 {
     "name": "JellySkin",
     "author": "prayagprajapati17",
-    "description": "A very bright and colorful look using lots of drop shadows. Theme is by prayag17.",
+    "description": "A very bright and colorful look using lots of drop shadows. Theme is by prayag17. Note: JellySkin is archived upstream and is no longer updated, so parts of it may look wrong on Jellyfin 12.",
     "defaultCss": "@import url('https://cdn.jsdelivr.net/npm/jellyskin@latest/dist/main.css');",
     "previews": [{
             "name": "Login Page",
@@ -108,7 +108,7 @@
 {
     "name": "JellyFlix",
     "author": "prayagprajapati17",
-    "description": "A theme that aims to replicate the red and black look of Netflix. Theme is by prayag17.",
+    "description": "A theme that aims to replicate the red and black look of Netflix. Theme is by prayag17. Note: JellyFlix has not been updated since 2023, so parts of it may look wrong on Jellyfin 12.",
     "defaultCss": "@import url(https://cdn.jsdelivr.net/gh/prayag17/JellyFlix@latest/default.css);",
     "previews": [{
             "name": "Login Page",
@@ -374,7 +374,7 @@
                 {
                     "type": "number",
                     "name": "Modify Backdrop Blur",
-                    "css": ".backdropImage {filter: blur($px);}",
+                    "css": ":root {--sm-backdrop-blur: blur($px);} .backdropImage {filter: var(--sm-backdrop-blur,) var(--sm-backdrop-saturate,) var(--sm-backdrop-contrast,) var(--sm-backdrop-brightness,);}",
                     "default": "18",			
 					"description": ""
 
@@ -382,21 +382,21 @@
                 {
                     "type": "number",
                     "name": "Modify Backdrop Saturation",
-                    "css": ".backdropImage {filter: saturate($%);}",
+                    "css": ":root {--sm-backdrop-saturate: saturate($%);} .backdropImage {filter: var(--sm-backdrop-blur,) var(--sm-backdrop-saturate,) var(--sm-backdrop-contrast,) var(--sm-backdrop-brightness,);}",
                     "default": "120",			
 					"description": ""
                 },
                 {
                     "type": "number",
                     "name": "Modify Backdrop Contrast",
-                    "css": ".backdropImage {filter: contrast($%);}",
+                    "css": ":root {--sm-backdrop-contrast: contrast($%);} .backdropImage {filter: var(--sm-backdrop-blur,) var(--sm-backdrop-saturate,) var(--sm-backdrop-contrast,) var(--sm-backdrop-brightness,);}",
                     "default": "120",			
 					"description": ""
                 },
                 {
                     "type": "number",
                     "name": "Modify Backdrop Brightness",
-                    "css": ".backdropImage {filter: brightness($%);}",
+                    "css": ":root {--sm-backdrop-brightness: brightness($%);} .backdropImage {filter: var(--sm-backdrop-blur,) var(--sm-backdrop-saturate,) var(--sm-backdrop-contrast,) var(--sm-backdrop-brightness,);}",
                     "default": "40",			
 					"description": ""
                 },
@@ -490,7 +490,7 @@
     "name": "Kaleidochromic",
     "author": "Casper Talvio",
     "description": "This theme aims to be more colorful and minimalistic. Add-ons and custom accent colors are possible, but not entirely supported by this plug-in. Visit the github of the theme for more information.",
-    "defaultCss": "@import url('https://ctalvio.github.io/Kaleidochromic/default_style.css');",
+    "defaultCss": "@import url('https://cdn.jsdelivr.net/gh/CTalvio/Ultrachromic/presets/kaleidochromic_preset.css');",
     "previews": [{
             "name": "Login Page",
             "url": "https://github.com/danieladov/jellyfin-plugin-skin-manager/blob/master/src/img/Kaleidochromic/Login.jpg?raw=true"
@@ -544,7 +544,7 @@
     "name": "Novachromic",
     "author": "EdgeMentality",
     "description": "Novachromic is essentially Monochromic, but with another layer of overrides on top.",
-    "defaultCss": "@import url('https://ctalvio.github.io/Novachromic/default_style.css');",
+    "defaultCss": "@import url('https://cdn.jsdelivr.net/gh/CTalvio/Ultrachromic/presets/novachromic_preset.css');",
     "previews": [
 
         {
@@ -598,19 +598,19 @@
     "previews": [
         {
             "name": "Home/Index Page",
-            "url": "https://camo.githubusercontent.com/6dd10c355679d68222c4bed4889be5e7c453e623acc0308bf0e5cab464fc5e66/68747470733a2f2f6d62636f6f70657238332e6769746875622e696f2f6a6663737364726b67726e2f6a6663737330312e706e673f7261773d74727565"
+            "url": "https://mbcooper83.github.io/jfcssdrkgrn/jfcss01.png?raw=true"
         },
         {
             "name": "Settings Page",
-            "url": "https://camo.githubusercontent.com/fe309944755cf16b8a78ded952c28758bbf2fa8a2cd4a9f035953e9404747a50/68747470733a2f2f6d62636f6f70657238332e6769746875622e696f2f6a6663737364726b67726e2f6a6663737330322e706e673f7261773d74727565"
+            "url": "https://mbcooper83.github.io/jfcssdrkgrn/jfcss02.png?raw=true"
         },
         {
             "name": "Episode/season page",
-            "url": "https://camo.githubusercontent.com/6d8dd75114e06bffbc9ea87f4fb2845dc8a49b9408b5f79322a6d4ce80b4ee50/68747470733a2f2f6d62636f6f70657238332e6769746875622e696f2f6a6663737364726b67726e2f6a6663737330332e706e673f7261773d74727565"
+            "url": "https://mbcooper83.github.io/jfcssdrkgrn/jfcss03.png?raw=true"
         },
         {
             "name": "Player",
-            "url": "https://camo.githubusercontent.com/fcef7d4e498abf47f9dc44337436b2664ee2ce63195b93ec6ea564f1f689300c/68747470733a2f2f6d62636f6f70657238332e6769746875622e696f2f6a6663737364726b67726e2f6a6663737330342e706e673f7261773d74727565"
+            "url": "https://mbcooper83.github.io/jfcssdrkgrn/jfcss04.png?raw=true"
         }
     ],
     "categories": [{
@@ -706,6 +706,106 @@
     }]
 },
 {
+    "name": "ElegantFin",
+    "author": "lscambo13",
+    "description": "A modern, elegant theme with a translucent look, inspired by the Jellyseerr UI. Actively maintained.",
+    "defaultCss": "@import url('https://cdn.jsdelivr.net/gh/lscambo13/ElegantFin@main/Theme/ElegantFin-jellyfin-theme-build-latest-minified.css');",
+    "previews": [
+        {
+            "name": "Login Page",
+            "url": "https://raw.githubusercontent.com/lscambo13/ElegantFin/main/Previews/previews-v25.08.02/optimized/desktop/21.%20Login%20Page.webp"
+        },
+        {
+            "name": "Home/Index Page",
+            "url": "https://raw.githubusercontent.com/lscambo13/ElegantFin/main/Previews/previews-v25.08.02/optimized/desktop/1.%20Homepage.webp"
+        },
+        {
+            "name": "Library Page",
+            "url": "https://raw.githubusercontent.com/lscambo13/ElegantFin/main/Previews/previews-v25.08.02/optimized/desktop/2.%20Movies%20Library.webp"
+        },
+        {
+            "name": "Title page",
+            "url": "https://raw.githubusercontent.com/lscambo13/ElegantFin/main/Previews/previews-v25.08.02/optimized/desktop/4.%20Movie%20Page.webp"
+        }
+    ],
+    "categories": [
+        {
+            "name": "Add-ons",
+            "options": [
+                {
+                    "type": "checkBox",
+                    "name": "Media Bar plugin support",
+                    "description": "Only enable this if you use the Media Bar plugin.",
+                    "css": "@import url('https://cdn.jsdelivr.net/gh/lscambo13/ElegantFin@main/Theme/assets/add-ons/media-bar-plugin-support-latest-min.css');"
+                }
+            ]
+        }
+    ]
+},
+{
+    "name": "Zesty",
+    "author": "stpnwf",
+    "description": "A minimal and elegant theme inspired by Ultrachromic, Glassmorphism and Scyfin. Actively maintained.",
+    "defaultCss": "@import url('https://cdn.jsdelivr.net/gh/stpnwf/ZestyTheme@latest/theme.css');",
+    "previews": [
+        {
+            "name": "Login Page",
+            "url": "https://raw.githubusercontent.com/stpnwf/ZestyTheme/main/images/login.jpg"
+        },
+        {
+            "name": "Home/Index Page",
+            "url": "https://raw.githubusercontent.com/stpnwf/ZestyTheme/main/images/home.jpg"
+        },
+        {
+            "name": "Title page",
+            "url": "https://raw.githubusercontent.com/stpnwf/ZestyTheme/main/images/nice-guys.jpg"
+        },
+        {
+            "name": "Player",
+            "url": "https://raw.githubusercontent.com/stpnwf/ZestyTheme/main/images/player.jpg"
+        }
+    ],
+    "categories": [
+        {
+            "name": "Customization",
+            "options": [
+                {
+                    "type": "selector",
+                    "name": "Color scheme",
+                    "description": "Optional color preset.",
+                    "css": "/* Zesty color scheme */",
+                    "selections": [
+                        {
+                            "name": "Default",
+                            "css": ""
+                        },
+                        {
+                            "name": "Blue",
+                            "css": "@import url('https://cdn.jsdelivr.net/gh/stpnwf/ZestyTheme@latest/colorschemes/blue.css');"
+                        },
+                        {
+                            "name": "Coral",
+                            "css": "@import url('https://cdn.jsdelivr.net/gh/stpnwf/ZestyTheme@latest/colorschemes/coral.css');"
+                        },
+                        {
+                            "name": "Gray",
+                            "css": "@import url('https://cdn.jsdelivr.net/gh/stpnwf/ZestyTheme@latest/colorschemes/gray.css');"
+                        },
+                        {
+                            "name": "Green",
+                            "css": "@import url('https://cdn.jsdelivr.net/gh/stpnwf/ZestyTheme@latest/colorschemes/green.css');"
+                        },
+                        {
+                            "name": "Purple",
+                            "css": "@import url('https://cdn.jsdelivr.net/gh/stpnwf/ZestyTheme@latest/colorschemes/purple.css');"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+},
+{
     "name": "Custom",
     "author": "you",
     "description": "customize the look of jellyfin by your needs",
@@ -772,26 +872,26 @@
                         },
                         {
                             "name": "Outlined",
-                            "css": "@import url('https://prayag17.github.io/Jellyfin-Icons/Outline.css');"
+                            "css": "@import url('https://cdn.jsdelivr.net/gh/prayag17/Jellyfin-Icons/Outline.css');"
                         },
                         {
                             "name": "Rounded",
-                            "css": "@import url('https://prayag17.github.io/Jellyfin-Icons/round.css');"
+                            "css": "@import url('https://cdn.jsdelivr.net/gh/prayag17/Jellyfin-Icons/round.css');"
                         },
                         {
                             "name": "Sharp",
-                            "css": "@import url('https://prayag17.github.io/Jellyfin-Icons/Sharp.css');"
+                            "css": "@import url('https://cdn.jsdelivr.net/gh/prayag17/Jellyfin-Icons/Sharp.css');"
                         }, {
                             "name": "Outlined-Non google fonts",
-                            "css": "@import url('https://prayag17.github.io/Jellyfin-Icons/Outline.css');"
+                            "css": "@import url('https://cdn.jsdelivr.net/gh/prayag17/Jellyfin-Icons/Outline.css');"
                         },
                         {
                             "name": "Rounded-Non google fonts",
-                            "css": "@import url('https://prayag17.github.io/Jellyfin-Icons/round.css');"
+                            "css": "@import url('https://cdn.jsdelivr.net/gh/prayag17/Jellyfin-Icons/round.css');"
                         },
                         {
                             "name": "Sharp-Non google fonts",
-                            "css": "@import url('https://prayag17.github.io/Jellyfin-Icons/Sharp.css');"
+                            "css": "@import url('https://cdn.jsdelivr.net/gh/prayag17/Jellyfin-Icons/Sharp.css');"
                         }
                     ]
                 },
@@ -854,7 +954,7 @@
                     "mode": "hex",
                     "name": "Idle button color-foreground",
                     "description": "This modifies the color of buttons like cast and search.",
-                    "css": ".paper-icon-button-light{color: $; transititon: all .2s;}",
+                    "css": ".paper-icon-button-light{color: $; transition: all .2s;}",
                     "default": "#ffffff"
                 },
                 {
@@ -885,7 +985,7 @@
                     "type": "number",
                     "name": "Border Radius",
                     "description": "Change the rounding",
-                    "css": ":root{--btn-rounding: $px; --rounding: $px;} .missingIndicator, .unairedIndicator {border-radius: var(--rounding);}.formDialogHeader {border-top-left-radius: var(--rounding);border-top-right-radius: var(--rounding);}.formDialogFooter {border-bottom-left-radius: var(--rounding);border-bottom-right-radius: var(--rounding);}.cardOverlayContainer {border-radius: var(--rounding) !important;}.primaryImageWrapper>img, .toast, .paperList, .cardContent, .sessionNowPlayingInnerContent, .listItem:hover, .cardImage, .fab, .raised, .multiSelectCheckboxOutline, .itemSelectionPanel, .cardContent-button, .cardContent-shadow, .itemDetailImage, .cardOverlayButton-hover, .cardImageContainer, .cardPadder, .listItemImage, .listItemImageButton, .listItemButton, .headerButton, .paper-icon-button-light, .innerCardFooter, .blurhash-canvas, .dialog, .countIndicator, .playedIndicator, .listItemIcon, .listItem-border, .button-flat, .visualCardBox, .checkboxOutline, .emby-select-withcolor, .chapterThumbTextContainer, .chapterThumbContainer, .chapterThumb, .emby-input, .emby-textarea, .emby-select-withcolor, .nowPlayingPageImage, .upNextDialog-poster-img, .upNextContainer, .cardOverlayButtonIcon {border-radius: var(--rounding) !important;}.osdPoster img {border-radius: var(--rounding);border: none;}.mdl-slider::-moz-range-thumb {border-radius: var(--rounding);}.mdl-slider::-ms-thumb {border-radius: var(--rounding);}.mdl-slider::-webkit-slider-thumb {border-radius: var(--rounding);}div[data-role='controlgroup'] a[data-role='button']:first-child {border-bottom-left-radius: var(--rounding);border-top-left-radius: var(--rounding);}div[data-role='controlgroup'] a[data-role='button']:last-child {border-bottom-right-radius: var(--rounding);border-top-right-radius: var(--rounding);}#dashboardPage .cardContent, #dashboardPage .sessionNowPlayingInnerContent {border-radius: var(--rounding) var(--rounding) 0 0 !important;}#divVirtualFolders .cardImageContainer, #divVirtualFolders .cardContent {border-radius: var(--rounding) var(--rounding) 0 0 !important;}#userProfilesPage .cardImage, #userProfilesPage .cardContent {border-radius: var(--rounding) var(--rounding) 0 0 !important;}#user_usage_report_table, .detailTable {border-radius: var(--rounding);}progress {border-radius: var(--rounding);}progress::-webkit-progress-bar {border-radius: var(--rounding);}progress::-moz-progress-bar {border-radius: var(--rounding);}progress::-webkit-progress-value {border-radius: var(--rounding);}.taskProgressOuter, .taskProgressInner {border-radius: var(--rounding) !important;}::-webkit-scrollbar-thumb {border-radius: var(--rounding);} .paper-icon-button-light{border-radius: var(--btn-rounding) !impotant;}",
+                    "css": ":root{--btn-rounding: $px; --rounding: $px;} .missingIndicator, .unairedIndicator {border-radius: var(--rounding);}.formDialogHeader {border-top-left-radius: var(--rounding);border-top-right-radius: var(--rounding);}.formDialogFooter {border-bottom-left-radius: var(--rounding);border-bottom-right-radius: var(--rounding);}.cardOverlayContainer {border-radius: var(--rounding) !important;}.primaryImageWrapper>img, .toast, .paperList, .cardContent, .sessionNowPlayingInnerContent, .listItem:hover, .cardImage, .fab, .raised, .multiSelectCheckboxOutline, .itemSelectionPanel, .cardContent-button, .cardContent-shadow, .itemDetailImage, .cardOverlayButton-hover, .cardImageContainer, .cardPadder, .listItemImage, .listItemImageButton, .listItemButton, .headerButton, .paper-icon-button-light, .innerCardFooter, .blurhash-canvas, .dialog, .countIndicator, .playedIndicator, .listItemIcon, .listItem-border, .button-flat, .visualCardBox, .checkboxOutline, .emby-select-withcolor, .chapterThumbTextContainer, .chapterThumbContainer, .chapterThumb, .emby-input, .emby-textarea, .emby-select-withcolor, .nowPlayingPageImage, .upNextDialog-poster-img, .upNextContainer, .cardOverlayButtonIcon {border-radius: var(--rounding) !important;}.osdPoster img {border-radius: var(--rounding);border: none;}.mdl-slider::-moz-range-thumb {border-radius: var(--rounding);}.mdl-slider::-ms-thumb {border-radius: var(--rounding);}.mdl-slider::-webkit-slider-thumb {border-radius: var(--rounding);}div[data-role='controlgroup'] a[data-role='button']:first-child {border-bottom-left-radius: var(--rounding);border-top-left-radius: var(--rounding);}div[data-role='controlgroup'] a[data-role='button']:last-child {border-bottom-right-radius: var(--rounding);border-top-right-radius: var(--rounding);}#dashboardPage .cardContent, #dashboardPage .sessionNowPlayingInnerContent {border-radius: var(--rounding) var(--rounding) 0 0 !important;}#divVirtualFolders .cardImageContainer, #divVirtualFolders .cardContent {border-radius: var(--rounding) var(--rounding) 0 0 !important;}#userProfilesPage .cardImage, #userProfilesPage .cardContent {border-radius: var(--rounding) var(--rounding) 0 0 !important;}#user_usage_report_table, .detailTable {border-radius: var(--rounding);}progress {border-radius: var(--rounding);}progress::-webkit-progress-bar {border-radius: var(--rounding);}progress::-moz-progress-bar {border-radius: var(--rounding);}progress::-webkit-progress-value {border-radius: var(--rounding);}.taskProgressOuter, .taskProgressInner {border-radius: var(--rounding) !important;}::-webkit-scrollbar-thumb {border-radius: var(--rounding);} .paper-icon-button-light{border-radius: var(--btn-rounding) !important;}",
                     "default": "0"
                 },
                 {

@@ -1,34 +1,37 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>NET8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>Jellyfin.Plugin.SkinManager</RootNamespace>
+    <Nullable>enable</Nullable>
     <IsPackable>true</IsPackable>
-    <AssemblyVersion>2.0.2</AssemblyVersion>
-    <FileVersion>2.0.2</FileVersion>
-    <Authors />
-    <Company />
+    <Version>3.0.0.0</Version>
+    <AssemblyVersion>3.0.0.0</AssemblyVersion>
+    <FileVersion>3.0.0.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Jellyfin.Controller" Version="10.10.0" />
+    <!-- The server provides these at runtime; only compile against them. -->
+    <PackageReference Include="Jellyfin.Controller" Version="12.0.0">
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </PackageReference>
+    <PackageReference Include="Jellyfin.Model" Version="12.0.0">
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
     <None Remove="Configuration\configurationpage.html" />
     <EmbeddedResource Include="Configuration\configurationpage.html" />
 
+    <None Remove="Configuration\skinmanager.js" />
+    <EmbeddedResource Include="Configuration\skinmanager.js" />
+
     <None Remove="Configuration\fontpicker.js" />
     <EmbeddedResource Include="Configuration\fontpicker.js" />
-  </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Properties\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="MediaBrowser.Api">
-      <HintPath>..\..\..\..\..\..\Program Files\Jellyfin\Server\MediaBrowser.Api.dll</HintPath>
-    </Reference>
+    <!-- Bundled copy of the skin list so the page works offline and behind strict proxies. -->
+    <EmbeddedResource Include="..\skins-3.0.json" LogicalName="Jellyfin.Plugin.SkinManager.Configuration.skins.json" />
   </ItemGroup>
 
 </Project>

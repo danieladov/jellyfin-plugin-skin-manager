@@ -8,7 +8,7 @@ using MediaBrowser.Model.Serialization;
 
 namespace Jellyfin.Plugin.SkinManager
 {
-    public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages 
+    public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages
     {
         public Plugin(IApplicationPaths appPaths, IXmlSerializer xmlSerializer)
             : base(appPaths, xmlSerializer)
@@ -18,32 +18,38 @@ namespace Jellyfin.Plugin.SkinManager
 
         public override string Name => "SkinManager";
 
-        public static Plugin Instance { get; private set; }
+        public static Plugin? Instance { get; private set; }
 
         public override string Description
-            => "Skin Manager";
+            => "Install and customise community skins for the Jellyfin web client.";
 
         private readonly Guid _id = new Guid("e9ca8b8e-ca6d-40e7-85dc-58e536df8eb3");
         public override Guid Id => _id;
 
         public IEnumerable<PluginPageInfo> GetPages()
         {
+            var prefix = GetType().Namespace + ".Configuration.";
             return new[]
             {
                 new PluginPageInfo
                 {
                     Name = "SkinManager",
-                    EmbeddedResourcePath = GetType().Namespace + ".Configuration.configurationpage.html"
+                    EmbeddedResourcePath = prefix + "configurationpage.html"
                 },
-                 new PluginPageInfo
-                {
-                    Name = "fontpicker.js",
-                    EmbeddedResourcePath = GetType().Namespace + ".Configuration.fontpicker.js"
-                }, 
                 new PluginPageInfo
                 {
-                    Name = "fontpicker.css",
-                    EmbeddedResourcePath = GetType().Namespace + ".Configuration.jquery.fontpicker.min.css"
+                    Name = "skinmanager.js",
+                    EmbeddedResourcePath = prefix + "skinmanager.js"
+                },
+                new PluginPageInfo
+                {
+                    Name = "skinmanager.fontpicker.js",
+                    EmbeddedResourcePath = prefix + "fontpicker.js"
+                },
+                new PluginPageInfo
+                {
+                    Name = "skinmanager.skins.json",
+                    EmbeddedResourcePath = prefix + "skins.json"
                 }
             };
         }
