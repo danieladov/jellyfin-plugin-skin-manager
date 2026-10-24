@@ -1,15 +1,20 @@
 ---
-name: "jellyfin-plugin-tmdbboxsets"
-guid: "bc4aad2e-d3d0-4725-a5e2-fd07949e5b42"
-version: "5" # Please increment with each pull request
-jellyfin_version: "10.5.0" # The earliest binary-compatible version
-owner: "jellyfin"
-nicename: "TMDb Box Sets"
-description: "Automatically create movie box sets based on TMDb collections"
-overview: "Automatically create movie box sets based on TMDb collections"
-category: "Metadata"
+name: "SkinManager"
+guid: "e9ca8b8e-ca6d-40e7-85dc-58e536df8eb3"
+version: "3.0.0.0" # Please increment with each release
+targetAbi: "12.0.0.0" # The earliest binary-compatible Jellyfin version
+framework: "net10.0"
+owner: "danieladov"
+overview: "Install and customise community skins for Jellyfin"
+description: >
+  Pick a community skin (Ultrachromic, ElegantFin, Zesty, JellyFlix, ...),
+  tweak its options and apply it to the Jellyfin web client without
+  losing your own custom CSS.
+category: "General"
 artifacts:
-  - "Jellyfin.Plugin.TMDbBoxSets.dll"
-build_type: "dotnet"
-dotnet_configuration: "Release"
-dotnet_framework: "netstandard2.1"
+  - "Jellyfin.Plugin.SkinManager.dll"
+changelog: >
+  Rebuilt for Jellyfin 12.0 (.NET 10). Your own custom CSS is now kept
+  and a backup of your previous CSS is saved. Added a "Remove skin"
+  button, ElegantFin and Zesty skins, and fixed the empty skin list,
+  broken sliders, Google Fonts and dead skin links.
